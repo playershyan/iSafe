@@ -34,9 +34,9 @@ export default async function ShelterAuthPage({ params }: { params: Promise<{ lo
       </div>
 
       <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-        <h3 className="text-sm font-bold mb-2">{t('needHelp')}</h3>
+        <h3 className="text-sm font-bold mb-2">Need help?</h3>
         <p className="text-sm text-gray-700">
-          {t('needHelpText')}
+          Contact your shelter administrator if you don't have access codes or need assistance.
         </p>
       </div>
     </div>

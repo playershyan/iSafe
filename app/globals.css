@@ -28,4 +28,24 @@
     white-space: nowrap;
     border-width: 0;
   }
+
+  .live-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 9999px;
+    background-color: #ef4444; /* red-500 */
+    animation: live-blink 1.4s ease-in-out infinite;
+  }
+
+  @keyframes live-blink {
+    0% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.4;
+    }
+  }
 }
