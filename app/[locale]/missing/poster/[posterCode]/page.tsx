@@ -1,19 +1,17 @@
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PosterPreview } from '@/components/features/PosterPreview';
 import { Alert } from '@/components/ui';
 
 interface PosterPageProps {
-  params: {
+  params: Promise<{
     locale: string;
     posterCode: string;
-  };
+  }>;
 }
 
-export default function PosterPage({ params: { locale, posterCode } }: PosterPageProps) {
-  const t = useTranslations('poster');
-  const tCommon = useTranslations('common');
+export default async function PosterPage({ params }: PosterPageProps) {
+  const { locale, posterCode } = await params;
 
   // Validate poster code format (MP + 5 digits)
   const posterCodeRegex = /^MP\d{5}$/;
@@ -28,19 +26,15 @@ export default function PosterPage({ params: { locale, posterCode } }: PosterPag
           href={`/${locale}`}
           className="inline-flex items-center text-sm text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
         >
-          ← {tCommon('backHome')}
+          ← Back home
         </Link>
       </div>
 
-      <h1 className="mb-2 text-2xl font-bold text-gray-900 md:text-3xl">
-        {t('title')}
-      </h1>
-      <p className="mb-6 text-gray-600">
-        {t('subtitle')}
-      </p>
+      <h1 className="mb-2 text-2xl font-bold text-gray-900 md:text-3xl">Poster created</h1>
+      <p className="mb-6 text-gray-600">Share this poster widely to help find the missing person.</p>
 
-      <Alert variant="success" title={t('reportCreated')}>
-        {t('reportCreatedText')}
+      <Alert variant="success" title="Report created">
+        A missing person report has been created successfully.
       </Alert>
 
       <div className="mt-6">
@@ -48,10 +42,9 @@ export default function PosterPage({ params: { locale, posterCode } }: PosterPag
       </div>
 
       <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <h3 className="font-bold mb-2">{t('importantNote')}</h3>
+        <h3 className="font-bold mb-2">Important</h3>
         <p className="text-sm text-gray-700">
-          {t('importantNoteText')}
-        </p>
+          Please keep this poster handy and share only with trusted channels when needed.
       </div>
 
       <div className="mt-6 text-center">

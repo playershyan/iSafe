@@ -1,4 +1,3 @@
-import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { Button } from '@/components/ui';
 import { StatCard } from '@/components/features/StatCard';
@@ -6,28 +5,26 @@ import { getStatistics } from '@/lib/services/statisticsService';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
-export default async function HomePage({ params: { locale } }: { params: { locale: string } }) {
-  const t = await getTranslations('home');
+export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const stats = await getStatistics();
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       {/* Hero Section */}
       <div className="mb-8 text-center">
-        <h1 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
-          {t('title')}
-        </h1>
+        <h1 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">Find and protect your loved ones</h1>
 
         {/* Primary CTAs */}
         <div className="mb-6 flex flex-col gap-4">
           <Link href={`/${locale}/search`}>
             <Button size="large" fullWidth>
-              🔍 {t('searchButton')}
+              🔍 Search for a missing person
             </Button>
           </Link>
           <Link href={`/${locale}/missing`}>
             <Button size="large" fullWidth variant="secondary">
-              + {t('reportButton')}
+              + Report a missing person
             </Button>
           </Link>
         </div>
@@ -37,10 +34,10 @@ export default async function HomePage({ params: { locale } }: { params: { local
 
         {/* Shelter Staff CTA */}
         <div className="mb-8">
-          <p className="mb-3 text-sm font-medium text-gray-600">{t('shelterSection')}</p>
+          <p className="mb-3 text-sm font-medium text-gray-600">Shelter staff tools</p>
           <Link href={`/${locale}/register`}>
             <Button fullWidth variant="secondary">
-              {t('registerButton')}
+              Register a person in your shelter
             </Button>
           </Link>
         </div>
@@ -51,22 +48,22 @@ export default async function HomePage({ params: { locale } }: { params: { local
         {/* Live Statistics */}
         <div>
           <h2 className="mb-4 text-lg font-bold text-gray-900">
-            📊 {t('statsTitle')}
+            📊 Live statistics
           </h2>
           <div className="grid gap-3">
             <StatCard
               value={stats.totalPersons}
-              label={t('personsRegistered')}
+              label="Missing persons registered"
               icon="👥"
             />
             <StatCard
               value={stats.activeShelters}
-              label={t('sheltersActive')}
+              label="Active shelters"
               icon="🏠"
             />
             <StatCard
               value={stats.totalMatches}
-              label={t('matchesMade')}
+              label="Matches made"
               icon="✅"
             />
           </div>

@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button, Input, Alert } from '@/components/ui';
-import { useTranslations } from 'next-intl';
 
 const shelterAuthFormSchema = z.object({
   shelterCode: z.string().min(1, 'Shelter code is required'),
@@ -20,8 +19,8 @@ interface ShelterAuthFormProps {
 }
 
 export function ShelterAuthForm({ locale }: ShelterAuthFormProps) {
-  const t = useTranslations('auth');
-  const tCommon = useTranslations('common');
+  const t = (key: string) => key;
+  const tCommon = (key: string) => key;
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);

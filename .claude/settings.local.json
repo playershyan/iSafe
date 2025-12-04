@@ -9,7 +9,10 @@
       "Bash(npx prisma db push:*)",
       "Bash(copy:*)",
       "Bash(copy \"D:\\projects\\iSafe\\messages\\en.json\" \"D:\\projects\\iSafe\\messages\\ta.json\")",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx prisma validate:*)",
+      "Bash(npm audit fix:*)",
+      "Bash(npm audit:*)"
     ],
     "deny": [],
     "ask": []

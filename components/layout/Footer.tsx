@@ -1,9 +1,6 @@
-import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 export function Footer() {
-  const t = useTranslations('nav');
-
   return (
     <footer className="border-t border-gray-200 bg-gray-50">
       <div className="mx-auto max-w-2xl px-4 py-8">
@@ -12,7 +9,7 @@ export function Footer() {
             href="/about"
             className="text-sm text-gray-600 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
           >
-            {t('about')}
+            About
           </Link>
         </nav>
         <p className="mt-4 text-center text-xs text-gray-500">

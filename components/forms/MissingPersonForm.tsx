@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button, Input, Alert } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
-import { useTranslations } from 'next-intl';
 
 const missingPersonFormSchema = z.object({
   // Step 1: Person details
@@ -35,8 +34,8 @@ interface MissingPersonFormProps {
 }
 
 export function MissingPersonForm({ locale }: MissingPersonFormProps) {
-  const t = useTranslations('missing');
-  const tCommon = useTranslations('common');
+  const t = (key: string) => key;
+  const tCommon = (key: string) => key;
   const router = useRouter();
 
   const [step, setStep] = useState(1);

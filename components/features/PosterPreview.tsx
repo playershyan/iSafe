@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Button, Alert, Card } from '@/components/ui';
-import { useTranslations } from 'next-intl';
 
 interface PosterPreviewProps {
   posterCode: string;
@@ -10,8 +9,8 @@ interface PosterPreviewProps {
 }
 
 export function PosterPreview({ posterCode, locale }: PosterPreviewProps) {
-  const t = useTranslations('poster');
-  const tCommon = useTranslations('common');
+  const t = (key: string) => key;
+  const tCommon = (key: string) => key;
 
   const [format, setFormat] = useState<'square' | 'story'>('square');
   const [shareSuccess, setShareSuccess] = useState(false);

@@ -32,7 +32,11 @@ export async function getStatistics(): Promise<AppStatistics> {
       byDistrict: stats.byDistrict as Record<string, number>,
     };
   } catch (error) {
-    console.error('Error fetching statistics:', error);
+    // Only log errors in development to avoid noisy source map warnings
+    if (process.env.NODE_ENV === 'development') {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Error fetching statistics:', errorMessage);
+    }
     // Return default values on error
     return {
       totalPersons: 0,

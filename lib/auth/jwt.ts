@@ -25,7 +25,14 @@ export async function verifyShelterToken(token: string): Promise<ShelterSession 
     const { payload } = await jwtVerify(token, JWT_SECRET);
     return payload as ShelterSession;
   } catch (error) {
-    console.error('JWT verification failed:', error);
+    // Only log errors in development to avoid noisy source map warnings
+    if (process.env.NODE_ENV === 'development') {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // Only log non-expected errors (invalid tokens are expected for unauthenticated users)
+      if (!errorMessage.includes('Invalid Compact JWS') && !errorMessage.includes('signature')) {
+        console.error('JWT verification failed:', errorMessage);
+      }
+    }
     return null;
   }
 }

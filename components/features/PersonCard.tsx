@@ -1,4 +1,3 @@
-import { useTranslations } from 'next-intl';
 import { Card } from '@/components/ui';
 import { PersonSearchResult } from '@/types';
 import { format } from 'date-fns';
@@ -15,8 +14,8 @@ const healthStatusColors = {
 };
 
 export function PersonCard({ person }: PersonCardProps) {
-  const t = useTranslations('search');
-  const tHealth = useTranslations('health');
+  const t = (key: string) => key;
+  const tHealth = (key: string) => key;
 
   return (
     <Card className="hover:border-primary">

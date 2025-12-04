@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Button, Input, Card } from '@/components/ui';
 
@@ -12,7 +11,7 @@ interface SearchFormProps {
 }
 
 export function SearchForm({ locale }: SearchFormProps) {
-  const t = useTranslations('search');
+  const t = (key: string) => key;
   const router = useRouter();
   const [searchType, setSearchType] = useState<SearchType>('name');
   const [query, setQuery] = useState('');
@@ -59,7 +58,7 @@ export function SearchForm({ locale }: SearchFormProps) {
                 onChange={(e) => setSearchType(e.target.value as SearchType)}
                 className="h-5 w-5 text-primary focus:ring-primary"
               />
-              <span className="text-base">{t('byName')}</span>
+              <span className="text-base">By name</span>
             </label>
 
             <label className="flex items-center gap-3 rounded border border-gray-300 p-3 cursor-pointer hover:bg-gray-50">
@@ -71,7 +70,7 @@ export function SearchForm({ locale }: SearchFormProps) {
                 onChange={(e) => setSearchType(e.target.value as SearchType)}
                 className="h-5 w-5 text-primary focus:ring-primary"
               />
-              <span className="text-base">{t('byNIC')}</span>
+              <span className="text-base">By NIC</span>
             </label>
           </div>
         </div>
@@ -80,10 +79,10 @@ export function SearchForm({ locale }: SearchFormProps) {
         {searchType === 'name' ? (
           <div>
             <Input
-              label={t('firstName')}
+              label="First name"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t('firstName')}
+              placeholder="First name"
               required
               minLength={2}
             />
@@ -94,17 +93,17 @@ export function SearchForm({ locale }: SearchFormProps) {
         ) : (
           <div>
             <Input
-              label={t('nic')}
+            label="NIC"
               value={nic}
               onChange={(e) => setNic(e.target.value)}
-              placeholder={t('nicPlaceholder')}
+              placeholder="NIC number"
               required
             />
           </div>
         )}
 
         <Button type="submit" fullWidth size="large" disabled={isLoading}>
-          {isLoading ? '⏳ Searching...' : `🔍 ${t('searchButton')}`}
+          {isLoading ? '⏳ Searching...' : '🔍 Search'}
         </Button>
       </form>
     </Card>

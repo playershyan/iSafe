@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button, Input, Alert, Card } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
-import { useTranslations } from 'next-intl';
 
 const registrationFormSchema = z.object({
   photoFile: z.instanceof(File).optional(),
@@ -54,8 +53,8 @@ interface ShelterRegistrationFormProps {
 }
 
 export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistrationFormProps) {
-  const t = useTranslations('register');
-  const tCommon = useTranslations('common');
+  const t = (key: string) => key;
+  const tCommon = (key: string) => key;
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
