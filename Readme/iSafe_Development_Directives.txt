@@ -1,0 +1,1405 @@
+================================================================================
+iSafe - DEVELOPMENT DIRECTIVES & COMMANDS
+================================================================================
+
+PROJECT: iSafe - Disaster Response Platform
+PURPOSE: Build a fast, functional, simple application that works on 2G networks
+PRIORITY: Speed and reliability over aesthetics
+TIMELINE: 24-48 hours to MVP
+
+These are MANDATORY directives. Follow them strictly.
+
+
+================================================================================
+CORE PHILOSOPHY
+================================================================================
+
+1. FUNCTION OVER FORM
+   "If it doesn't improve functionality, don't add it"
+   
+2. SPEED IS EVERYTHING
+   "Every kilobyte matters, every millisecond counts"
+   
+3. SIMPLICITY WINS
+   "Simple solutions that work beat complex solutions that might work"
+   
+4. MOBILE FIRST, MOBILE ONLY
+   "Design for the slowest connection, smallest screen"
+   
+5. SERVER DOES THE WORK
+   "Process on server, deliver results to client"
+
+
+================================================================================
+ABSOLUTE PROHIBITIONS (NEVER DO THESE)
+================================================================================
+
+❌ NEVER use animations or transitions (CSS or JS)
+❌ NEVER use custom fonts beyond system fonts (exception: Noto for Sinhala/Tamil)
+❌ NEVER use hero images, background images, or decorative graphics
+❌ NEVER use third-party UI libraries (Material UI, Chakra, etc.)
+❌ NEVER use heavyweight state management (Redux, Zustand, etc.)
+❌ NEVER use client-side data fetching when server-side is possible
+❌ NEVER load JavaScript for static content
+❌ NEVER use video, audio, or interactive media
+❌ NEVER use auto-refresh or polling (wastes bandwidth)
+❌ NEVER use external analytics scripts that slow page load
+❌ NEVER use social media widgets or embeds
+❌ NEVER use carousels, sliders, or image galleries
+❌ NEVER use modal dialogs unless absolutely necessary
+❌ NEVER use custom scrollbars or scroll effects
+❌ NEVER use gradient backgrounds (solid colors only)
+❌ NEVER use box-shadows (borders only)
+❌ NEVER use blur effects or filters
+❌ NEVER send multiple API requests simultaneously without purpose
+❌ NEVER fetch data you won't immediately use
+❌ NEVER make API calls on every keystroke (debounce properly)
+❌ NEVER use console.log in production code
+❌ NEVER commit commented-out code
+❌ NEVER use inline styles (Tailwind utility classes only)
+
+
+================================================================================
+MANDATORY REQUIREMENTS (ALWAYS DO THESE)
+================================================================================
+
+✅ ALWAYS use semantic HTML (proper heading hierarchy)
+✅ ALWAYS use Server Components by default (mark 'use client' only when needed)
+✅ ALWAYS validate on both client and server
+✅ ALWAYS handle errors gracefully with user-friendly messages
+✅ ALWAYS use loading states for async operations
+✅ ALWAYS use Next.js Image component for images
+✅ ALWAYS compress images before upload (client-side)
+✅ ALWAYS use database indexes on searchable fields
+✅ ALWAYS use prepared statements (Prisma prevents SQL injection)
+✅ ALWAYS implement rate limiting on public endpoints
+✅ ALWAYS use environment variables for secrets
+✅ ALWAYS use HTTPS (production only)
+✅ ALWAYS sanitize user inputs
+✅ ALWAYS provide alt text for images
+✅ ALWAYS use proper ARIA labels
+✅ ALWAYS test on mobile device before committing
+✅ ALWAYS use TypeScript types (no 'any' except for edge cases)
+✅ ALWAYS handle offline/network errors
+✅ ALWAYS provide clear error messages in user's language
+✅ ALWAYS use async/await (avoid callbacks)
+✅ ALWAYS clean up resources (close connections, clear timers)
+✅ ALWAYS use meaningful variable names
+✅ ALWAYS write self-documenting code (minimal comments needed)
+✅ ALWAYS use git commits with clear messages
+
+
+================================================================================
+COMPONENT ARCHITECTURE RULES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+COMPONENT CREATION
+────────────────────────────────────────────────────────────────────────────────
+
+RULE 1: ONE COMPONENT, ONE RESPONSIBILITY
+- Each component does ONE thing
+- If a component does multiple things, split it
+- Component name describes its purpose clearly
+
+RULE 2: SMALL COMPONENTS (< 200 LINES)
+- If component exceeds 200 lines, refactor
+- Extract sub-components
+- Move logic to utility functions
+
+RULE 3: SERVER COMPONENTS BY DEFAULT
+```typescript
+// ✅ CORRECT: Server Component (default)
+export default async function PersonList() {
+  const persons = await getPersons(); // Fetch on server
+  return <div>...</div>;
+}
+
+// ❌ WRONG: Client Component unnecessarily
+'use client';
+export default function PersonList() {
+  const [persons, setPersons] = useState([]);
+  useEffect(() => { fetchPersons(); }, []);
+  return <div>...</div>;
+}
+```
+
+RULE 4: CLIENT COMPONENTS ONLY WHEN NECESSARY
+Use 'use client' ONLY for:
+- User interactions (onClick, onChange)
+- Browser APIs (localStorage, geolocation)
+- React hooks (useState, useEffect)
+- Third-party client libraries
+
+RULE 5: COMPONENT FILE STRUCTURE
+```
+ComponentName.tsx (component file)
+- Default export: component
+- Named exports: types, interfaces (if needed)
+- No logic (move to utils)
+- No styles (use Tailwind)
+```
+
+RULE 6: PROP TYPES
+```typescript
+// ✅ CORRECT: Interface for props
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+export function Button({ label, onClick, disabled = false }: ButtonProps) {
+  return <button onClick={onClick} disabled={disabled}>{label}</button>;
+}
+
+// ❌ WRONG: No types
+export function Button({ label, onClick, disabled }) {
+  return <button onClick={onClick} disabled={disabled}>{label}</button>;
+}
+```
+
+
+────────────────────────────────────────────────────────────────────────────────
+COMPONENT ORGANIZATION
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTORY STRUCTURE:
+```
+components/
+├── ui/              (Atomic, reusable components)
+│   ├── Button.tsx
+│   ├── Input.tsx
+│   ├── Card.tsx
+│   └── ...
+├── forms/           (Form-specific components)
+│   ├── SearchForm.tsx
+│   ├── PersonForm.tsx
+│   └── ...
+├── layout/          (Layout components)
+│   ├── Header.tsx
+│   ├── Footer.tsx
+│   └── ...
+└── features/        (Business logic components)
+    ├── PersonCard.tsx
+    ├── SearchResults.tsx
+    └── ...
+```
+
+NAMING CONVENTIONS:
+- PascalCase for components: `SearchForm.tsx`
+- camelCase for utilities: `formatDate.ts`
+- kebab-case for routes: `missing-person/page.tsx`
+- SCREAMING_SNAKE_CASE for constants: `MAX_FILE_SIZE`
+
+
+────────────────────────────────────────────────────────────────────────────────
+COMPONENT REUSABILITY
+────────────────────────────────────────────────────────────────────────────────
+
+RULE 7: DRY (Don't Repeat Yourself)
+If you copy-paste code more than twice, create a component
+
+RULE 8: COMPOSITION OVER DUPLICATION
+```typescript
+// ✅ CORRECT: Composable components
+<Button variant="primary" size="large">Search</Button>
+<Button variant="secondary" size="small">Cancel</Button>
+
+// ❌ WRONG: Separate components for each variant
+<PrimaryButton>Search</PrimaryButton>
+<SecondaryButton>Cancel</SecondaryButton>
+```
+
+RULE 9: PROPS OVER CONDITIONALS
+```typescript
+// ✅ CORRECT: Props control behavior
+<Input type="text" required />
+<Input type="email" />
+
+// ❌ WRONG: Multiple components for same thing
+<TextInput required />
+<EmailInput />
+```
+
+
+================================================================================
+SERVER-SIDE RENDERING DIRECTIVES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+SERVER COMPONENT STRATEGY
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 1: FETCH DATA ON SERVER
+```typescript
+// ✅ CORRECT: Server Component with direct DB query
+export default async function SearchPage() {
+  const results = await prisma.person.findMany({
+    take: 10,
+    include: { shelter: true },
+  });
+  
+  return <SearchResults results={results} />;
+}
+
+// ❌ WRONG: Client-side fetch
+'use client';
+export default function SearchPage() {
+  const [results, setResults] = useState([]);
+  
+  useEffect(() => {
+    fetch('/api/search').then(res => res.json()).then(setResults);
+  }, []);
+  
+  return <SearchResults results={results} />;
+}
+```
+
+DIRECTIVE 2: PROCESS ON SERVER
+Server handles:
+- Database queries
+- Data transformation
+- Business logic
+- Validation
+- Authentication checks
+- Image processing
+- Complex calculations
+
+Client handles:
+- User interactions
+- Form state
+- UI state (modals, dropdowns)
+- Browser APIs only
+
+DIRECTIVE 3: SERVER ACTIONS FOR MUTATIONS
+```typescript
+// ✅ CORRECT: Server Action
+'use server';
+export async function createPerson(data: FormData) {
+  const validated = personSchema.parse(Object.fromEntries(data));
+  const person = await prisma.person.create({ data: validated });
+  revalidatePath('/search');
+  return { success: true, person };
+}
+
+// ❌ WRONG: Client-side API call
+export async function createPerson(data) {
+  const response = await fetch('/api/person', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}
+```
+
+DIRECTIVE 4: MINIMIZE CLIENT BUNDLE
+- Keep 'use client' boundary as low as possible
+- Import heavy libraries in Server Components only
+- Use dynamic imports for client-only code
+
+```typescript
+// ✅ CORRECT: Dynamic import for client component
+import dynamic from 'next/dynamic';
+const PhotoUploader = dynamic(() => import('./PhotoUploader'), {
+  loading: () => <p>Loading...</p>,
+  ssr: false,
+});
+```
+
+
+────────────────────────────────────────────────────────────────────────────────
+DATA FETCHING PATTERNS
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 5: PARALLEL DATA FETCHING
+```typescript
+// ✅ CORRECT: Parallel fetching
+export default async function Dashboard() {
+  const [persons, shelters, stats] = await Promise.all([
+    getPersons(),
+    getShelters(),
+    getStatistics(),
+  ]);
+  
+  return <DashboardContent {...{ persons, shelters, stats }} />;
+}
+
+// ❌ WRONG: Sequential fetching
+export default async function Dashboard() {
+  const persons = await getPersons();
+  const shelters = await getShelters();  // Waits for persons
+  const stats = await getStatistics();   // Waits for shelters
+  
+  return <DashboardContent {...{ persons, shelters, stats }} />;
+}
+```
+
+DIRECTIVE 6: CACHE STATIC DATA
+```typescript
+// ✅ CORRECT: Cache static data
+export async function getDistricts() {
+  return await prisma.district.findMany({
+    cache: 'force-cache', // Cache indefinitely
+  });
+}
+
+// ✅ CORRECT: Revalidate periodically
+export async function getStatistics() {
+  return await fetch('/api/stats', {
+    next: { revalidate: 60 }, // Revalidate every 60 seconds
+  });
+}
+```
+
+DIRECTIVE 7: STREAMING FOR SLOW DATA
+```typescript
+// ✅ CORRECT: Streaming with Suspense
+import { Suspense } from 'react';
+
+export default function Page() {
+  return (
+    <div>
+      <FastComponent />
+      <Suspense fallback={<LoadingSkeleton />}>
+        <SlowComponent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+
+================================================================================
+DATABASE & API OPTIMIZATION
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+SUPABASE/PRISMA BEST PRACTICES
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 8: EFFICIENT QUERIES
+```typescript
+// ✅ CORRECT: Select only needed fields
+const persons = await prisma.person.findMany({
+  select: {
+    id: true,
+    fullName: true,
+    age: true,
+    shelter: {
+      select: {
+        name: true,
+        district: true,
+      },
+    },
+  },
+});
+
+// ❌ WRONG: Select everything
+const persons = await prisma.person.findMany({
+  include: {
+    shelter: true,
+    missingReport: true,
+  },
+});
+```
+
+DIRECTIVE 9: USE INDEXES
+```prisma
+// ✅ CORRECT: Index frequently queried fields
+model Person {
+  id       String @id @default(cuid())
+  fullName String
+  nic      String? @unique
+  
+  @@index([fullName])      // Search by name
+  @@index([nic])           // Search by NIC
+  @@index([shelterId])     // Filter by shelter
+}
+```
+
+DIRECTIVE 10: BATCH OPERATIONS
+```typescript
+// ✅ CORRECT: Batch create
+await prisma.person.createMany({
+  data: persons,
+  skipDuplicates: true,
+});
+
+// ❌ WRONG: Individual creates
+for (const person of persons) {
+  await prisma.person.create({ data: person });
+}
+```
+
+DIRECTIVE 11: PAGINATION
+```typescript
+// ✅ CORRECT: Paginated query
+async function getPersons(page: number = 1, pageSize: number = 20) {
+  const skip = (page - 1) * pageSize;
+  
+  const [persons, total] = await Promise.all([
+    prisma.person.findMany({
+      skip,
+      take: pageSize,
+    }),
+    prisma.person.count(),
+  ]);
+  
+  return { persons, total, page, pageSize };
+}
+
+// ❌ WRONG: Load everything
+async function getPersons() {
+  return await prisma.person.findMany(); // Could be thousands
+}
+```
+
+DIRECTIVE 12: TRANSACTIONS FOR RELATED OPERATIONS
+```typescript
+// ✅ CORRECT: Use transaction
+await prisma.$transaction(async (tx) => {
+  const person = await tx.person.create({ data: personData });
+  await tx.shelter.update({
+    where: { id: shelterId },
+    data: { currentCount: { increment: 1 } },
+  });
+  return person;
+});
+
+// ❌ WRONG: Separate queries (can fail partially)
+const person = await prisma.person.create({ data: personData });
+await prisma.shelter.update({
+  where: { id: shelterId },
+  data: { currentCount: { increment: 1 } },
+});
+```
+
+
+────────────────────────────────────────────────────────────────────────────────
+API DESIGN PRINCIPLES
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 13: SINGLE RESPONSIBILITY ENDPOINTS
+```typescript
+// ✅ CORRECT: Focused endpoints
+GET  /api/persons          // List persons
+POST /api/persons          // Create person
+GET  /api/persons/[id]     // Get one person
+PUT  /api/persons/[id]     // Update person
+
+// ❌ WRONG: Do-everything endpoint
+POST /api/person?action=create
+POST /api/person?action=update
+POST /api/person?action=delete
+```
+
+DIRECTIVE 14: VALIDATE ALL INPUTS
+```typescript
+// ✅ CORRECT: Validate with Zod
+const personSchema = z.object({
+  fullName: z.string().min(2).max(100),
+  age: z.number().min(0).max(120),
+  nic: z.string().optional(),
+});
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const validated = personSchema.parse(body); // Throws if invalid
+  // ... proceed with validated data
+}
+
+// ❌ WRONG: No validation
+export async function POST(request: Request) {
+  const body = await request.json();
+  await prisma.person.create({ data: body }); // Dangerous!
+}
+```
+
+DIRECTIVE 15: PROPER ERROR RESPONSES
+```typescript
+// ✅ CORRECT: Structured error response
+try {
+  // ... operation
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    return NextResponse.json(
+      { error: 'Validation failed', details: error.errors },
+      { status: 400 }
+    );
+  }
+  
+  console.error('Unexpected error:', error);
+  return NextResponse.json(
+    { error: 'Internal server error' },
+    { status: 500 }
+  );
+}
+
+// ❌ WRONG: Generic error
+try {
+  // ... operation
+} catch (error) {
+  return NextResponse.json({ error: 'Error' }, { status: 500 });
+}
+```
+
+DIRECTIVE 16: RATE LIMITING
+```typescript
+// ✅ CORRECT: Rate limit public endpoints
+import { Ratelimit } from '@upstash/ratelimit';
+import { kv } from '@vercel/kv';
+
+const ratelimit = new Ratelimit({
+  redis: kv,
+  limiter: Ratelimit.slidingWindow(10, '10 s'), // 10 requests per 10 seconds
+});
+
+export async function POST(request: Request) {
+  const ip = request.headers.get('x-forwarded-for') ?? 'anonymous';
+  const { success } = await ratelimit.limit(ip);
+  
+  if (!success) {
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429 }
+    );
+  }
+  
+  // ... proceed
+}
+```
+
+
+================================================================================
+NETWORK OPTIMIZATION
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+REQUEST MANAGEMENT
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 17: NEVER SEND PARALLEL REQUESTS UNNECESSARILY
+```typescript
+// ✅ CORRECT: Sequential when dependent
+async function createPersonWithPoster(data) {
+  const person = await createPerson(data);     // First
+  const poster = await generatePoster(person); // Uses person data
+  return { person, poster };
+}
+
+// ✅ CORRECT: Parallel when independent
+async function getDashboardData() {
+  const [persons, shelters, stats] = await Promise.all([
+    getPersons(),
+    getShelters(),
+    getStatistics(),
+  ]);
+  return { persons, shelters, stats };
+}
+
+// ❌ WRONG: Parallel when dependent
+async function createPersonWithPoster(data) {
+  const [person, poster] = await Promise.all([
+    createPerson(data),
+    generatePoster(data), // poster needs person.id!
+  ]);
+}
+```
+
+DIRECTIVE 18: DEBOUNCE SEARCH INPUTS
+```typescript
+// ✅ CORRECT: Debounced search
+'use client';
+import { useDeferredValue } from 'react';
+
+export function SearchInput() {
+  const [query, setQuery] = useState('');
+  const deferredQuery = useDeferredValue(query);
+  
+  useEffect(() => {
+    if (deferredQuery.length > 2) {
+      searchPersons(deferredQuery);
+    }
+  }, [deferredQuery]);
+  
+  return <input value={query} onChange={(e) => setQuery(e.target.value)} />;
+}
+
+// ❌ WRONG: Search on every keystroke
+export function SearchInput() {
+  const [query, setQuery] = useState('');
+  
+  const handleChange = async (e) => {
+    setQuery(e.target.value);
+    await searchPersons(e.target.value); // API call on every keystroke!
+  };
+  
+  return <input value={query} onChange={handleChange} />;
+}
+```
+
+DIRECTIVE 19: OPTIMIZE IMAGE UPLOADS
+```typescript
+// ✅ CORRECT: Compress before upload
+import imageCompression from 'browser-image-compression';
+
+async function handleImageUpload(file: File) {
+  // Compress on client
+  const compressed = await imageCompression(file, {
+    maxSizeMB: 0.2,
+    maxWidthOrHeight: 800,
+    useWebWorker: true,
+  });
+  
+  // Then upload
+  const formData = new FormData();
+  formData.append('file', compressed);
+  await fetch('/api/upload', { method: 'POST', body: formData });
+}
+
+// ❌ WRONG: Upload original
+async function handleImageUpload(file: File) {
+  const formData = new FormData();
+  formData.append('file', file); // Could be 5MB!
+  await fetch('/api/upload', { method: 'POST', body: formData });
+}
+```
+
+DIRECTIVE 20: LAZY LOAD IMAGES
+```typescript
+// ✅ CORRECT: Lazy load with Next.js Image
+import Image from 'next/image';
+
+<Image
+  src={photoUrl}
+  alt={`Photo of ${name}`}
+  width={400}
+  height={400}
+  loading="lazy"
+  placeholder="blur"
+  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+/>
+
+// ❌ WRONG: Regular img tag
+<img src={photoUrl} alt={name} />
+```
+
+
+────────────────────────────────────────────────────────────────────────────────
+CACHING STRATEGY
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 21: CACHE STATIC DATA AGGRESSIVELY
+```typescript
+// Districts, categories, constants - never change
+export const revalidate = false; // Cache forever
+
+// Statistics - update periodically
+export const revalidate = 60; // 1 minute
+
+// Search results - fresh data
+export const revalidate = 0; // No cache
+```
+
+DIRECTIVE 22: USE SWR FOR CLIENT-SIDE CACHING
+```typescript
+// ✅ CORRECT: SWR for frequently accessed data
+import useSWR from 'swr';
+
+function usePersons() {
+  const { data, error, isLoading } = useSWR('/api/persons', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+    dedupingInterval: 5000, // Dedupe requests within 5 seconds
+  });
+  
+  return { persons: data, error, isLoading };
+}
+```
+
+
+================================================================================
+STYLING DIRECTIVES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+TAILWIND CSS RULES
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 23: UTILITY CLASSES ONLY
+```typescript
+// ✅ CORRECT: Tailwind utilities
+<button className="bg-blue-600 text-white px-4 py-2 rounded">
+  Search
+</button>
+
+// ❌ WRONG: Inline styles
+<button style={{ backgroundColor: '#2563EB', color: 'white', padding: '8px 16px' }}>
+  Search
+</button>
+
+// ❌ WRONG: CSS modules
+<button className={styles.button}>
+  Search
+</button>
+```
+
+DIRECTIVE 24: NO CUSTOM CSS (except globals)
+```css
+/* ✅ CORRECT: Only in globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ❌ WRONG: Component-specific CSS */
+.my-button {
+  background-color: blue;
+  padding: 8px 16px;
+}
+```
+
+DIRECTIVE 25: MOBILE-FIRST RESPONSIVE
+```typescript
+// ✅ CORRECT: Mobile default, desktop modifier
+<div className="text-sm md:text-base lg:text-lg">
+
+// ❌ WRONG: Desktop default, mobile modifier
+<div className="text-lg md:text-sm">
+```
+
+DIRECTIVE 26: MINIMAL DESIGN TOKENS
+Use only:
+- Colors: white, gray-50 to gray-900, blue-600, green-600, red-600, yellow-600
+- Spacing: 0, 1, 2, 3, 4, 6, 8, 12, 16, 24
+- Border radius: none, sm (4px), DEFAULT (6px)
+- Font sizes: xs, sm, base, lg, xl, 2xl
+- Font weights: normal (400), medium (500), semibold (600), bold (700)
+
+DIRECTIVE 27: NO UNNECESSARY STYLING
+```typescript
+// ✅ CORRECT: Minimal, functional
+<button className="bg-blue-600 text-white px-4 py-2 rounded">
+  Search
+</button>
+
+// ❌ WRONG: Over-styled
+<button className="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+  Search
+</button>
+```
+
+
+================================================================================
+FORM HANDLING
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+FORM VALIDATION & SUBMISSION
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 28: CLIENT + SERVER VALIDATION
+```typescript
+// ✅ CORRECT: Validate on both sides
+
+// Client: React Hook Form + Zod
+'use client';
+const form = useForm({
+  resolver: zodResolver(personSchema),
+});
+
+// Server: Validate again
+'use server';
+export async function createPerson(data: unknown) {
+  const validated = personSchema.parse(data); // Will throw if invalid
+  return await prisma.person.create({ data: validated });
+}
+
+// ❌ WRONG: Client validation only
+'use client';
+const form = useForm({
+  resolver: zodResolver(personSchema),
+});
+// Server trusts client data (dangerous!)
+```
+
+DIRECTIVE 29: SHOW VALIDATION ERRORS IMMEDIATELY
+```typescript
+// ✅ CORRECT: Show errors on blur
+<input
+  {...register('fullName')}
+  onBlur={() => trigger('fullName')}
+  className={errors.fullName ? 'border-red-500' : 'border-gray-300'}
+/>
+{errors.fullName && (
+  <p className="text-red-600 text-sm">{errors.fullName.message}</p>
+)}
+
+// ❌ WRONG: Show errors only on submit
+```
+
+DIRECTIVE 30: DISABLE SUBMIT DURING PROCESSING
+```typescript
+// ✅ CORRECT: Disable and show loading
+const [isSubmitting, setIsSubmitting] = useState(false);
+
+async function handleSubmit(data) {
+  setIsSubmitting(true);
+  try {
+    await createPerson(data);
+  } finally {
+    setIsSubmitting(false);
+  }
+}
+
+return (
+  <button disabled={isSubmitting}>
+    {isSubmitting ? 'Saving...' : 'Save'}
+  </button>
+);
+
+// ❌ WRONG: Allow multiple submissions
+<button onClick={handleSubmit}>Save</button>
+```
+
+DIRECTIVE 31: PRESERVE FORM DATA ON ERROR
+```typescript
+// ✅ CORRECT: Keep form values on error
+async function handleSubmit(data) {
+  try {
+    await createPerson(data);
+    form.reset(); // Clear only on success
+  } catch (error) {
+    // Form keeps values so user can fix and retry
+    toast.error('Failed to save. Please try again.');
+  }
+}
+
+// ❌ WRONG: Clear form on error
+async function handleSubmit(data) {
+  try {
+    await createPerson(data);
+  } catch (error) {
+    form.reset(); // User loses all their input!
+  }
+}
+```
+
+
+================================================================================
+ERROR HANDLING
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+ERROR BOUNDARIES & GRACEFUL DEGRADATION
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 32: ALWAYS HANDLE ERRORS
+```typescript
+// ✅ CORRECT: Try-catch with user feedback
+async function searchPersons(query: string) {
+  try {
+    const response = await fetch(`/api/search?q=${query}`);
+    if (!response.ok) throw new Error('Search failed');
+    return await response.json();
+  } catch (error) {
+    console.error('Search error:', error);
+    toast.error('Search failed. Please try again.');
+    return { results: [] };
+  }
+}
+
+// ❌ WRONG: No error handling
+async function searchPersons(query: string) {
+  const response = await fetch(`/api/search?q=${query}`);
+  return await response.json(); // Will crash if network fails
+}
+```
+
+DIRECTIVE 33: USER-FRIENDLY ERROR MESSAGES
+```typescript
+// ✅ CORRECT: Clear, actionable
+"Unable to upload photo. Please ensure it's under 5MB and try again."
+"Search failed. Please check your connection and try again."
+"This NIC number is already registered at another shelter."
+
+// ❌ WRONG: Technical jargon
+"ERR_CONNECTION_REFUSED"
+"500 Internal Server Error"
+"Unhandled rejection: TypeError: Cannot read property 'name' of undefined"
+```
+
+DIRECTIVE 34: FALLBACK UI
+```typescript
+// ✅ CORRECT: Provide fallback
+<Suspense fallback={<LoadingSkeleton />}>
+  <PersonList />
+</Suspense>
+
+// Error boundary
+<ErrorBoundary fallback={<ErrorMessage />}>
+  <PersonList />
+</ErrorBoundary>
+
+// Offline detection
+{navigator.onLine ? <SearchForm /> : <OfflineMessage />}
+```
+
+
+================================================================================
+TESTING & QUALITY ASSURANCE
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+MANUAL TESTING CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+BEFORE EVERY COMMIT:
+
+☐ Test on mobile device (real phone, not just devtools)
+☐ Test on slow network (Chrome devtools: Slow 3G)
+☐ Test all form validations (empty, invalid, valid)
+☐ Test error states (disconnect wifi, reload)
+☐ Test with real data (not just "test" and "123")
+☐ Test in all three languages
+☐ Check browser console for errors
+☐ Check network tab for unnecessary requests
+☐ Verify images load correctly
+☐ Verify navigation works
+☐ Test back button behavior
+☐ Test on both iOS and Android (if possible)
+
+
+────────────────────────────────────────────────────────────────────────────────
+CODE REVIEW CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+BEFORE PUSHING:
+
+☐ No console.log statements
+☐ No commented-out code
+☐ No TODOs without issue numbers
+☐ All functions have proper types
+☐ All components have prop types
+☐ No 'any' types (except edge cases)
+☐ No magic numbers (use constants)
+☐ Meaningful variable names
+☐ Functions are small (< 50 lines)
+☐ Components are small (< 200 lines)
+☐ No duplicate code
+☐ Proper error handling
+☐ Loading states for async operations
+☐ Environment variables for secrets
+☐ Git commit message is clear
+
+
+================================================================================
+PERFORMANCE MONITORING
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+METRICS TO TRACK
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 35: LIGHTHOUSE SCORES (MINIMUM)
+- Performance: > 90
+- Accessibility: > 95
+- Best Practices: > 90
+- SEO: > 90
+
+DIRECTIVE 36: CORE WEB VITALS (TARGETS)
+- LCP (Largest Contentful Paint): < 2.5s
+- FID (First Input Delay): < 100ms
+- CLS (Cumulative Layout Shift): < 0.1
+
+DIRECTIVE 37: BUNDLE SIZE LIMITS
+- Initial JS bundle: < 100KB (gzipped)
+- Total page size: < 500KB
+- Images: < 200KB each
+
+
+────────────────────────────────────────────────────────────────────────────────
+MONITORING ACTIONS
+────────────────────────────────────────────────────────────────────────────────
+
+RUN BEFORE DEPLOYMENT:
+```bash
+# Build and analyze
+npm run build
+
+# Check bundle size
+npx @next/bundle-analyzer
+
+# Run Lighthouse (on production URL)
+npx lighthouse https://isafe.lk --view
+
+# Check for unused dependencies
+npx depcheck
+```
+
+
+================================================================================
+SECURITY DIRECTIVES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+SECURITY CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 38: NEVER TRUST CLIENT INPUT
+```typescript
+// ✅ CORRECT: Validate everything
+const validated = schema.parse(clientData);
+
+// ❌ WRONG: Trust client
+await prisma.person.create({ data: clientData });
+```
+
+DIRECTIVE 39: ENVIRONMENT VARIABLES
+```typescript
+// ✅ CORRECT: Use environment variables
+const apiKey = process.env.API_KEY;
+
+// ❌ WRONG: Hard-coded secrets
+const apiKey = 'sk_live_abc123xyz';
+```
+
+DIRECTIVE 40: SANITIZE USER INPUTS
+```typescript
+// ✅ CORRECT: Prisma prevents SQL injection automatically
+await prisma.person.findMany({
+  where: { fullName: { contains: userInput } }
+});
+
+// ❌ WRONG: Raw SQL with user input (never do this)
+await prisma.$queryRaw`SELECT * FROM persons WHERE name = ${userInput}`;
+```
+
+DIRECTIVE 41: AUTHENTICATION
+```typescript
+// ✅ CORRECT: Hash shelter codes
+import bcrypt from 'bcryptjs';
+
+const hashedCode = await bcrypt.hash(shelterCode, 10);
+const isValid = await bcrypt.compare(inputCode, hashedCode);
+
+// ❌ WRONG: Plain text codes
+if (inputCode === storedCode) { /* ... */ }
+```
+
+DIRECTIVE 42: HTTPS ONLY IN PRODUCTION
+```typescript
+// middleware.ts
+export function middleware(request: NextRequest) {
+  if (
+    process.env.NODE_ENV === 'production' &&
+    request.headers.get('x-forwarded-proto') !== 'https'
+  ) {
+    return NextResponse.redirect(
+      `https://${request.headers.get('host')}${request.nextUrl.pathname}`,
+      301
+    );
+  }
+}
+```
+
+
+================================================================================
+GIT WORKFLOW
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+COMMIT CONVENTIONS
+────────────────────────────────────────────────────────────────────────────────
+
+DIRECTIVE 43: CLEAR COMMIT MESSAGES
+```bash
+# ✅ CORRECT: Descriptive
+git commit -m "Add search by NIC functionality"
+git commit -m "Fix image upload validation"
+git commit -m "Optimize database queries for person search"
+
+# ❌ WRONG: Vague
+git commit -m "updates"
+git commit -m "fix"
+git commit -m "wip"
+```
+
+DIRECTIVE 44: COMMIT FREQUENTLY
+- Commit after each feature/fix
+- Commit working code only
+- One logical change per commit
+- Don't commit broken code
+
+DIRECTIVE 45: BRANCH NAMING
+```bash
+# ✅ CORRECT: Descriptive branches
+feature/search-by-nic
+fix/image-upload-validation
+refactor/optimize-queries
+
+# ❌ WRONG: Vague branches
+dev
+test
+branch1
+```
+
+
+================================================================================
+DEPLOYMENT DIRECTIVES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+PRE-DEPLOYMENT CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+☐ All tests pass
+☐ Build succeeds locally
+☐ No console errors
+☐ No console.log statements
+☐ Environment variables set in Vercel
+☐ Database migrations run
+☐ Images optimized
+☐ Lighthouse score > 90
+☐ Tested on mobile device
+☐ Tested on slow network
+☐ Error tracking configured (Sentry)
+☐ Domain configured
+☐ SSL certificate active
+
+
+────────────────────────────────────────────────────────────────────────────────
+POST-DEPLOYMENT CHECKLIST
+────────────────────────────────────────────────────────────────────────────────
+
+☐ Visit production URL
+☐ Test all critical paths
+☐ Check error monitoring (Sentry)
+☐ Monitor API response times
+☐ Check database performance
+☐ Verify images load correctly
+☐ Test on multiple devices
+☐ Check analytics tracking
+
+
+================================================================================
+EMERGENCY PROCEDURES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+IF PRODUCTION BREAKS
+────────────────────────────────────────────────────────────────────────────────
+
+1. Immediately rollback to previous deployment (Vercel dashboard)
+2. Check Sentry for error details
+3. Check Vercel logs for server errors
+4. Check database status (Supabase dashboard)
+5. Fix issue locally
+6. Test thoroughly
+7. Redeploy
+
+
+────────────────────────────────────────────────────────────────────────────────
+IF DATABASE IS SLOW
+────────────────────────────────────────────────────────────────────────────────
+
+1. Check active connections (Supabase dashboard)
+2. Check for missing indexes
+3. Check for N+1 queries
+4. Implement query caching
+5. Optimize slow queries
+6. Consider upgrading plan if near limits
+
+
+────────────────────────────────────────────────────────────────────────────────
+IF IMAGES WON'T LOAD
+────────────────────────────────────────────────────────────────────────────────
+
+1. Check Supabase Storage status
+2. Verify CORS configuration
+3. Check bucket permissions (public)
+4. Verify upload size limits
+5. Check CDN caching
+
+
+================================================================================
+PROHIBITED PATTERNS
+================================================================================
+
+These patterns are ABSOLUTELY FORBIDDEN:
+
+❌ PATTERN 1: Fetching in loops
+```typescript
+// ❌ FORBIDDEN
+for (const id of personIds) {
+  const person = await getPerson(id); // N database queries!
+}
+
+// ✅ DO THIS INSTEAD
+const persons = await prisma.person.findMany({
+  where: { id: { in: personIds } }
+});
+```
+
+❌ PATTERN 2: Unnecessary re-renders
+```typescript
+// ❌ FORBIDDEN
+function Component() {
+  const [data, setData] = useState([]);
+  
+  useEffect(() => {
+    fetchData().then(setData);
+  }); // Missing dependency array - infinite loop!
+}
+
+// ✅ DO THIS INSTEAD
+function Component() {
+  const [data, setData] = useState([]);
+  
+  useEffect(() => {
+    fetchData().then(setData);
+  }, []); // Empty array - run once
+}
+```
+
+❌ PATTERN 3: Large client-side state
+```typescript
+// ❌ FORBIDDEN: Storing entire database in state
+const [allPersons, setAllPersons] = useState([]); // Could be thousands!
+
+// ✅ DO THIS INSTEAD: Fetch on server, paginate
+export default async function PersonsPage({ searchParams }) {
+  const persons = await getPersons({
+    page: searchParams.page ?? 1,
+    pageSize: 20
+  });
+  return <PersonList persons={persons} />;
+}
+```
+
+❌ PATTERN 4: Deeply nested components
+```typescript
+// ❌ FORBIDDEN
+<Container>
+  <Wrapper>
+    <Box>
+      <Card>
+        <Content>
+          <Inner>
+            <Text>Hello</Text>
+          </Inner>
+        </Content>
+      </Card>
+    </Box>
+  </Wrapper>
+</Container>
+
+// ✅ DO THIS INSTEAD
+<div className="p-4">
+  <p>Hello</p>
+</div>
+```
+
+
+================================================================================
+CODE QUALITY METRICS
+================================================================================
+
+TARGET METRICS:
+- Lines per file: < 200
+- Lines per function: < 50
+- Function parameters: < 5
+- Cyclomatic complexity: < 10
+- Test coverage: > 70% (if testing implemented)
+- TypeScript coverage: 100% (no 'any')
+- Bundle size: < 100KB (JS, gzipped)
+- Dependencies: < 20 (excluding Next.js ecosystem)
+
+
+================================================================================
+FINAL REMINDERS
+================================================================================
+
+1. SPEED IS THE FEATURE
+   Every optimization directly improves user experience on 2G networks
+
+2. SIMPLICITY SCALES
+   Simple code is easy to debug, easy to modify, easy to maintain
+
+3. SERVER > CLIENT
+   Process on server, send results to client
+
+4. MEASURE EVERYTHING
+   If you can't measure it, you can't improve it
+
+5. USER FIRST
+   Every decision should prioritize user experience
+
+6. MOBILE ONLY
+   Design for the weakest device and slowest connection
+
+7. FAIL GRACEFULLY
+   Handle errors, show fallbacks, never crash
+
+8. VALIDATE TWICE
+   Client validation for UX, server validation for security
+
+9. OPTIMIZE IMAGES
+   Images are usually the biggest performance bottleneck
+
+10. COMMIT OFTEN
+    Small, frequent commits are easier to debug and rollback
+
+
+================================================================================
+ENFORCEMENT
+================================================================================
+
+These directives are MANDATORY. Code that violates these directives will be:
+1. Flagged in code review
+2. Rejected from main branch
+3. Required to be refactored before merge
+
+NO EXCEPTIONS unless explicitly approved for specific technical reasons.
+
+
+================================================================================
+QUESTIONS BEFORE YOU CODE
+================================================================================
+
+Before writing any code, ask yourself:
+
+1. Can this be done on the server instead of client?
+2. Is this component reusable?
+3. Can this be simpler?
+4. Will this work on 2G?
+5. Does this follow the directives?
+6. Have I handled errors?
+7. Have I added loading states?
+8. Is this accessible?
+9. Have I tested on mobile?
+10. Would I be proud to show this code to senior engineers?
+
+If you answer "no" to any question, reconsider your approach.
+
+
+================================================================================
+END OF DIRECTIVES
+================================================================================
+
+These directives ensure iSafe is:
+- Fast (works on 2G networks)
+- Reliable (handles errors gracefully)
+- Maintainable (simple, clear code)
+- Secure (validates everything)
+- Accessible (works for everyone)
+
+Follow these directives strictly. Speed and reliability are not optional.
+
+Good luck building iSafe. Lives may depend on it.

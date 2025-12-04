@@ -1,0 +1,60 @@
+import { z } from 'zod';
+
+// NIC validation (Sri Lankan format)
+const nicRegex = /^(\d{9}[VvXx]|\d{12})$/;
+
+export const nicSchema = z
+  .string()
+  .regex(nicRegex, 'Invalid NIC format (e.g., 199512345678 or 951234567V)')
+  .transform((val) => val.toUpperCase());
+
+// Phone validation (Sri Lankan format: 10 digits starting with 0)
+const phoneRegex = /^0\d{9}$/;
+
+export const phoneSchema = z
+  .string()
+  .regex(phoneRegex, 'Invalid phone number (e.g., 0771234567)');
+
+// Search validation
+export const searchSchema = z.object({
+  type: z.enum(['name', 'nic']),
+  query: z.string().min(2, 'Search term must be at least 2 characters').optional(),
+  nic: z.string().optional(),
+});
+
+// Person registration validation
+export const personSchema = z.object({
+  fullName: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  age: z.coerce.number().min(0, 'Age must be at least 0').max(120, 'Age must be at most 120'),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER']),
+  nic: nicSchema.optional().or(z.literal('')),
+  contactNumber: phoneSchema.optional().or(z.literal('')),
+  shelterId: z.string().min(1, 'Shelter is required'),
+  healthStatus: z.enum(['HEALTHY', 'MINOR_INJURIES', 'REQUIRES_CARE', 'CRITICAL']),
+  specialNotes: z.string().max(500, 'Notes must be at most 500 characters').optional(),
+  photoUrl: z.string().optional(),
+  photoPublicId: z.string().optional(),
+});
+
+// Missing person validation
+export const missingPersonSchema = z.object({
+  fullName: z.string().min(2, 'Name must be at least 2 characters').max(100),
+  age: z.coerce.number().min(0, 'Age must be at least 0').max(120, 'Age must be at most 120'),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER']),
+  photoUrl: z.string().min(1, 'Photo is required'),
+  photoPublicId: z.string().min(1, 'Photo is required'),
+  lastSeenLocation: z.string().min(2, 'Location is required'),
+  lastSeenDistrict: z.string().min(1, 'District is required'),
+  lastSeenDate: z.coerce.date(),
+  clothing: z.string().max(200).optional(),
+  reporterName: z.string().min(2, 'Your name is required'),
+  reporterPhone: phoneSchema,
+  altContact: phoneSchema.optional().or(z.literal('')),
+  consent: z.boolean().refine((val) => val === true, 'You must authorize sharing this information'),
+});
+
+// Shelter auth validation
+export const shelterAuthSchema = z.object({
+  code: z.string().min(1, 'Shelter code is required'),
+  accessCode: z.string().min(1, 'Access code is required'),
+});

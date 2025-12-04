@@ -1,0 +1,1662 @@
+================================================================================
+iSafe - TECH STACK PLAN (Next.js)
+================================================================================
+
+PROJECT: iSafe - Disaster Response Platform
+APPROACH: Next.js web application, mobile-optimized
+TARGET: Deploy in 24-48 hours, works on 2G networks
+COST: Zero to minimal (< $10/month)
+
+================================================================================
+CORE TECHNOLOGY DECISIONS
+================================================================================
+
+FRAMEWORK: Next.js 14 (App Router)
+REASONING:
+- Server-side rendering (SEO + performance)
+- Built-in API routes (no separate backend needed)
+- Image optimization out of the box
+- File-based routing (fast development)
+- Zero config TypeScript
+- Vercel deployment (free tier)
+- React Server Components (reduce JS bundle)
+
+LANGUAGE: TypeScript
+REASONING:
+- Type safety (catch bugs early)
+- Better IDE support
+- Self-documenting code
+- Minimal overhead for small project
+
+STYLING: Tailwind CSS
+REASONING:
+- Utility-first (rapid development)
+- Tiny production builds (purges unused)
+- Mobile-first by default
+- Excellent documentation
+- No CSS file management
+
+
+================================================================================
+TECH STACK BREAKDOWN
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+FRONTEND
+────────────────────────────────────────────────────────────────────────────────
+
+FRAMEWORK:
+- Next.js 14.0+ (App Router)
+- React 18+
+- TypeScript 5.0+
+
+UI/STYLING:
+- Tailwind CSS 3.4+
+- Headless UI (accessible components)
+- Heroicons (free SVG icons)
+- clsx (conditional classes)
+
+FORMS:
+- React Hook Form (performance + validation)
+- Zod (schema validation)
+
+IMAGE HANDLING:
+- Next.js Image component (automatic optimization)
+- Browser Image Compression (client-side compression)
+- Sharp (server-side processing)
+
+STATE MANAGEMENT:
+- React Context (global state - language, auth)
+- useState/useReducer (local state)
+- SWR or TanStack Query (server state/caching)
+- NO Redux needed (overkill for this)
+
+INTERNATIONALIZATION (i18n):
+- next-intl (Next.js 14 compatible)
+- Three languages: en, si (Sinhala), ta (Tamil)
+
+
+────────────────────────────────────────────────────────────────────────────────
+BACKEND / API
+────────────────────────────────────────────────────────────────────────────────
+
+API: Next.js API Routes (App Router)
+- Server Actions for mutations
+- Route Handlers for REST endpoints
+- Middleware for auth/rate limiting
+
+DATABASE: Supabase (PostgreSQL)
+REASONING:
+- Free tier: 500MB database, 2GB bandwidth/month
+- PostgreSQL (reliable, powerful)
+- Built-in auth (if needed later)
+- Real-time subscriptions
+- Storage for images (1GB free)
+- Auto-generated REST API
+- Row Level Security (RLS)
+
+ALTERNATIVE: Neon (Serverless Postgres)
+- Free tier: 0.5GB storage, 3GB data transfer
+- Serverless (cost-effective)
+- Excellent cold start performance
+
+ORM: Prisma
+REASONING:
+- Type-safe database queries
+- Automatic migrations
+- Great TypeScript support
+- Easy to learn
+- Works with Supabase/Neon
+
+ALTERNATIVE: Drizzle ORM
+- Lighter than Prisma
+- SQL-like syntax
+- Better performance
+- Smaller learning curve
+
+
+────────────────────────────────────────────────────────────────────────────────
+FILE STORAGE (Photos)
+────────────────────────────────────────────────────────────────────────────────
+
+PRIMARY: Supabase Storage
+- 1GB free
+- CDN delivery
+- Automatic image transformations
+- Public/private buckets
+
+ALTERNATIVE: Cloudflare R2
+- Free tier: 10GB storage, 10M requests/month
+- S3-compatible API
+- No egress fees (unlike S3)
+
+IMAGE CDN: Cloudflare (Free tier)
+- Cache images globally
+- Automatic WebP conversion
+- Polish feature (compression)
+
+
+────────────────────────────────────────────────────────────────────────────────
+SEARCH
+────────────────────────────────────────────────────────────────────────────────
+
+SIMPLE SEARCH (MVP):
+- PostgreSQL full-text search
+- pg_trgm extension (fuzzy matching)
+- GIN indexes for performance
+- No external service needed
+
+FUTURE (If needed):
+- Typesense (open-source, self-hosted)
+- Meilisearch (good free tier)
+
+
+────────────────────────────────────────────────────────────────────────────────
+AUTHENTICATION (Shelter Staff)
+────────────────────────────────────────────────────────────────────────────────
+
+SIMPLE AUTH (MVP):
+- Simple code-based system
+- Codes stored in database
+- JWT for session management
+- Next.js middleware for protection
+
+LIBRARY: jose (JWT library)
+- Lightweight
+- Web standards based
+- Works in Edge Runtime
+
+FUTURE (If scaling):
+- Supabase Auth (built-in)
+- NextAuth.js (OAuth providers)
+
+
+────────────────────────────────────────────────────────────────────────────────
+DEPLOYMENT & HOSTING
+────────────────────────────────────────────────────────────────────────────────
+
+HOSTING: Vercel (Free tier)
+FEATURES:
+- Automatic deployments (push to main)
+- Preview deployments (PRs)
+- Edge Functions (fast globally)
+- Image optimization
+- Analytics (optional)
+- 100GB bandwidth/month
+- Custom domain support
+- SSL certificates (automatic)
+
+ALTERNATIVE: Cloudflare Pages
+- Unlimited bandwidth (free)
+- Global CDN
+- Fast edge network
+- GitHub integration
+
+DATABASE HOSTING:
+- Supabase (Free tier) - hosted
+- Neon (Free tier) - serverless
+
+
+────────────────────────────────────────────────────────────────────────────────
+MONITORING & ANALYTICS
+────────────────────────────────────────────────────────────────────────────────
+
+ERROR TRACKING: Sentry (Free tier)
+- 5K events/month free
+- Source maps support
+- Performance monitoring
+- User feedback integration
+
+ANALYTICS: Vercel Analytics (Free)
+- Web Vitals
+- Real User Monitoring (RUM)
+- No cookies (privacy-friendly)
+
+ALTERNATIVE: Plausible (Self-hosted or paid)
+- Privacy-focused
+- No cookies
+- Lightweight script
+
+
+────────────────────────────────────────────────────────────────────────────────
+NOTIFICATIONS (Future Phase)
+────────────────────────────────────────────────────────────────────────────────
+
+SMS: Twilio or local provider
+- Send match notifications
+- Pay as you go
+
+EMAIL: Resend (Free tier)
+- 3K emails/month free
+- Good deliverability
+- Simple API
+
+PUSH NOTIFICATIONS:
+- Web Push API (native)
+- OneSignal (free tier)
+
+
+────────────────────────────────────────────────────────────────────────────────
+DEVELOPMENT TOOLS
+────────────────────────────────────────────────────────────────────────────────
+
+PACKAGE MANAGER: pnpm
+- Faster than npm/yarn
+- Disk space efficient
+- Strict dependency management
+
+LINTING:
+- ESLint (Next.js config)
+- Prettier (code formatting)
+- TypeScript compiler
+
+TESTING (Optional for MVP):
+- Vitest (fast unit tests)
+- Playwright (E2E tests)
+
+VERSION CONTROL: Git + GitHub
+- Free private repos
+- GitHub Actions (CI/CD)
+- Issue tracking
+
+
+================================================================================
+PROJECT STRUCTURE
+================================================================================
+
+iSafe/
+│
+├── app/                          # Next.js App Router
+│   ├── [locale]/                 # Internationalization
+│   │   ├── layout.tsx            # Root layout
+│   │   ├── page.tsx              # Home page (/)
+│   │   ├── search/
+│   │   │   └── page.tsx          # Search page
+│   │   ├── missing/
+│   │   │   └── page.tsx          # Report missing
+│   │   ├── register/
+│   │   │   └── page.tsx          # Shelter registration
+│   │   └── about/
+│   │       └── page.tsx          # About page
+│   │
+│   ├── api/                      # API Routes
+│   │   ├── persons/
+│   │   │   ├── route.ts          # GET/POST persons
+│   │   │   └── [id]/
+│   │   │       └── route.ts      # GET/PUT/DELETE person
+│   │   ├── search/
+│   │   │   └── route.ts          # Search endpoint
+│   │   ├── missing/
+│   │   │   └── route.ts          # Missing persons
+│   │   ├── shelters/
+│   │   │   └── route.ts          # Shelter management
+│   │   ├── upload/
+│   │   │   └── route.ts          # Image upload
+│   │   └── poster/
+│   │       └── route.ts          # Generate poster
+│   │
+│   ├── actions/                  # Server Actions
+│   │   ├── person.ts             # Person CRUD
+│   │   ├── search.ts             # Search actions
+│   │   └── upload.ts             # Upload actions
+│   │
+│   └── globals.css               # Global styles
+│
+├── components/                   # React Components
+│   ├── ui/                       # Reusable UI components
+│   │   ├── Button.tsx
+│   │   ├── Input.tsx
+│   │   ├── Card.tsx
+│   │   ├── Alert.tsx
+│   │   ├── Loading.tsx
+│   │   └── ...
+│   │
+│   ├── forms/                    # Form components
+│   │   ├── SearchForm.tsx
+│   │   ├── MissingPersonForm.tsx
+│   │   ├── ShelterRegistrationForm.tsx
+│   │   └── ...
+│   │
+│   ├── layout/                   # Layout components
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Navigation.tsx
+│   │   └── LanguageToggle.tsx
+│   │
+│   └── features/                 # Feature-specific components
+│       ├── PersonCard.tsx
+│       ├── SearchResults.tsx
+│       ├── PosterPreview.tsx
+│       └── ...
+│
+├── lib/                          # Utility functions
+│   ├── db/                       # Database utilities
+│   │   ├── prisma.ts             # Prisma client
+│   │   └── queries.ts            # Common queries
+│   │
+│   ├── utils/                    # General utilities
+│   │   ├── validation.ts         # Form validation
+│   │   ├── formatting.ts         # Data formatting
+│   │   ├── constants.ts          # App constants
+│   │   └── helpers.ts            # Helper functions
+│   │
+│   ├── services/                 # Business logic
+│   │   ├── personService.ts      # Person operations
+│   │   ├── searchService.ts      # Search logic
+│   │   ├── matchService.ts       # Matching algorithm
+│   │   └── posterService.ts      # Poster generation
+│   │
+│   └── auth/                     # Authentication
+│       ├── middleware.ts         # Auth middleware
+│       └── jwt.ts                # JWT utilities
+│
+├── prisma/                       # Prisma ORM
+│   ├── schema.prisma             # Database schema
+│   ├── migrations/               # Database migrations
+│   └── seed.ts                   # Seed data (districts, etc.)
+│
+├── public/                       # Static files
+│   ├── images/                   # Static images
+│   │   ├── logo.svg
+│   │   └── placeholder.png
+│   ├── fonts/                    # Custom fonts
+│   │   ├── NotoSansSinhala.woff2
+│   │   └── NotoSansTamil.woff2
+│   └── icons/                    # PWA icons
+│
+├── messages/                     # Translations
+│   ├── en.json                   # English
+│   ├── si.json                   # Sinhala
+│   └── ta.json                   # Tamil
+│
+├── types/                        # TypeScript types
+│   ├── person.ts
+│   ├── shelter.ts
+│   ├── search.ts
+│   └── api.ts
+│
+├── config/                       # Configuration
+│   ├── districts.ts              # Sri Lankan districts
+│   └── constants.ts              # App-wide constants
+│
+├── middleware.ts                 # Next.js middleware
+├── next.config.js                # Next.js configuration
+├── tailwind.config.js            # Tailwind configuration
+├── tsconfig.json                 # TypeScript config
+├── package.json                  # Dependencies
+├── .env.local                    # Environment variables
+├── .env.example                  # Example env vars
+├── .gitignore                    # Git ignore
+└── README.md                     # Documentation
+
+
+================================================================================
+DATABASE SCHEMA (Prisma)
+================================================================================
+
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// PERSONS (In Shelters)
+// ─────────────────────────────────────────────────────────────────────────
+
+model Person {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Basic Info
+  fullName        String
+  age             Int
+  gender          Gender
+  nic             String?   @unique  // Sri Lankan NIC
+  contactNumber   String?
+  
+  // Location
+  shelterId       String
+  shelter         Shelter   @relation(fields: [shelterId], references: [id])
+  
+  // Health
+  healthStatus    HealthStatus
+  specialNotes    String?
+  
+  // Photo
+  photoUrl        String?
+  photoPublicId   String?   // For Supabase Storage
+  
+  // Matching
+  missingReportId String?
+  missingReport   MissingPerson? @relation(fields: [missingReportId], references: [id])
+  matchedAt       DateTime?
+  
+  // Search optimization
+  searchVector    Unsupported("tsvector")? // PostgreSQL full-text search
+  
+  @@index([fullName])
+  @@index([nic])
+  @@index([shelterId])
+  @@index([searchVector])
+  @@map("persons")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum HealthStatus {
+  HEALTHY
+  MINOR_INJURIES
+  REQUIRES_CARE
+  CRITICAL
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────
+// MISSING PERSONS (Reports)
+// ─────────────────────────────────────────────────────────────────────────
+
+model MissingPerson {
+  id                String    @id @default(cuid())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  // Person Details
+  fullName          String
+  age               Int
+  gender            Gender
+  photoUrl          String
+  photoPublicId     String
+  
+  // Last Known
+  lastSeenLocation  String
+  lastSeenDistrict  String
+  lastSeenDate      DateTime
+  clothing          String?
+  
+  // Reporter Details
+  reporterName      String
+  reporterPhone     String
+  altContact        String?
+  
+  // Status
+  status            MissingStatus @default(MISSING)
+  foundPersons      Person[]      // Potential matches
+  
+  // Poster
+  posterCode        String    @unique  // e.g., MP12345
+  posterUrl         String?
+  
+  // Search optimization
+  searchVector      Unsupported("tsvector")?
+  
+  @@index([fullName])
+  @@index([posterCode])
+  @@index([status])
+  @@index([searchVector])
+  @@map("missing_persons")
+}
+
+enum MissingStatus {
+  MISSING
+  FOUND
+  CLOSED
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────
+// SHELTERS
+// ─────────────────────────────────────────────────────────────────────────
+
+model Shelter {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Basic Info
+  name            String
+  code            String    @unique  // e.g., CMB-CC-245
+  district        String
+  address         String?
+  
+  // Contact
+  contactPerson   String?
+  contactNumber   String?
+  
+  // Capacity
+  capacity        Int?
+  currentCount    Int       @default(0)
+  
+  // Status
+  isActive        Boolean   @default(true)
+  
+  // Relations
+  persons         Person[]
+  
+  @@index([code])
+  @@index([district])
+  @@map("shelters")
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────
+// SHELTER STAFF / AUTH
+// ─────────────────────────────────────────────────────────────────────────
+
+model ShelterAuth {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  shelterId       String    @unique
+  accessCode      String    @unique  // Hashed
+  
+  // Audit
+  lastAccessAt    DateTime?
+  accessCount     Int       @default(0)
+  
+  @@index([accessCode])
+  @@map("shelter_auth")
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────
+// MATCHES (Audit Trail)
+// ─────────────────────────────────────────────────────────────────────────
+
+model Match {
+  id                String    @id @default(cuid())
+  createdAt         DateTime  @default(now())
+  
+  missingPersonId   String
+  personId          String
+  
+  // Match quality
+  confidence        Float     // 0.0 - 1.0
+  matchedBy         MatchMethod
+  
+  // Confirmation
+  confirmedAt       DateTime?
+  confirmedBy       String?   // Shelter code
+  
+  // Notification
+  notificationSent  Boolean   @default(false)
+  notifiedAt        DateTime?
+  
+  @@index([missingPersonId])
+  @@index([personId])
+  @@map("matches")
+}
+
+enum MatchMethod {
+  MANUAL
+  AUTOMATIC
+  PHOTO_MATCH
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────
+// STATISTICS (Cached)
+// ─────────────────────────────────────────────────────────────────────────
+
+model Statistics {
+  id                String    @id @default("singleton")
+  updatedAt         DateTime  @updatedAt
+  
+  totalPersons      Int       @default(0)
+  totalShelters     Int       @default(0)
+  activeShelters    Int       @default(0)
+  totalMissing      Int       @default(0)
+  totalMatches      Int       @default(0)
+  
+  // Per district
+  byDistrict        Json      // { "Colombo": 1234, ... }
+  
+  @@map("statistics")
+}
+
+
+================================================================================
+ENVIRONMENT VARIABLES
+================================================================================
+
+# .env.local
+
+# Database
+DATABASE_URL="postgresql://user:password@host:5432/isafe"
+
+# Supabase (if using)
+NEXT_PUBLIC_SUPABASE_URL="https://xxxxx.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="xxxxx"
+SUPABASE_SERVICE_ROLE_KEY="xxxxx"
+
+# Cloudflare (if using R2)
+R2_ACCOUNT_ID="xxxxx"
+R2_ACCESS_KEY_ID="xxxxx"
+R2_SECRET_ACCESS_KEY="xxxxx"
+R2_BUCKET_NAME="isafe-photos"
+
+# JWT Secret (for auth)
+JWT_SECRET="your-super-secret-jwt-key-change-this"
+
+# SMS (Future - Twilio)
+TWILIO_ACCOUNT_SID="xxxxx"
+TWILIO_AUTH_TOKEN="xxxxx"
+TWILIO_PHONE_NUMBER="+1234567890"
+
+# Email (Future - Resend)
+RESEND_API_KEY="re_xxxxx"
+
+# Sentry (Error tracking)
+NEXT_PUBLIC_SENTRY_DSN="https://xxxxx@sentry.io/xxxxx"
+
+# Analytics
+NEXT_PUBLIC_VERCEL_ANALYTICS_ID="xxxxx"
+
+# App Config
+NEXT_PUBLIC_APP_URL="https://isafe.lk"
+NEXT_PUBLIC_APP_NAME="iSafe"
+
+
+================================================================================
+PACKAGE.JSON DEPENDENCIES
+================================================================================
+
+{
+  "name": "isafe",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    // Core
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.3.3",
+    
+    // Database & ORM
+    "@prisma/client": "^5.7.1",
+    
+    // UI & Styling
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.1.1",
+    "clsx": "^2.0.0",
+    
+    // Forms & Validation
+    "react-hook-form": "^7.49.2",
+    "zod": "^3.22.4",
+    "@hookform/resolvers": "^3.3.3",
+    
+    // Internationalization
+    "next-intl": "^3.4.0",
+    
+    // Image Processing
+    "sharp": "^0.33.1",
+    "browser-image-compression": "^2.0.2",
+    
+    // Date handling
+    "date-fns": "^3.0.0",
+    
+    // Utilities
+    "nanoid": "^5.0.4",
+    "jose": "^5.2.0",
+    "bcryptjs": "^2.4.3",
+    
+    // State Management / Data Fetching
+    "swr": "^2.2.4"
+    // OR
+    "@tanstack/react-query": "^5.14.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.7.1",
+    "@types/node": "^20.10.6",
+    "@types/react": "^18.2.46",
+    "@types/react-dom": "^18.2.18",
+    "@types/bcryptjs": "^2.4.6",
+    "eslint": "^8.56.0",
+    "eslint-config-next": "^14.0.4",
+    "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.9"
+  }
+}
+
+
+================================================================================
+KEY CONFIGURATION FILES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+NEXT.JS CONFIG
+────────────────────────────────────────────────────────────────────────────────
+
+// next.config.js
+
+const withNextIntl = require('next-intl/plugin')();
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Image domains
+  images: {
+    domains: [
+      'xxxxx.supabase.co', // Supabase
+      'pub-xxxxx.r2.dev',  // Cloudflare R2
+    ],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+  
+  // Compression
+  compress: true,
+  
+  // Production optimization
+  productionBrowserSourceMaps: false,
+  
+  // Headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          }
+        ]
+      }
+    ];
+  },
+  
+  // Redirects
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+  },
+};
+
+module.exports = withNextIntl(nextConfig);
+
+
+────────────────────────────────────────────────────────────────────────────────
+TAILWIND CONFIG
+────────────────────────────────────────────────────────────────────────────────
+
+// tailwind.config.js
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: '#2563EB',
+          dark: '#1E40AF',
+          light: '#DBEAFE',
+        },
+        success: {
+          DEFAULT: '#16A34A',
+          light: '#D1FAE5',
+        },
+        warning: {
+          DEFAULT: '#F59E0B',
+          light: '#FEF3C7',
+        },
+        danger: {
+          DEFAULT: '#DC2626',
+          light: '#FEE2E2',
+        },
+      },
+      fontFamily: {
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
+        sinhala: ['Noto Sans Sinhala', 'sans-serif'],
+        tamil: ['Noto Sans Tamil', 'sans-serif'],
+      },
+      fontSize: {
+        'xs': '0.75rem',     // 12px
+        'sm': '0.875rem',    // 14px
+        'base': '1rem',      // 16px
+        'lg': '1.125rem',    // 18px
+        'xl': '1.25rem',     // 20px
+        '2xl': '1.5rem',     // 24px
+        '3xl': '1.875rem',   // 30px
+        '4xl': '2rem',       // 32px
+      },
+      spacing: {
+        '18': '4.5rem',      // 72px
+        '88': '22rem',       // 352px
+      },
+      minHeight: {
+        'touch': '44px',     // iOS minimum touch target
+      },
+      minWidth: {
+        'touch': '44px',
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
+};
+
+
+────────────────────────────────────────────────────────────────────────────────
+TYPESCRIPT CONFIG
+────────────────────────────────────────────────────────────────────────────────
+
+// tsconfig.json
+
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/types/*": ["./types/*"],
+      "@/config/*": ["./config/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+
+
+────────────────────────────────────────────────────────────────────────────────
+MIDDLEWARE (Auth & i18n)
+────────────────────────────────────────────────────────────────────────────────
+
+// middleware.ts
+
+import createMiddleware from 'next-intl/middleware';
+import { NextRequest, NextResponse } from 'next/server';
+
+// Internationalization
+const intlMiddleware = createMiddleware({
+  locales: ['en', 'si', 'ta'],
+  defaultLocale: 'en',
+  localePrefix: 'always'
+});
+
+export default function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Skip middleware for static files and API routes
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/static') ||
+    pathname.includes('/icon') ||
+    pathname.includes('/favicon')
+  ) {
+    return NextResponse.next();
+  }
+  
+  // Apply i18n middleware
+  const response = intlMiddleware(request);
+  
+  // Check if accessing shelter registration
+  if (pathname.includes('/register')) {
+    // Check for shelter auth cookie/header
+    const shelterCode = request.cookies.get('shelter_code');
+    
+    if (!shelterCode) {
+      // Redirect to auth page
+      const url = request.nextUrl.clone();
+      url.pathname = `/${request.nextUrl.locale}/register/auth`;
+      return NextResponse.redirect(url);
+    }
+  }
+  
+  return response;
+}
+
+export const config = {
+  matcher: ['/((?!api|_next|.*\\..*).*)']
+};
+
+
+================================================================================
+API ENDPOINT EXAMPLES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+SEARCH ENDPOINT
+────────────────────────────────────────────────────────────────────────────────
+
+// app/api/search/route.ts
+
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/db/prisma';
+import { z } from 'zod';
+
+const searchSchema = z.object({
+  query: z.string().min(2).optional(),
+  nic: z.string().optional(),
+  type: z.enum(['name', 'nic']),
+});
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get('query');
+    const nic = searchParams.get('nic');
+    const type = searchParams.get('type') || 'name';
+    
+    // Validate input
+    const validated = searchSchema.parse({ query, nic, type });
+    
+    if (type === 'nic' && nic) {
+      // Search by NIC (exact match)
+      const results = await prisma.person.findMany({
+        where: {
+          nic: {
+            equals: nic,
+            mode: 'insensitive',
+          },
+        },
+        include: {
+          shelter: true,
+        },
+      });
+      
+      return NextResponse.json({ results });
+    }
+    
+    if (type === 'name' && query) {
+      // Search by name (fuzzy match)
+      const results = await prisma.$queryRaw`
+        SELECT p.*, s.name as shelter_name, s.district
+        FROM persons p
+        JOIN shelters s ON p.shelter_id = s.id
+        WHERE similarity(p.full_name, ${query}) > 0.3
+        ORDER BY similarity(p.full_name, ${query}) DESC
+        LIMIT 10
+      `;
+      
+      return NextResponse.json({ results });
+    }
+    
+    return NextResponse.json({ results: [] });
+    
+  } catch (error) {
+    console.error('Search error:', error);
+    return NextResponse.json(
+      { error: 'Search failed' },
+      { status: 500 }
+    );
+  }
+}
+
+
+────────────────────────────────────────────────────────────────────────────────
+PERSON REGISTRATION (Server Action)
+────────────────────────────────────────────────────────────────────────────────
+
+// app/actions/person.ts
+
+'use server';
+
+import { prisma } from '@/lib/db/prisma';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+
+const personSchema = z.object({
+  fullName: z.string().min(2).max(100),
+  age: z.number().min(0).max(120),
+  gender: z.enum(['MALE', 'FEMALE', 'OTHER']),
+  nic: z.string().optional(),
+  contactNumber: z.string().optional(),
+  shelterId: z.string(),
+  healthStatus: z.enum(['HEALTHY', 'MINOR_INJURIES', 'REQUIRES_CARE', 'CRITICAL']),
+  specialNotes: z.string().optional(),
+  photoUrl: z.string().optional(),
+});
+
+export async function registerPerson(data: z.infer<typeof personSchema>) {
+  try {
+    // Validate
+    const validated = personSchema.parse(data);
+    
+    // Create person
+    const person = await prisma.person.create({
+      data: validated,
+    });
+    
+    // Update shelter count
+    await prisma.shelter.update({
+      where: { id: validated.shelterId },
+      data: {
+        currentCount: {
+          increment: 1,
+        },
+      },
+    });
+    
+    // Check for matches
+    const potentialMatches = await findPotentialMatches(person);
+    
+    // Revalidate pages
+    revalidatePath('/search');
+    revalidatePath('/');
+    
+    return {
+      success: true,
+      person,
+      matches: potentialMatches,
+    };
+    
+  } catch (error) {
+    console.error('Registration error:', error);
+    return {
+      success: false,
+      error: 'Failed to register person',
+    };
+  }
+}
+
+async function findPotentialMatches(person: any) {
+  // Simple matching logic - can be enhanced
+  const matches = await prisma.missingPerson.findMany({
+    where: {
+      status: 'MISSING',
+      AND: [
+        {
+          fullName: {
+            contains: person.fullName,
+            mode: 'insensitive',
+          },
+        },
+        {
+          age: {
+            gte: person.age - 2,
+            lte: person.age + 2,
+          },
+        },
+        {
+          gender: person.gender,
+        },
+      ],
+    },
+    take: 5,
+  });
+  
+  return matches;
+}
+
+
+────────────────────────────────────────────────────────────────────────────────
+IMAGE UPLOAD
+────────────────────────────────────────────────────────────────────────────────
+
+// app/api/upload/route.ts
+
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+import sharp from 'sharp';
+import { nanoid } from 'nanoid';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+    
+    if (!file) {
+      return NextResponse.json(
+        { error: 'No file provided' },
+        { status: 400 }
+      );
+    }
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      return NextResponse.json(
+        { error: 'File must be an image' },
+        { status: 400 }
+      );
+    }
+    
+    // Convert to buffer
+    const buffer = Buffer.from(await file.arrayBuffer());
+    
+    // Compress and optimize
+    const optimizedBuffer = await sharp(buffer)
+      .resize(800, 800, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({ quality: 80 })
+      .toBuffer();
+    
+    // Generate unique filename
+    const filename = `${nanoid()}.webp`;
+    const filepath = `photos/${filename}`;
+    
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('isafe-photos')
+      .upload(filepath, optimizedBuffer, {
+        contentType: 'image/webp',
+        cacheControl: '31536000', // 1 year
+      });
+    
+    if (error) {
+      console.error('Upload error:', error);
+      return NextResponse.json(
+        { error: 'Upload failed' },
+        { status: 500 }
+      );
+    }
+    
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('isafe-photos')
+      .getPublicUrl(filepath);
+    
+    return NextResponse.json({
+      success: true,
+      url: urlData.publicUrl,
+      publicId: filename,
+    });
+    
+  } catch (error) {
+    console.error('Upload error:', error);
+    return NextResponse.json(
+      { error: 'Upload failed' },
+      { status: 500 }
+    );
+  }
+}
+
+// Configure for large files
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+};
+
+
+================================================================================
+DEPLOYMENT CHECKLIST
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+PRE-DEPLOYMENT
+────────────────────────────────────────────────────────────────────────────────
+
+☐ Database Setup
+  ☐ Create Supabase/Neon account
+  ☐ Create database
+  ☐ Run Prisma migrations
+  ☐ Seed initial data (districts, etc.)
+  ☐ Set up full-text search extensions
+  ☐ Configure indexes
+
+☐ Environment Variables
+  ☐ Set all required env vars in Vercel
+  ☐ Generate strong JWT secret
+  ☐ Configure database URL
+  ☐ Set up Supabase keys
+
+☐ Domain
+  ☐ Register domain (iSafe.lk)
+  ☐ Configure DNS
+  ☐ Add domain to Vercel
+  ☐ SSL certificate (automatic)
+
+☐ Storage
+  ☐ Create Supabase storage bucket
+  ☐ Set up CORS policy
+  ☐ Configure public access
+  ☐ Test image upload/retrieval
+
+☐ Testing
+  ☐ Test all forms
+  ☐ Test search functionality
+  ☐ Test image upload
+  ☐ Test on mobile devices
+  ☐ Test on 3G connection
+  ☐ Check accessibility
+  ☐ Verify all translations
+
+
+────────────────────────────────────────────────────────────────────────────────
+DEPLOYMENT
+────────────────────────────────────────────────────────────────────────────────
+
+☐ Vercel Setup
+  ☐ Connect GitHub repository
+  ☐ Configure build settings
+  ☐ Set environment variables
+  ☐ Enable automatic deployments
+
+☐ Performance
+  ☐ Enable Edge Functions (if needed)
+  ☐ Configure CDN caching
+  ☐ Set up image optimization
+  ☐ Enable compression
+
+☐ Monitoring
+  ☐ Set up Sentry error tracking
+  ☐ Enable Vercel Analytics
+  ☐ Configure logging
+
+☐ Security
+  ☐ Review security headers
+  ☐ Set up rate limiting
+  ☐ Configure CORS
+  ☐ Enable HTTPS only
+
+
+────────────────────────────────────────────────────────────────────────────────
+POST-DEPLOYMENT
+────────────────────────────────────────────────────────────────────────────────
+
+☐ Verification
+  ☐ Test production URL
+  ☐ Verify all features work
+  ☐ Check mobile responsiveness
+  ☐ Test on multiple devices
+  ☐ Verify translations
+
+☐ Performance
+  ☐ Run Lighthouse audit
+  ☐ Check Core Web Vitals
+  ☐ Optimize if needed
+
+☐ Monitoring
+  ☐ Monitor error rates
+  ☐ Check API response times
+  ☐ Monitor database performance
+
+☐ Documentation
+  ☐ Create user guide (Sinhala/Tamil/English)
+  ☐ Document API for government
+  ☐ Create admin guide for shelters
+
+
+================================================================================
+PERFORMANCE OPTIMIZATION STRATEGIES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+FRONTEND OPTIMIZATION
+────────────────────────────────────────────────────────────────────────────────
+
+1. CODE SPLITTING
+   - Lazy load heavy components
+   - Use dynamic imports for non-critical features
+   - Split by routes automatically (Next.js)
+
+2. IMAGE OPTIMIZATION
+   - Use Next.js Image component
+   - Serve WebP with fallback
+   - Lazy load below-fold images
+   - Use appropriate sizes
+   - Implement blur placeholder
+
+3. FONT OPTIMIZATION
+   - Use system fonts (zero load time)
+   - Subset Noto fonts (only needed characters)
+   - Use font-display: swap
+   - Preload critical fonts
+
+4. CSS OPTIMIZATION
+   - Purge unused Tailwind classes
+   - Critical CSS inline
+   - Defer non-critical CSS
+
+5. JAVASCRIPT OPTIMIZATION
+   - Minimize third-party scripts
+   - Use React Server Components
+   - Avoid large client-side libraries
+   - Tree-shake unused code
+
+
+────────────────────────────────────────────────────────────────────────────────
+BACKEND OPTIMIZATION
+────────────────────────────────────────────────────────────────────────────────
+
+1. DATABASE QUERIES
+   - Add indexes on frequently queried columns
+   - Use connection pooling
+   - Implement query caching
+   - Avoid N+1 queries (use include/join)
+   - Paginate large result sets
+
+2. API RESPONSES
+   - Implement response caching
+   - Use CDN for static responses
+   - Compress responses (gzip/brotli)
+   - Return only needed fields
+
+3. CACHING STRATEGY
+   - Cache static content (1 year)
+   - Cache API responses (1-5 minutes)
+   - Use SWR for client-side caching
+   - Implement Redis for session data (future)
+
+4. IMAGE PROCESSING
+   - Process on upload (not on request)
+   - Generate multiple sizes upfront
+   - Store optimized versions
+   - Use CDN for delivery
+
+
+────────────────────────────────────────────────────────────────────────────────
+NETWORK OPTIMIZATION
+────────────────────────────────────────────────────────────────────────────────
+
+1. REDUCE REQUESTS
+   - Combine assets
+   - Use sprite sheets for icons
+   - Inline small assets
+   - Batch API calls
+
+2. COMPRESSION
+   - Enable gzip/brotli
+   - Minify HTML/CSS/JS
+   - Optimize images
+
+3. CDN
+   - Use Vercel Edge Network
+   - Cache static assets globally
+   - Reduce latency
+
+
+================================================================================
+COST BREAKDOWN (Monthly)
+================================================================================
+
+FREE TIER (MVP):
+- Vercel hosting:        $0 (100GB bandwidth)
+- Supabase database:     $0 (500MB storage, 2GB bandwidth)
+- Supabase storage:      $0 (1GB)
+- Domain (.lk):          ~$10/year (~$1/month)
+- Total:                 ~$1/month
+
+SCALING COSTS (If needed):
+- Vercel Pro:            $20/month (1TB bandwidth, better performance)
+- Supabase Pro:          $25/month (8GB database, 100GB bandwidth)
+- Cloudflare R2:         $0 (free tier covers most usage)
+- Total:                 ~$45/month (handles significant traffic)
+
+
+================================================================================
+TIMELINE & MILESTONES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+DAY 1 (Setup & Core Features)
+────────────────────────────────────────────────────────────────────────────────
+
+HOURS 0-4:
+☐ Project setup
+  ☐ Initialize Next.js project
+  ☐ Install dependencies
+  ☐ Configure Tailwind
+  ☐ Set up database (Supabase/Neon)
+  ☐ Create Prisma schema
+  ☐ Run migrations
+
+HOURS 4-8:
+☐ Core components
+  ☐ Layout (Header, Footer)
+  ☐ Navigation
+  ☐ Button component
+  ☐ Input component
+  ☐ Card component
+
+HOURS 8-12:
+☐ Home page
+  ☐ Hero section
+  ☐ Primary CTAs
+  ☐ Live statistics
+  ☐ Language toggle
+
+HOURS 12-16:
+☐ Search functionality
+  ☐ Search form (name/NIC)
+  ☐ Search API endpoint
+  ☐ Results display
+  ☐ Empty states
+
+
+────────────────────────────────────────────────────────────────────────────────
+DAY 2 (Features & Polish)
+────────────────────────────────────────────────────────────────────────────────
+
+HOURS 0-4:
+☐ Missing person report
+  ☐ Multi-step form
+  ☐ Image upload
+  ☐ Validation
+  ☐ Poster generation
+
+HOURS 4-8:
+☐ Shelter registration
+  ☐ Auth system
+  ☐ Registration form
+  ☐ Match detection
+  ☐ Success states
+
+HOURS 8-12:
+☐ Internationalization
+  ☐ Set up next-intl
+  ☐ Create translations (en/si/ta)
+  ☐ Test language switching
+
+HOURS 12-16:
+☐ Testing & fixes
+  ☐ Test all features
+  ☐ Mobile testing
+  ☐ Fix bugs
+  ☐ Performance check
+
+
+────────────────────────────────────────────────────────────────────────────────
+DAY 3 (Deployment & Launch)
+────────────────────────────────────────────────────────────────────────────────
+
+HOURS 0-4:
+☐ Final polish
+  ☐ Add error handling
+  ☐ Add loading states
+  ☐ Improve accessibility
+  ☐ Add metadata/SEO
+
+HOURS 4-8:
+☐ Deployment
+  ☐ Set up Vercel
+  ☐ Configure environment variables
+  ☐ Deploy to production
+  ☐ Configure domain
+  ☐ Test production
+
+HOURS 8-12:
+☐ Launch preparation
+  ☐ Create user guide
+  ☐ Prepare pitch materials
+  ☐ Contact government officials
+  ☐ Prepare press release
+
+HOURS 12+:
+☐ LAUNCH!
+  ☐ Social media announcement
+  ☐ Contact media
+  ☐ Monitor for issues
+  ☐ Gather feedback
+
+
+================================================================================
+FUTURE ENHANCEMENTS ROADMAP
+================================================================================
+
+PHASE 2 (Week 2-4):
+☐ Photo search with face recognition
+☐ SMS notifications for matches
+☐ Bulk registration (CSV upload)
+☐ Offline mode (Progressive Web App)
+☐ Admin dashboard (statistics, management)
+☐ Export functionality (PDF reports)
+
+PHASE 3 (Month 2-3):
+☐ Mobile apps (React Native)
+☐ WhatsApp bot integration
+☐ Voice search (for low literacy users)
+☐ Map view of shelters
+☐ Real-time updates (WebSocket)
+☐ Advanced matching (ML)
+
+PHASE 4 (Month 4+):
+☐ Multi-disaster support
+☐ Integration with government systems
+☐ Medical records integration
+☐ Supply chain tracking
+☐ Volunteer management
+☐ Donation tracking
+
+
+================================================================================
+SUPPORT & RESOURCES
+================================================================================
+
+DOCUMENTATION:
+- Next.js: https://nextjs.org/docs
+- Prisma: https://www.prisma.io/docs
+- Tailwind CSS: https://tailwindcss.com/docs
+- React Hook Form: https://react-hook-form.com
+- Supabase: https://supabase.com/docs
+
+COMMUNITIES:
+- Next.js Discord
+- Prisma Discord
+- Tailwind CSS Discord
+- r/nextjs (Reddit)
+- Stack Overflow
+
+LEARNING RESOURCES:
+- Next.js Learn: https://nextjs.org/learn
+- Prisma Getting Started
+- Tailwind Play (practice)
+- TypeScript Handbook
+
+
+================================================================================
+EMERGENCY CONTACTS & SUPPORT
+================================================================================
+
+TECHNICAL ISSUES:
+- Check error logs (Sentry)
+- Review Vercel deployment logs
+- Check database status (Supabase dashboard)
+- Monitor API response times
+
+SCALING ISSUES:
+- Upgrade Vercel plan (more bandwidth)
+- Upgrade database plan (more storage)
+- Enable caching aggressively
+- Optimize queries
+
+SECURITY ISSUES:
+- Review security headers
+- Check for SQL injection vulnerabilities
+- Implement rate limiting
+- Monitor suspicious activity
+
+
+================================================================================
+END OF DOCUMENT
+================================================================================
+
+This comprehensive tech stack plan covers everything needed to build and
+deploy iSafe using Next.js. The architecture is designed for:
+- Rapid development (24-48 hours)
+- Zero to minimal cost (~$1/month)
+- Mobile-first performance
+- Works on 2G networks
+- Scalable for future growth
+
+Ready to start building!
+
+Last updated: December 2025
+Version: 1.0

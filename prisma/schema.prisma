@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// PERSONS (In Shelters)
+// ============================================================================
+
+model Person {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Basic Info
+  fullName        String
+  age             Int
+  gender          Gender
+  nic             String?   @unique
+  contactNumber   String?
+
+  // Location
+  shelterId       String
+  shelter         Shelter   @relation(fields: [shelterId], references: [id])
+
+  // Health
+  healthStatus    HealthStatus
+  specialNotes    String?
+
+  // Photo
+  photoUrl        String?
+  photoPublicId   String?
+
+  // Matching
+  missingReportId String?
+  missingReport   MissingPerson? @relation(fields: [missingReportId], references: [id])
+  matchedAt       DateTime?
+
+  @@index([fullName])
+  @@index([nic])
+  @@index([shelterId])
+  @@map("persons")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum HealthStatus {
+  HEALTHY
+  MINOR_INJURIES
+  REQUIRES_CARE
+  CRITICAL
+}
+
+// ============================================================================
+// MISSING PERSONS (Reports)
+// ============================================================================
+
+model MissingPerson {
+  id                String    @id @default(cuid())
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Person Details
+  fullName          String
+  age               Int
+  gender            Gender
+  nic               String?
+  photoUrl          String?
+  photoPublicId     String?
+
+  // Last Known
+  lastSeenLocation  String
+  lastSeenDistrict  String
+  lastSeenDate      DateTime?
+  clothing          String?
+
+  // Reporter Details
+  reporterName      String
+  reporterPhone     String
+  altContact        String?
+
+  // Status
+  status            MissingStatus @default(MISSING)
+  foundPersons      Person[]
+
+  // Poster
+  posterCode        String    @unique
+  posterUrl         String?
+
+  @@index([fullName])
+  @@index([nic])
+  @@index([posterCode])
+  @@index([status])
+  @@map("missing_persons")
+}
+
+enum MissingStatus {
+  MISSING
+  FOUND
+  CLOSED
+}
+
+// ============================================================================
+// SHELTERS
+// ============================================================================
+
+model Shelter {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Basic Info
+  name            String
+  code            String    @unique
+  district        String
+  address         String?
+
+  // Contact
+  contactPerson   String?
+  contactNumber   String?
+
+  // Capacity
+  capacity        Int?
+  currentCount    Int       @default(0)
+
+  // Status
+  isActive        Boolean   @default(true)
+
+  // Relations
+  persons         Person[]
+  auth            ShelterAuth?
+
+  @@index([code])
+  @@index([district])
+  @@map("shelters")
+}
+
+// ============================================================================
+// SHELTER STAFF / AUTH
+// ============================================================================
+
+model ShelterAuth {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  shelterId       String    @unique
+  shelter         Shelter   @relation(fields: [shelterId], references: [id])
+  accessCode      String
+
+  // Audit
+  lastAccessAt    DateTime?
+  accessCount     Int       @default(0)
+
+  @@index([accessCode])
+  @@map("shelter_auth")
+}
+
+// ============================================================================
+// MATCHES (Audit Trail)
+// ============================================================================
+
+model Match {
+  id                String    @id @default(cuid())
+  createdAt         DateTime  @default(now())
+  matchedAt         DateTime  @default(now())
+
+  missingPersonId   String
+  personId          String
+
+  // Match quality
+  matchScore        Int
+  matchedBy         MatchMethod @default(AUTOMATIC)
+
+  // Confirmation
+  confirmedAt       DateTime?
+  confirmedBy       String?
+
+  // Notification
+  notificationSent  Boolean   @default(false)
+  notifiedAt        DateTime?
+
+  @@index([missingPersonId])
+  @@index([personId])
+  @@map("matches")
+}
+
+enum MatchMethod {
+  MANUAL
+  AUTOMATIC
+  PHOTO_MATCH
+}
+
+// ============================================================================
+// STATISTICS (Cached)
+// ============================================================================
+
+model Statistics {
+  id                String    @id @default("singleton")
+  updatedAt         DateTime  @updatedAt
+
+  totalPersons      Int       @default(0)
+  totalShelters     Int       @default(0)
+  activeShelters    Int       @default(0)
+  totalMissing      Int       @default(0)
+  totalMatches      Int       @default(0)
+
+  // Per district
+  byDistrict        Json
+
+  @@map("statistics")
+}
