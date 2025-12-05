@@ -1,25 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import createMiddleware from 'next-intl/middleware';
+import { locales } from './i18n';
 
-const defaultLocale = 'en'
-const locales = ['en', 'si', 'ta'] // English, Sinhala, Tamil
-
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
-
-  // Check if pathname is missing a locale
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  )
-
-  if (!pathnameHasLocale) {
-    // Redirect to default locale
-    const locale = defaultLocale
-    request.nextUrl.pathname = `/${locale}${pathname}`
-    return NextResponse.redirect(request.nextUrl)
-  }
-
-  return NextResponse.next()
-}
+export default createMiddleware({
+  locales: locales as unknown as string[],
+  defaultLocale: 'en',
+  localePrefix: 'always'
+});
 
 export const config = {
   matcher: [
@@ -31,7 +17,7 @@ export const config = {
      * - public folder
      * - api routes
      */
-    '/((?!_next/static|_next/image|favicon.ico|api).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api|.*\\..*|_next).*)',
   ],
-}
+};
 
