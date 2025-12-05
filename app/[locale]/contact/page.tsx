@@ -1,6 +1,8 @@
 import Link from 'next/link';
 
-export default function ContactPage() {
+export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
       <h1 className="mb-6 text-2xl font-bold text-gray-900 md:text-3xl">Contact Us</h1>
@@ -50,7 +52,7 @@ export default function ContactPage() {
           <h2 className="mb-3 text-lg font-bold text-gray-900">General Inquiries</h2>
           <p className="text-base text-gray-700">
             For questions about using iSafe or to provide feedback, please visit our{' '}
-            <Link href="/about" className="font-medium text-primary hover:underline">
+            <Link href={`/${locale}/about`} className="font-medium text-primary hover:underline">
               About page
             </Link>
             {' '}for more information.
@@ -61,7 +63,7 @@ export default function ContactPage() {
       {/* Back to Home */}
       <div className="pt-6">
         <Link
-          href="/"
+          href={`/${locale}`}
           className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           ← Back to Home

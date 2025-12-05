@@ -1,3 +1,5 @@
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AnonymousUserInitializer } from '@/components/features/AnonymousUserInitializer';
@@ -11,17 +13,21 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const messages = await getMessages();
+  
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
       <body className="flex min-h-screen flex-col">
-        <AnonymousUserInitializer />
-        <Header locale={locale} />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <AnonymousUserInitializer />
+          <Header locale={locale} />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

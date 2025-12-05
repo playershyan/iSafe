@@ -1,6 +1,8 @@
 import Link from 'next/link';
 
-export default function TermsPage() {
+export default async function TermsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
       <h1 className="mb-6 text-2xl font-bold text-gray-900 md:text-3xl">Terms of Service</h1>
@@ -62,7 +64,7 @@ export default function TermsPage() {
       {/* Back to Home */}
       <div className="pt-6">
         <Link
-          href="/"
+          href={`/${locale}`}
           className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           ← Back to Home

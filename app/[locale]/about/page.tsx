@@ -1,6 +1,8 @@
 import Link from 'next/link';
 
-export default function AboutPage() {
+export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
       <h1 className="mb-6 text-2xl font-bold text-gray-900 md:text-3xl">About iSafe</h1>
@@ -99,41 +101,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Feedback & Support */}
-      <section className="mb-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">Feedback & Support</h2>
-        <div className="space-y-2 text-base">
-          <div>
-            <Link
-              href="/feedback/problem"
-              className="font-medium text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-            >
-              Report a problem
-            </Link>
-          </div>
-          <div>
-            <Link
-              href="/feedback/suggestion"
-              className="font-medium text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-            >
-              Suggest improvements
-            </Link>
-          </div>
-          <div>
-            <Link
-              href="/feedback/technical"
-              className="font-medium text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-            >
-              Technical issues
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Back to Home */}
       <div className="pt-6">
         <Link
-          href="/"
+          href={`/${locale}`}
           className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           ← Back to Home
