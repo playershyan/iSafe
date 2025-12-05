@@ -4,19 +4,28 @@ import { UnifiedSearchResult, SearchStatus } from '@/types';
 
 const NAME_SIMILARITY_THRESHOLD = 0.3; // Lowered to allow more matches
 
-function classifyStatus(hasPerson: boolean, hasLinkedReport: boolean, reportStatus?: string | null): SearchStatus {
-  if (hasPerson && hasLinkedReport && reportStatus === 'FOUND') {
+function classifyStatus(
+  hasPerson: boolean,
+  hasLinkedReport: boolean,
+  reportStatus?: string | null,
+  hasShelterData?: boolean
+): SearchStatus {
+  // FOUND_AND_SHELTERED: Person is in shelter (with shelter data) AND has a linked missing report
+  if (hasPerson && hasShelterData && hasLinkedReport) {
     return 'FOUND_AND_SHELTERED';
   }
 
-  if (hasPerson) {
+  // SHELTERED: Person is registered into a shelter with shelter data
+  if (hasPerson && hasShelterData) {
     return 'SHELTERED';
   }
 
+  // FOUND: Missing person report is marked as found
   if (reportStatus === 'FOUND') {
     return 'FOUND';
   }
 
+  // MISSING: Default status for missing person reports
   return 'MISSING';
 }
 
@@ -95,10 +104,12 @@ export async function unifiedSearchByName(query: string): Promise<UnifiedSearchR
       if (similarity < NAME_SIMILARITY_THRESHOLD) continue;
 
       const linkedReport = person.missing_report;
+      const hasShelterData = !!person.shelter;
       const status = classifyStatus(
         true,
         !!linkedReport,
-        linkedReport ? linkedReport.status : null
+        linkedReport ? linkedReport.status : null,
+        hasShelterData
       );
 
       if (linkedReport) {
@@ -224,7 +235,7 @@ export async function unifiedSearchByNIC(nic: string): Promise<UnifiedSearchResu
             district,
             contact_number
           ),
-          missing_report:missing_persons!persons_missing_report_id_fkey(*)
+          missing_report:missing_persons!persons_missingReportId_fkey(*)
         `)
         .ilike('nic', normalizedNIC)
         .limit(10),
@@ -256,10 +267,12 @@ export async function unifiedSearchByNIC(nic: string): Promise<UnifiedSearchResu
 
     for (const person of persons) {
       const linkedReport = person.missing_report;
+      const hasShelterData = !!person.shelter;
       const status = classifyStatus(
         true,
         !!linkedReport,
-        linkedReport ? linkedReport.status : null
+        linkedReport ? linkedReport.status : null,
+        hasShelterData
       );
 
       if (linkedReport) {

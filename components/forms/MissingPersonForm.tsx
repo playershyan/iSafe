@@ -14,6 +14,7 @@ interface FormData {
   fullName: string;
   age: string;
   gender: Gender | '';
+  nic: string;
   lastSeenLocation: string;
   lastSeenDistrict: string;
   lastSeenDate: string;
@@ -52,6 +53,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
     fullName: '',
     age: '',
     gender: '',
+    nic: '',
     lastSeenLocation: '',
     lastSeenDistrict: '',
     lastSeenDate: new Date().toISOString().split('T')[0],
@@ -193,10 +195,11 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
       const response = await fetch('/api/missing', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+          body: JSON.stringify({
           fullName: formData.fullName.trim(),
           age: Number(formData.age),
           gender: formData.gender,
+          nic: formData.nic.trim() || undefined,
           photoUrl: finalPhotoUrl,
           lastSeenLocation: formData.lastSeenLocation.trim(),
           lastSeenDistrict: formData.lastSeenDistrict,
@@ -312,6 +315,14 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
           max={120}
           className="w-[120px]"
           error={errors.age}
+        />
+
+        <Input
+          label="NIC Number"
+          value={formData.nic}
+          onChange={(e) => updateField('nic', e.target.value)}
+          placeholder="e.g., 951234567V or 199512345678"
+          helperText="(Optional)"
         />
 
         <div>

@@ -9,6 +9,12 @@ const createMissingPersonSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters').max(100),
   age: z.number().min(0, 'Age must be at least 0').max(120, 'Age must be at most 120'),
   gender: z.enum(['MALE', 'FEMALE', 'OTHER'], { errorMap: () => ({ message: 'Gender is required' }) }),
+  nic: z
+    .string()
+    .regex(/^(\d{9}[VvXx]|\d{12})$/, 'Invalid NIC format')
+    .transform((val) => val.toUpperCase())
+    .optional()
+    .or(z.literal('')),
   photoUrl: z.union([z.string().url(), z.literal('')]).optional(),
   lastSeenLocation: z.string().min(2, 'Location must be at least 2 characters').max(200),
   lastSeenDistrict: z.union([z.string(), z.literal('')]).optional(),
@@ -65,6 +71,7 @@ export async function POST(request: NextRequest) {
         full_name: validated.fullName,
         age: validated.age,
         gender: validated.gender,
+        nic: validated.nic && validated.nic !== '' ? validated.nic : null,
         photo_url: validated.photoUrl && validated.photoUrl !== '' ? validated.photoUrl : null,
         last_seen_location: validated.lastSeenLocation,
         last_seen_district: validated.lastSeenDistrict && validated.lastSeenDistrict !== '' ? validated.lastSeenDistrict : null,
