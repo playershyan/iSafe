@@ -2,9 +2,12 @@ import { NextIntlClientProvider } from 'next-intl';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AnonymousUserInitializer } from '@/components/features/AnonymousUserInitializer';
+import { HtmlLangSetter } from '@/components/layout/HtmlLangSetter';
 import { locales } from '@/i18n';
 import { notFound } from 'next/navigation';
-import '../globals.css';
+
+// Force dynamic rendering to avoid next-intl config issues during static generation
+export const dynamic = 'force-dynamic';
 
 // Generate static params for all locales
 export function generateStaticParams() {
@@ -25,23 +28,16 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // Dynamically import messages based on locale
+  // Directly import messages - this works during static generation
   const messages = (await import(`../../messages/${locale}.json`)).default;
 
   return (
-    <html lang={locale}>
-      <head>
-        <link rel="preconnect" href="https://res.cloudinary.com" />
-        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
-      </head>
-      <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider messages={messages} locale={locale}>
-          <AnonymousUserInitializer />
-          <Header locale={locale} />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <HtmlLangSetter />
+      <AnonymousUserInitializer />
+      <Header locale={locale} />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </NextIntlClientProvider>
   );
 }
