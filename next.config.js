@@ -1,10 +1,10 @@
-const createNextIntlPlugin = require('next-intl/plugin')('./i18n.ts');
+const createNextIntlPlugin = require('next-intl/plugin');
+
+// Create the plugin with explicit path to config
+const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    turbopack: {},
-  },
   images: {
     remotePatterns: [
       {
@@ -57,4 +57,4 @@ const nextConfig = {
   },
 };
 
-module.exports = createNextIntlPlugin(nextConfig);
+module.exports = withNextIntl(nextConfig);
