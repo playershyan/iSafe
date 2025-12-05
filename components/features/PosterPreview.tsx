@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Alert, Card } from '@/components/ui';
+import { Button, Alert } from '@/components/ui';
+import Link from 'next/link';
 
 interface PosterPreviewProps {
   posterCode: string;
@@ -9,14 +10,10 @@ interface PosterPreviewProps {
 }
 
 export function PosterPreview({ posterCode, locale }: PosterPreviewProps) {
-  const t = (key: string) => key;
-  const tCommon = (key: string) => key;
+  const [copySuccess, setCopySuccess] = useState(false);
 
-  const [format, setFormat] = useState<'square' | 'story'>('square');
-  const [shareSuccess, setShareSuccess] = useState(false);
-
-  const posterUrl = `/api/poster?posterCode=${posterCode}&format=${format}`;
-  const shareUrl = `${window.location.origin}/${locale}/missing/poster/${posterCode}`;
+  const posterUrl = `/api/poster?posterCode=${posterCode}&format=square`;
+  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}/missing/poster/${posterCode}`;
 
   const handleDownload = async () => {
     try {
@@ -26,47 +23,20 @@ export function PosterPreview({ posterCode, locale }: PosterPreviewProps) {
 
       const a = document.createElement('a');
       a.href = url;
-      a.download = `missing-person-${posterCode}-${format}.png`;
+      a.download = `missing-person-${posterCode}.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Download error:', error);
-      alert(t('downloadError'));
-    }
-  };
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: t('shareTitle'),
-          text: t('shareText'),
-          url: shareUrl,
-        });
-        setShareSuccess(true);
-        setTimeout(() => setShareSuccess(false), 3000);
-      } catch (error) {
-        // User cancelled or error occurred
-        console.error('Share error:', error);
-      }
-    } else {
-      // Fallback: Copy to clipboard
-      try {
-        await navigator.clipboard.writeText(shareUrl);
-        setShareSuccess(true);
-        setTimeout(() => setShareSuccess(false), 3000);
-      } catch (error) {
-        console.error('Copy error:', error);
-        alert(t('copyError'));
-      }
+      alert('Failed to download poster');
     }
   };
 
   const handleWhatsAppShare = () => {
     const message = encodeURIComponent(
-      `${t('shareText')}\n\n${shareUrl}\n\n${t('posterCode')}: ${posterCode}`
+      `⚠️ MISSING PERSON\n\nHelp us find this person. View details at:\n${shareUrl}\n\nPoster Code: ${posterCode}`
     );
     window.open(`https://wa.me/?text=${message}`, '_blank');
   };
@@ -79,97 +49,77 @@ export function PosterPreview({ posterCode, locale }: PosterPreviewProps) {
     );
   };
 
-  const handleTwitterShare = () => {
-    const text = encodeURIComponent(t('shareText'));
-    const url = encodeURIComponent(shareUrl);
-    window.open(
-      `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
-      '_blank'
-    );
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (error) {
+      console.error('Copy error:', error);
+      alert('Failed to copy link');
+    }
   };
 
   return (
     <div className="space-y-6">
-      {shareSuccess && (
-        <Alert variant="success" title={t('shareSuccess')}>
-          {t('shareSuccessText')}
-        </Alert>
-      )}
+      {/* Poster Preview */}
+      <div className="mx-auto max-w-md overflow-hidden rounded-lg border-2 border-gray-200 shadow-md">
+        <img
+          src={posterUrl}
+          alt={`Missing person poster ${posterCode}`}
+          className="h-auto w-full"
+        />
+      </div>
 
-      <Card>
-        <h2 className="mb-4 text-xl font-bold">{t('posterGenerated')}</h2>
+      {/* Share Buttons */}
+      <div className="space-y-2">
+        <Button
+          onClick={handleDownload}
+          fullWidth
+          size="large"
+          className="bg-primary text-white hover:bg-primary-dark"
+        >
+          <span className="mr-2" aria-hidden="true">⬇</span>
+          Download Poster
+        </Button>
 
-        <div className="mb-4">
-          <p className="text-sm text-gray-600 mb-2">{t('posterCode')}:</p>
-          <p className="text-2xl font-bold text-primary">{posterCode}</p>
-          <p className="text-sm text-gray-500 mt-1">{t('posterCodeHint')}</p>
-        </div>
+        <button
+          onClick={handleWhatsAppShare}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] text-base font-bold text-white transition-colors hover:bg-[#20BA5A] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
+        >
+          Share on WhatsApp
+        </button>
 
-        {/* Format selector */}
-        <div className="mb-4">
-          <p className="text-sm font-medium mb-2">{t('format')}:</p>
-          <div className="flex gap-2">
-            <Button
-              variant={format === 'square' ? 'primary' : 'secondary'}
-              onClick={() => setFormat('square')}
-              size="small"
-            >
-              {t('square')} (1080x1080)
-            </Button>
-            <Button
-              variant={format === 'story' ? 'primary' : 'secondary'}
-              onClick={() => setFormat('story')}
-              size="small"
-            >
-              {t('story')} (1080x1920)
-            </Button>
-          </div>
-        </div>
+        <button
+          onClick={handleFacebookShare}
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-[#1877F2] text-base font-bold text-white transition-colors hover:bg-[#1665D8] focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:ring-offset-2"
+        >
+          Share on Facebook
+        </button>
 
-        {/* Poster preview */}
-        <div className="mb-4 border-2 border-gray-200 rounded-lg overflow-hidden">
-          <img
-            src={posterUrl}
-            alt={`Missing person poster ${posterCode}`}
-            className="w-full h-auto"
-          />
-        </div>
+        <button
+          onClick={handleCopyLink}
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white text-base text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          <span aria-hidden="true">🔗</span>
+          {copySuccess ? 'Link Copied!' : 'Copy Link'}
+        </button>
+      </div>
 
-        {/* Action buttons */}
-        <div className="space-y-3">
-          <Button onClick={handleDownload} fullWidth>
-            ⬇️ {t('download')}
-          </Button>
+      {/* Notification Box */}
+      <div className="rounded-md border border-blue-200 bg-blue-50 p-3">
+        <p className="flex items-start gap-2 text-sm text-gray-700">
+          <span className="text-lg" aria-hidden="true">💡</span>
+          <span>We&apos;ll notify you if someone is found</span>
+        </p>
+      </div>
 
-          <Button onClick={handleShare} variant="secondary" fullWidth>
-            📤 {t('share')}
-          </Button>
-
-          <div className="pt-2 border-t">
-            <p className="text-sm font-medium mb-2">{t('shareOn')}:</p>
-            <div className="grid grid-cols-3 gap-2">
-              <Button onClick={handleWhatsAppShare} variant="secondary" size="small">
-                WhatsApp
-              </Button>
-              <Button onClick={handleFacebookShare} variant="secondary" size="small">
-                Facebook
-              </Button>
-              <Button onClick={handleTwitterShare} variant="secondary" size="small">
-                Twitter
-              </Button>
-            </div>
-          </div>
-        </div>
-      </Card>
-
-      <Alert variant="info">
-        <p className="font-medium mb-2">{t('whatNext')}</p>
-        <ul className="list-disc list-inside space-y-1 text-sm">
-          <li>{t('tip1')}</li>
-          <li>{t('tip2')}</li>
-          <li>{t('tip3')}</li>
-        </ul>
-      </Alert>
+      {/* Secondary Button */}
+      <Link href={`/${locale}/missing/report`}>
+        <button className="flex h-12 w-full items-center justify-center rounded-lg border border-gray-300 bg-white text-base text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+          Create Another Poster
+        </button>
+      </Link>
     </div>
   );
 }

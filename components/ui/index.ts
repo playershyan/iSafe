@@ -3,3 +3,5 @@ export { Input } from './Input';
 export { Card } from './Card';
 export { Alert } from './Alert';
 export { Loading } from './Loading';
+export { Toast } from './Toast';
+export { default as OptimizedImage } from './OptimizedImage';

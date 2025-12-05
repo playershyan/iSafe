@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/db/prisma';
+import { createClient } from '@/utils/supabase/server';
 import bcrypt from 'bcryptjs';
 
 export async function authenticateShelter(
@@ -15,30 +15,36 @@ export async function authenticateShelter(
   error?: string;
 }> {
   try {
+    const supabase = await createClient();
+    
     // Find shelter by code
-    const shelter = await prisma.shelter.findUnique({
-      where: { code: shelterCode.toUpperCase() },
-      include: {
-        auth: true,
-      },
-    });
+    const { data: shelter, error: shelterError } = await supabase
+      .from('shelters')
+      .select(`
+        *,
+        auth:shelter_auth(*)
+      `)
+      .eq('code', shelterCode.toUpperCase())
+      .single();
 
-    if (!shelter) {
+    if (shelterError || !shelter) {
       return {
         success: false,
         error: 'Shelter not found',
       };
     }
 
-    if (!shelter.auth) {
+    if (!shelter.auth || !Array.isArray(shelter.auth) || shelter.auth.length === 0) {
       return {
         success: false,
         error: 'Shelter authentication not set up',
       };
     }
 
+    const auth = shelter.auth[0];
+
     // Verify access code
-    const isValid = await bcrypt.compare(accessCode, shelter.auth.accessCode);
+    const isValid = await bcrypt.compare(accessCode, auth.access_code);
 
     if (!isValid) {
       return {

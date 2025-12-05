@@ -1,10 +1,18 @@
-import { customAlphabet } from 'nanoid';
+import { customAlphabet, nanoid } from 'nanoid';
 
 // Generate unique poster code (e.g., MP12345)
-const nanoid = customAlphabet('0123456789', 5);
+const posterNanoid = customAlphabet('0123456789', 5);
 
 export function generatePosterCode(): string {
-  return `MP${nanoid()}`;
+  return `MP${posterNanoid()}`;
+}
+
+// Generate unique ID (cuid-like)
+// Format: c + timestamp base36 + random string
+export function generateId(): string {
+  const timestamp = Date.now().toString(36);
+  const randomPart = nanoid(16);
+  return `c${timestamp}${randomPart}`;
 }
 
 // Format phone number (0771234567 → 077 123 4567)

@@ -11,12 +11,12 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={clsx(
-          'rounded-lg border border-gray-300 bg-white',
+          'rounded-lg border border-gray-200 bg-white shadow-sm',
           {
             'p-0': padding === 'none',
-            'p-3': padding === 'small',
-            'p-4': padding === 'medium',
-            'p-6': padding === 'large',
+            'p-4': padding === 'small',
+            'p-5 md:p-6': padding === 'medium',
+            'p-6 md:p-8': padding === 'large',
           },
           className
         )}

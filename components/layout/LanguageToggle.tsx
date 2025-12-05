@@ -21,17 +21,17 @@ export function LanguageToggle() {
   };
 
   return (
-    <div className="flex items-center gap-1 rounded border border-gray-300 p-1" role="group" aria-label="Language selection">
+    <div className="flex items-center gap-1" role="group" aria-label="Language selection">
       {languages.map((lang, index) => (
         <div key={lang.code} className="flex items-center">
           <button
             onClick={() => handleLanguageChange(lang.code)}
             className={clsx(
-              'min-w-touch rounded px-2 py-1 text-sm font-medium transition-colors',
-              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
+              'rounded px-2 py-1 text-sm font-medium transition-colors',
+              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
               {
-                'bg-primary text-white': locale === lang.code,
-                'text-gray-700 hover:bg-gray-100': locale !== lang.code,
+                'font-bold text-primary': locale === lang.code,
+                'text-gray-600 hover:text-gray-900': locale !== lang.code,
               }
             )}
             aria-label={`Switch to ${lang.name}`}
@@ -40,7 +40,7 @@ export function LanguageToggle() {
             {lang.label}
           </button>
           {index < languages.length - 1 && (
-            <span className="mx-1 text-gray-300" aria-hidden="true">
+            <span className="mx-1 text-gray-400" aria-hidden="true">
               |
             </span>
           )}

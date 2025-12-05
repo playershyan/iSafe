@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db/prisma';
+import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { verifyShelterToken } from '@/lib/auth/jwt';
 import { findMatches } from '@/lib/services/matchService';
+import { generateId } from '@/lib/utils/helpers';
 
 const registerPersonSchema = z.object({
   fullName: z.string().min(2).max(100),
@@ -57,20 +58,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const supabase = await createClient();
+
+    // Generate unique ID
+    const id = generateId();
+    const now = new Date().toISOString();
+
     // Create person record
-    const person = await prisma.person.create({
-      data: {
-        fullName: validated.fullName,
+    const { data: person, error: createError } = await supabase
+      .from('persons')
+      .insert({
+        id: id,
+        created_at: now,
+        updated_at: now,
+        full_name: validated.fullName,
         age: validated.age,
         gender: validated.gender,
         nic: validated.nic || null,
-        photoUrl: validated.photoUrl || null,
-        contactNumber: validated.contactNumber || null,
-        healthStatus: validated.healthStatus,
-        specialNotes: validated.specialNotes || null,
-        shelterId: validated.shelterId,
-      },
-    });
+        photo_url: validated.photoUrl || null,
+        contact_number: validated.contactNumber || null,
+        health_status: validated.healthStatus,
+        special_notes: validated.specialNotes || null,
+        shelter_id: validated.shelterId,
+      })
+      .select()
+      .single();
+
+    if (createError || !person) {
+      throw createError || new Error('Failed to create person');
+    }
 
     // Find potential matches
     const matches = await findMatches({

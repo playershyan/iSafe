@@ -1,4 +1,6 @@
-import { prisma } from '@/lib/db/prisma';
+import { createClient } from '@/utils/supabase/server';
+import { calculateNameSimilarity } from '@/lib/utils/nameSimilarity';
+import { generateId } from '@/lib/utils/helpers';
 
 export interface MatchResult {
   missingPersonId: string;
@@ -25,12 +27,16 @@ export interface PersonData {
  */
 export async function findMatches(personData: PersonData): Promise<MatchResult[]> {
   try {
+    const supabase = await createClient();
+    
     // Fetch all active missing person reports
-    const missingPersons = await prisma.missingPerson.findMany({
-      where: {
-        status: 'MISSING',
-      },
-    });
+    const { data: missingPersons, error } = await supabase
+      .from('missing_persons')
+      .select('*')
+      .eq('status', 'MISSING');
+
+    if (error) throw error;
+    if (!missingPersons) return [];
 
     const matches: MatchResult[] = [];
 
@@ -45,10 +51,7 @@ export async function findMatches(personData: PersonData): Promise<MatchResult[]
       }
 
       // 2. Name similarity (fuzzy matching)
-      const nameSimilarity = calculateNameSimilarity(
-        personData.fullName.toLowerCase(),
-        missing.fullName.toLowerCase()
-      );
+      const nameSimilarity = calculateNameSimilarity(personData.fullName, missing.full_name);
 
       if (nameSimilarity > 0.7) {
         matchScore += nameSimilarity * 50;
@@ -76,13 +79,13 @@ export async function findMatches(personData: PersonData): Promise<MatchResult[]
       if (matchScore >= 70) {
         matches.push({
           missingPersonId: missing.id,
-          posterCode: missing.posterCode,
-          fullName: missing.fullName,
+          posterCode: missing.poster_code,
+          fullName: missing.full_name,
           age: missing.age,
           gender: missing.gender,
-          photoUrl: missing.photoUrl,
-          lastSeenLocation: missing.lastSeenLocation,
-          reporterPhone: missing.reporterPhone,
+          photoUrl: missing.photo_url,
+          lastSeenLocation: missing.last_seen_location,
+          reporterPhone: missing.reporter_phone,
           matchScore: Math.round(matchScore),
           matchReasons,
         });
@@ -98,46 +101,6 @@ export async function findMatches(personData: PersonData): Promise<MatchResult[]
 }
 
 /**
- * Calculate name similarity using Levenshtein distance
- */
-function calculateNameSimilarity(name1: string, name2: string): number {
-  const len1 = name1.length;
-  const len2 = name2.length;
-
-  if (len1 === 0) return len2 === 0 ? 1 : 0;
-  if (len2 === 0) return 0;
-
-  // Create a 2D array for dynamic programming
-  const matrix: number[][] = [];
-
-  for (let i = 0; i <= len1; i++) {
-    matrix[i] = [i];
-  }
-
-  for (let j = 0; j <= len2; j++) {
-    matrix[0][j] = j;
-  }
-
-  // Calculate Levenshtein distance
-  for (let i = 1; i <= len1; i++) {
-    for (let j = 1; j <= len2; j++) {
-      const cost = name1[i - 1] === name2[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1, // deletion
-        matrix[i][j - 1] + 1, // insertion
-        matrix[i - 1][j - 1] + cost // substitution
-      );
-    }
-  }
-
-  const distance = matrix[len1][len2];
-  const maxLen = Math.max(len1, len2);
-
-  // Convert distance to similarity score (0-1)
-  return 1 - distance / maxLen;
-}
-
-/**
  * Create a match record after manual confirmation
  */
 export async function createMatch(
@@ -146,29 +109,41 @@ export async function createMatch(
   matchScore: number
 ): Promise<void> {
   try {
-    await prisma.$transaction(async (tx) => {
-      // Create match record
-      await tx.match.create({
-        data: {
-          personId,
-          missingPersonId,
-          matchScore,
-          matchedAt: new Date(),
-        },
+    const supabase = await createClient();
+
+    // Generate unique ID
+    const id = generateId();
+    const now = new Date().toISOString();
+
+    // Create match record
+    const { error: matchError } = await supabase
+      .from('matches')
+      .insert({
+        id: id,
+        created_at: now,
+        person_id: personId,
+        missing_person_id: missingPersonId,
+        match_score: matchScore,
+        matched_at: now,
       });
 
-      // Update missing person status
-      await tx.missingPerson.update({
-        where: { id: missingPersonId },
-        data: { status: 'FOUND' },
-      });
+    if (matchError) throw matchError;
 
-      // Link person to missing report
-      await tx.person.update({
-        where: { id: personId },
-        data: { missingReportId: missingPersonId },
-      });
-    });
+    // Update missing person status
+    const { error: missingError } = await supabase
+      .from('missing_persons')
+      .update({ status: 'FOUND' })
+      .eq('id', missingPersonId);
+
+    if (missingError) throw missingError;
+
+    // Link person to missing report
+    const { error: personError } = await supabase
+      .from('persons')
+      .update({ missing_report_id: missingPersonId })
+      .eq('id', personId);
+
+    if (personError) throw personError;
   } catch (error) {
     console.error('Create match error:', error);
     throw error;

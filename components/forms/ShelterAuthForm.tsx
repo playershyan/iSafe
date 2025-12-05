@@ -16,9 +16,13 @@ type ShelterAuthFormData = z.infer<typeof shelterAuthFormSchema>;
 
 interface ShelterAuthFormProps {
   locale: string;
+  shelterCodeLabel?: string;
+  accessCodeLabel?: string;
+  submitButtonText?: string;
+  redirectTo?: string;
 }
 
-export function ShelterAuthForm({ locale }: ShelterAuthFormProps) {
+export function ShelterAuthForm({ locale, shelterCodeLabel, accessCodeLabel, submitButtonText, redirectTo }: ShelterAuthFormProps) {
   const t = (key: string) => key;
   const tCommon = (key: string) => key;
   const router = useRouter();
@@ -39,7 +43,12 @@ export function ShelterAuthForm({ locale }: ShelterAuthFormProps) {
     setAuthError(null);
 
     try {
-      const response = await fetch('/api/auth/shelter', {
+      // Determine which API endpoint to use based on redirectTo
+      const apiEndpoint = redirectTo?.includes('/staff') 
+        ? '/api/auth/staff' 
+        : '/api/auth/shelter';
+      
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -51,8 +60,9 @@ export function ShelterAuthForm({ locale }: ShelterAuthFormProps) {
         throw new Error(result.error || 'Authentication failed');
       }
 
-      // Redirect to registration page
-      router.push(`/${locale}/register`);
+      // Redirect to specified page or default to registration page
+      const redirectPath = redirectTo || `/${locale}/register`;
+      router.push(redirectPath);
     } catch (error) {
       console.error('Authentication error:', error);
       setAuthError(error instanceof Error ? error.message : 'Authentication failed');
@@ -69,7 +79,7 @@ export function ShelterAuthForm({ locale }: ShelterAuthFormProps) {
       )}
 
       <Input
-        label={`${t('shelterCode')} *`}
+        label={`${shelterCodeLabel || t('shelterCode')} *`}
         {...register('shelterCode')}
         error={errors.shelterCode?.message}
         placeholder="CMB-CC-001"
@@ -77,7 +87,7 @@ export function ShelterAuthForm({ locale }: ShelterAuthFormProps) {
       />
 
       <Input
-        label={`${t('accessCode')} *`}
+        label={`${accessCodeLabel || t('accessCode')} *`}
         type="password"
         {...register('accessCode')}
         error={errors.accessCode?.message}
@@ -89,7 +99,7 @@ export function ShelterAuthForm({ locale }: ShelterAuthFormProps) {
       </Alert>
 
       <Button type="submit" fullWidth disabled={isSubmitting}>
-        {isSubmitting ? tCommon('loading') : t('login')}
+        {isSubmitting ? tCommon('loading') : (submitButtonText || t('login'))}
       </Button>
     </form>
   );

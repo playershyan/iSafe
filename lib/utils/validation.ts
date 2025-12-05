@@ -18,9 +18,28 @@ export const phoneSchema = z
 // Search validation
 export const searchSchema = z.object({
   type: z.enum(['name', 'nic']),
-  query: z.string().min(2, 'Search term must be at least 2 characters').optional(),
-  nic: z.string().optional(),
-});
+  query: z.preprocess(
+    (val) => (val === null || val === '' ? undefined : val),
+    z.string().min(2, 'Search term must be at least 2 characters').optional()
+  ),
+  nic: z.preprocess(
+    (val) => (val === null || val === '' ? undefined : val),
+    z.string().optional()
+  ),
+}).refine(
+  (data) => {
+    if (data.type === 'name') {
+      return !!data.query && data.query.trim().length >= 2;
+    }
+    if (data.type === 'nic') {
+      return !!data.nic && data.nic.trim().length > 0;
+    }
+    return false;
+  },
+  {
+    message: 'Query is required for name search (min 2 characters), NIC is required for NIC search',
+  }
+);
 
 // Person registration validation
 export const personSchema = z.object({

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db/prisma';
+import { createClient } from '@/utils/supabase/server';
 import { generatePosterImage } from '@/lib/services/posterService';
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = await createClient();
     const { searchParams } = new URL(request.url);
     const posterCode = searchParams.get('posterCode');
     const format = (searchParams.get('format') || 'square') as 'square' | 'story';
@@ -16,11 +17,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch missing person data
-    const missingPerson = await prisma.missingPerson.findUnique({
-      where: { posterCode },
-    });
+    const { data: missingPerson, error } = await supabase
+      .from('missing_persons')
+      .select('*')
+      .eq('poster_code', posterCode)
+      .single();
 
-    if (!missingPerson) {
+    if (error || !missingPerson) {
       return NextResponse.json(
         { error: 'Missing person report not found' },
         { status: 404 }
@@ -30,15 +33,15 @@ export async function GET(request: NextRequest) {
     // Generate poster image
     const posterBuffer = await generatePosterImage(
       {
-        fullName: missingPerson.fullName,
+        fullName: missingPerson.full_name,
         age: missingPerson.age,
         gender: missingPerson.gender,
-        photoUrl: missingPerson.photoUrl,
-        lastSeenLocation: missingPerson.lastSeenLocation,
-        lastSeenDistrict: missingPerson.lastSeenDistrict,
-        lastSeenDate: missingPerson.lastSeenDate?.toISOString() || null,
-        reporterPhone: missingPerson.reporterPhone,
-        posterCode: missingPerson.posterCode,
+        photoUrl: missingPerson.photo_url,
+        lastSeenLocation: missingPerson.last_seen_location,
+        lastSeenDistrict: missingPerson.last_seen_district,
+        lastSeenDate: missingPerson.last_seen_date || null,
+        reporterPhone: missingPerson.reporter_phone,
+        posterCode: missingPerson.poster_code,
       },
       format
     );

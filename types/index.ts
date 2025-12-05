@@ -42,7 +42,9 @@ export interface SearchParams {
   nic?: string;
 }
 
-export interface PersonSearchResult {
+export type SearchStatus = 'SHELTERED' | 'FOUND_AND_SHELTERED' | 'FOUND' | 'MISSING';
+
+export interface UnifiedSearchResultPerson {
   id: string;
   fullName: string;
   age: number;
@@ -50,12 +52,39 @@ export interface PersonSearchResult {
   nic?: string;
   photoUrl?: string;
   healthStatus: HealthStatus;
-  shelter: {
+  shelter?: {
     name: string;
     district: string;
     contactNumber?: string;
   };
   createdAt: Date;
+}
+
+export interface UnifiedSearchResultMissingReport {
+  id: string;
+  posterCode: string;
+  fullName: string;
+  age: number;
+  gender: Gender;
+  nic?: string;
+  photoUrl?: string;
+  lastSeenLocation: string;
+  lastSeenDistrict: string;
+  lastSeenDate?: Date;
+  clothing?: string;
+  reporterName: string;
+  reporterPhone: string;
+  altContact?: string;
+  status: MissingStatus;
+  createdAt: Date;
+}
+
+export interface UnifiedSearchResult {
+  id: string;
+  status: SearchStatus;
+  similarityScore?: number;
+  person?: UnifiedSearchResultPerson;
+  missingReport?: UnifiedSearchResultMissingReport;
 }
 
 // Match types

@@ -20,7 +20,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
         ref={ref}
         role="alert"
         className={clsx(
-          'rounded-lg border-l-4 p-4',
+          'rounded-md border-l-4 p-3 md:p-4',
           {
             'border-info bg-info-light text-cyan-900': variant === 'info',
             'border-success bg-success-light text-green-900': variant === 'success',
@@ -32,12 +32,12 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(
         {...props}
       >
         <div className="flex">
-          <div className="flex-shrink-0 text-xl" aria-hidden="true">
+          <div className="flex-shrink-0 text-lg md:text-xl" aria-hidden="true">
             {icons[variant]}
           </div>
           <div className="ml-3 flex-1">
-            {title && <h3 className="text-sm font-bold">{title}</h3>}
-            <div className={clsx('text-sm', { 'mt-1': title })}>{children}</div>
+            {title && <h3 className="text-sm font-bold md:text-base">{title}</h3>}
+            <div className={clsx('text-sm md:text-base', { 'mt-1': title })}>{children}</div>
           </div>
         </div>
       </div>

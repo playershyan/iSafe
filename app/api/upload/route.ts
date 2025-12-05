@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import sharp from 'sharp';
-import { nanoid } from 'nanoid';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { CloudinaryService } from '@/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,59 +14,80 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/tiff'];
+    if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'File must be an image' },
+        { error: 'Invalid file type. Allowed: JPEG, PNG, WebP, TIFF' },
         { status: 400 }
+      );
+    }
+
+    // Validate file size (10MB max)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: 'File size exceeds 10MB limit' },
+        { status: 400 }
+      );
+    }
+
+    // Check Cloudinary configuration
+    if (!CloudinaryService.isConfigured()) {
+      console.error('Cloudinary configuration check failed');
+      console.error('CLOUDINARY_CLOUD_NAME:', process.env.CLOUDINARY_CLOUD_NAME ? 'Set' : 'Missing');
+      console.error('CLOUDINARY_API_KEY:', process.env.CLOUDINARY_API_KEY ? 'Set' : 'Missing');
+      console.error('CLOUDINARY_API_SECRET:', process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Missing');
+      return NextResponse.json(
+        { error: 'Cloudinary not configured. Please check environment variables.' },
+        { status: 500 }
       );
     }
 
     // Convert to buffer
     const buffer = Buffer.from(await file.arrayBuffer());
+    console.log('File received:', { size: file.size, type: file.type, bufferSize: buffer.length });
 
-    // Compress and optimize with Sharp
-    const optimizedBuffer = await sharp(buffer)
-      .resize(800, 800, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .jpeg({ quality: 80 })
-      .toBuffer();
+    // Upload to Cloudinary with optimization
+    const uploadResult = await CloudinaryService.uploadImage(buffer, 'isafe/missing-persons', {
+      transformation: [
+        {
+          width: 1920,
+          height: 1440,
+          crop: 'limit',
+          quality: 'auto:eco',
+          fetch_format: 'auto',
+        },
+      ],
+      tags: ['missing-person', 'isafe'],
+    });
 
-    // Generate unique filename
-    const filename = `${nanoid()}.jpg`;
-    const filepath = `photos/${filename}`;
+    console.log('Upload result:', { success: uploadResult.success, public_id: uploadResult.public_id, error: uploadResult.error });
 
-    // Upload to Supabase Storage
-    const { data, error } = await supabase.storage
-      .from('isafe-photos')
-      .upload(filepath, optimizedBuffer, {
-        contentType: 'image/jpeg',
-        cacheControl: '31536000', // 1 year
-      });
-
-    if (error) {
-      console.error('Upload error:', error);
+    if (!uploadResult.success || !uploadResult.public_id) {
       return NextResponse.json(
-        { error: 'Upload failed' },
+        { error: uploadResult.error || 'Upload failed - no public_id returned' },
         { status: 500 }
       );
     }
 
-    // Get public URL
-    const { data: urlData } = supabase.storage
-      .from('isafe-photos')
-      .getPublicUrl(filepath);
+    // Generate optimized URLs
+    const thumbnail = CloudinaryService.getThumbnailUrl(uploadResult.public_id, 400, false);
+    const mobile = CloudinaryService.getMobileUrl(uploadResult.public_id, false);
+    const gallery = CloudinaryService.getGalleryUrl(uploadResult.public_id, false);
 
     return NextResponse.json({
       success: true,
-      url: urlData.publicUrl,
-      publicId: filename,
+      url: uploadResult.secure_url || uploadResult.url,
+      publicId: uploadResult.public_id,
+      thumbnail,
+      mobile,
+      gallery,
     });
   } catch (error) {
     console.error('Upload error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Upload failed';
     return NextResponse.json(
-      { error: 'Upload failed' },
+      { error: errorMessage, details: process.env.NODE_ENV === 'development' ? String(error) : undefined },
       { status: 500 }
     );
   }

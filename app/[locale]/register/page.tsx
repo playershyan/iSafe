@@ -35,44 +35,37 @@ export default async function RegisterPage({ params }: RegisterPageProps) {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <Link
-          href={`/${locale}`}
-          className="inline-flex items-center text-sm text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
-        >
-          ← Back home
-        </Link>
+      {/* Header Bar */}
+      <div className="mb-6">
         <form action={handleLogout}>
           <button
             type="submit"
-            className="text-sm text-danger hover:text-red-700"
+            className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            Logout
+            ← Logout
           </button>
         </form>
+        <div className="mt-2 flex items-start gap-2">
+          <span className="text-lg" aria-hidden="true">📍</span>
+          <div>
+            <p className="text-sm font-medium text-gray-700">{session.shelterName}</p>
+          </div>
+        </div>
       </div>
 
-      <h1 className="mb-2 text-2xl font-bold text-gray-900 md:text-3xl">
-        Register a person in your shelter
-      </h1>
-      <p className="mb-6 text-gray-600">
-        Add people currently staying at your shelter so families can find them.
-      </p>
-
-      <Alert variant="info" title="Automatic matching">
-        We'll automatically try to match this person with any existing missing person reports.
-      </Alert>
-
-      <div className="mt-6">
-        <ShelterRegistrationForm
-          locale={locale}
-          shelterInfo={{
-            id: session.shelterId,
-            name: session.shelterName,
-            code: session.shelterCode,
-          }}
-        />
+      {/* Stats Badge */}
+      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-900">
+        Registered today: 0
       </div>
+
+      <ShelterRegistrationForm
+        locale={locale}
+        shelterInfo={{
+          id: session.shelterId,
+          name: session.shelterName,
+          code: session.shelterCode,
+        }}
+      />
     </div>
   );
 }

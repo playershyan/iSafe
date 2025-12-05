@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui';
 import { PersonSearchResult } from '@/types';
 import { format } from 'date-fns';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 
 interface PersonCardProps {
   person: PersonSearchResult;
@@ -23,9 +24,13 @@ export function PersonCard({ person }: PersonCardProps) {
         {/* Photo */}
         {person.photoUrl ? (
           <div className="h-24 w-24 flex-shrink-0">
-            <img
+            <OptimizedImage
               src={person.photoUrl}
               alt={`Photo of ${person.fullName}`}
+              width={96}
+              height={96}
+              quality="listing"
+              watermark={false}
               className="h-full w-full rounded object-cover"
             />
           </div>

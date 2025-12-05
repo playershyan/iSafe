@@ -1,16 +1,40 @@
 import Link from 'next/link';
+import { LanguageToggle } from './LanguageToggle';
+import { UserIconButton } from '@/components/features/UserIconButton';
 
-export function Header() {
+interface HeaderProps {
+  locale: string;
+}
+
+export function Header({ locale }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white">
-      <div className="mx-auto max-w-2xl px-4">
-        <div className="flex h-16 items-center justify-between">
+      <div className="mx-auto max-w-7xl px-4 md:px-8">
+        <div className="flex h-[60px] items-center justify-between">
           <Link
-            href="/"
-            className="text-xl font-bold text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+            href={`/${locale}`}
+            className="flex items-center rounded text-base font-bold text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-xl"
+            aria-label="iSafe Home"
           >
             iSafe
           </Link>
+
+          <div className="flex items-center gap-4">
+            <Link
+              href={`/${locale}`}
+              className="rounded text-base text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base"
+            >
+              Home
+            </Link>
+            <Link
+              href={`/${locale}/missing`}
+              className="rounded text-base text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base"
+            >
+              Missing
+            </Link>
+            <UserIconButton locale={locale} />
+          <LanguageToggle />
+          </div>
         </div>
       </div>
     </header>
