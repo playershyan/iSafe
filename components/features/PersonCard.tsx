@@ -1,6 +1,9 @@
+'use client';
+
 import { Card } from '@/components/ui';
 import { PersonSearchResult } from '@/types';
 import { format } from 'date-fns';
+import { useTranslations } from 'next-intl';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 
 interface PersonCardProps {
@@ -8,7 +11,7 @@ interface PersonCardProps {
 }
 
 export function PersonCard({ person }: PersonCardProps) {
-  const t = (key: string) => key;
+  const t = useTranslations('search');
 
   return (
     <Card className="hover:border-primary">

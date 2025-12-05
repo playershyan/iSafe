@@ -14,14 +14,18 @@
     "success": "Success",
     "optional": "optional",
     "next": "Next",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "copyright": "© 2025 iSafe. All rights reserved."
   },
   "nav": {
     "home": "Home",
     "search": "Search",
     "reportMissing": "Report Missing",
     "register": "Register",
-    "about": "About"
+    "about": "About",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms"
   },
   "home": {
     "title": "Find Your Family After the Disaster",
