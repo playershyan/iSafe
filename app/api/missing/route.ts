@@ -22,6 +22,7 @@ const createMissingPersonSchema = z.object({
   clothing: z.union([z.string().max(500), z.literal('')]).optional(),
   reporterName: z.string().min(2, 'Reporter name must be at least 2 characters').max(100),
   reporterPhone: z.string().regex(/^0\d{9}$/, 'Phone must be 10 digits starting with 0'),
+  alternativeContact: z.string().regex(/^0\d{9}$/, 'Phone must be 10 digits starting with 0').optional().or(z.literal('')),
   anonymousUserId: z.string().uuid().optional(),
 });
 
@@ -79,6 +80,7 @@ export async function POST(request: NextRequest) {
         clothing: validated.clothing && validated.clothing !== '' ? validated.clothing : null,
         reporter_name: validated.reporterName,
         reporter_phone: validated.reporterPhone,
+        alt_contact: validated.alternativeContact && validated.alternativeContact !== '' ? validated.alternativeContact : null,
         poster_code: posterCode,
         status: 'MISSING',
         anonymous_user_id: anonymousUserId || null,
