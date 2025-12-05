@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { Button, Input, Alert, Card } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
 
@@ -52,8 +53,8 @@ interface ShelterRegistrationFormProps {
 }
 
 export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistrationFormProps) {
-  const t = (key: string) => key;
-  const tCommon = (key: string) => key;
+  const t = useTranslations('register');
+  const tCommon = useTranslations('common');
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);

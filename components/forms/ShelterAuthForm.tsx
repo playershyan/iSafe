@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { Button, Input, Alert } from '@/components/ui';
 
 const shelterAuthFormSchema = z.object({
@@ -23,8 +24,8 @@ interface ShelterAuthFormProps {
 }
 
 export function ShelterAuthForm({ locale, shelterCodeLabel, accessCodeLabel, submitButtonText, redirectTo }: ShelterAuthFormProps) {
-  const t = (key: string) => key;
-  const tCommon = (key: string) => key;
+  const t = useTranslations('auth');
+  const tCommon = useTranslations('common');
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
