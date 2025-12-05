@@ -18,7 +18,6 @@ const registerPersonSchema = z.object({
     .or(z.literal('')),
   photoUrl: z.string().url().optional().or(z.literal('')),
   contactNumber: z.string().regex(/^0\d{9}$/).optional().or(z.literal('')),
-  healthStatus: z.enum(['HEALTHY', 'MINOR_INJURIES', 'REQUIRES_CARE', 'CRITICAL']),
   specialNotes: z.string().max(500).optional(),
   shelterId: z.string(),
 });
@@ -77,7 +76,6 @@ export async function POST(request: NextRequest) {
         nic: validated.nic || null,
         photo_url: validated.photoUrl || null,
         contact_number: validated.contactNumber || null,
-        health_status: validated.healthStatus,
         special_notes: validated.specialNotes || null,
         shelter_id: validated.shelterId,
       })

@@ -10,7 +10,6 @@ const personSchema = z.object({
   age: z.number().min(0).max(120),
   gender: z.enum(['MALE', 'FEMALE', 'OTHER']),
   shelterId: z.string(),
-  healthStatus: z.enum(['HEALTHY', 'MINOR_INJURIES', 'REQUIRES_CARE', 'CRITICAL']).default('HEALTHY'),
 });
 
 const bulkRegisterSchema = z.object({
@@ -66,7 +65,6 @@ export async function POST(request: NextRequest) {
       age: person.age,
       gender: person.gender,
       shelter_id: person.shelterId,
-      health_status: person.healthStatus,
       nic: null,
       contact_number: null,
       photo_url: null,

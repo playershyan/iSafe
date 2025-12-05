@@ -1,7 +1,7 @@
-import { Gender, HealthStatus, MissingStatus, MatchMethod } from '@prisma/client';
-
-// Re-export Prisma enums
-export { Gender, HealthStatus, MissingStatus, MatchMethod };
+// Enum types (previously from Prisma, now defined directly)
+export type Gender = 'MALE' | 'FEMALE' | 'OTHER';
+export type MissingStatus = 'MISSING' | 'FOUND' | 'CLOSED';
+export type MatchMethod = 'MANUAL' | 'AUTOMATIC' | 'PHOTO_MATCH';
 
 // Person types
 export interface PersonData {
@@ -11,7 +11,6 @@ export interface PersonData {
   nic?: string;
   contactNumber?: string;
   shelterId: string;
-  healthStatus: HealthStatus;
   specialNotes?: string;
   photoUrl?: string;
   photoPublicId?: string;
@@ -51,7 +50,6 @@ export interface UnifiedSearchResultPerson {
   gender: Gender;
   nic?: string;
   photoUrl?: string;
-  healthStatus: HealthStatus;
   shelter?: {
     name: string;
     district: string;

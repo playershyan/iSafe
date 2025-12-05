@@ -49,7 +49,6 @@ export const personSchema = z.object({
   nic: nicSchema.optional().or(z.literal('')),
   contactNumber: phoneSchema.optional().or(z.literal('')),
   shelterId: z.string().min(1, 'Shelter is required'),
-  healthStatus: z.enum(['HEALTHY', 'MINOR_INJURIES', 'REQUIRES_CARE', 'CRITICAL']),
   specialNotes: z.string().max(500, 'Notes must be at most 500 characters').optional(),
   photoUrl: z.string().optional(),
   photoPublicId: z.string().optional(),

@@ -49,7 +49,7 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
     return rows.map(row => {
       const normalizedName = row.fullName.trim().toLowerCase();
       const count = nameCounts.get(normalizedName) || 0;
-      const hasInternalDuplicate = count > 1 && normalizedName;
+      const hasInternalDuplicate = count > 1 && normalizedName.length > 0;
       
       // Preserve database duplicate error if it exists
       const hasDatabaseDuplicate = row.duplicateError === 'This person is already registered in the center';
@@ -120,13 +120,12 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
           const withInternalChecks = checkInternalDuplicates(currentRows);
           // Clear database duplicate errors but preserve internal duplicate errors
           return withInternalChecks.map(row => {
+            // If this row has the database duplicate error, clear it (internal duplicates are already handled by checkInternalDuplicates)
             if (row.duplicateError === 'This person is already registered in the center') {
               return {
                 ...row,
-                duplicateWarning: row.duplicateError === 'This name appears multiple times in the form',
-                duplicateError: row.duplicateError === 'This name appears multiple times in the form' 
-                  ? row.duplicateError 
-                  : undefined,
+                duplicateWarning: false,
+                duplicateError: undefined,
               };
             }
             return row;
@@ -141,7 +140,8 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
   }, [centerId, checkInternalDuplicates]);
 
   const addRow = () => {
-    const newRows = [...rows, { id: Date.now().toString(), fullName: '', gender: '', age: '' }];
+    const newRow: PersonRow = { id: Date.now().toString(), fullName: '', gender: '', age: '' };
+    const newRows = [...rows, newRow];
     const withInternalChecks = checkInternalDuplicates(newRows);
     setRows(withInternalChecks);
   };
@@ -273,7 +273,6 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
           gender: row.gender as 'MALE' | 'FEMALE' | 'OTHER',
           age: parseInt(row.age),
           shelterId: centerId,
-          healthStatus: 'HEALTHY' as const,
         }));
 
       const response = await fetch('/api/register/bulk', {

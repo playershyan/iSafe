@@ -7,16 +7,8 @@ interface PersonCardProps {
   person: PersonSearchResult;
 }
 
-const healthStatusColors = {
-  HEALTHY: 'text-success',
-  MINOR_INJURIES: 'text-warning',
-  REQUIRES_CARE: 'text-warning',
-  CRITICAL: 'text-danger',
-};
-
 export function PersonCard({ person }: PersonCardProps) {
   const t = (key: string) => key;
-  const tHealth = (key: string) => key;
 
   return (
     <Card className="hover:border-primary">
@@ -57,13 +49,6 @@ export function PersonCard({ person }: PersonCardProps) {
               <p className="font-medium text-gray-900">{person.shelter.name}</p>
               <p className="text-gray-600">{person.shelter.district}</p>
             </div>
-          </div>
-
-          <div className="mb-2 flex items-center gap-2">
-            <span className="text-sm">🏥</span>
-            <p className={`text-sm font-medium ${healthStatusColors[person.healthStatus]}`}>
-              {tHealth(person.healthStatus)}
-            </p>
           </div>
 
           {person.shelter.contactNumber && (

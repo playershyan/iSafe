@@ -24,7 +24,6 @@ const registrationFormSchema = z.object({
     .regex(/^0\d{9}$/, 'Phone must be 10 digits')
     .optional()
     .or(z.literal('')),
-  healthStatus: z.enum(['HEALTHY', 'MINOR_INJURIES', 'REQUIRES_CARE', 'CRITICAL']),
   specialNotes: z.string().max(500).optional(),
 });
 
@@ -72,9 +71,6 @@ export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistra
     reset,
   } = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationFormSchema),
-    defaultValues: {
-      healthStatus: 'HEALTHY',
-    },
   });
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,7 +132,6 @@ export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistra
         nic: data.nic || null,
         photoUrl: photoUrl || null,
         contactNumber: data.contactNumber || null,
-        healthStatus: data.healthStatus,
         specialNotes: data.specialNotes || null,
         shelterId: shelterInfo.id,
       };
@@ -354,19 +349,6 @@ export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistra
         error={errors.contactNumber?.message}
         placeholder="0771234567"
       />
-
-      <div>
-        <label className="block text-sm font-medium mb-2">{t('healthStatus')} *</label>
-        <select
-          {...register('healthStatus')}
-          className="w-full rounded border border-gray-300 px-3 py-2 min-h-touch"
-        >
-          <option value="HEALTHY">{t('healthy')}</option>
-          <option value="MINOR_INJURIES">{t('minorInjuries')}</option>
-          <option value="REQUIRES_CARE">{t('requiresCare')}</option>
-          <option value="CRITICAL">{t('critical')}</option>
-        </select>
-      </div>
 
       <div>
         <label className="block text-sm font-medium mb-2">

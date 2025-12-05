@@ -53,26 +53,37 @@ export class CloudinaryService {
 
       if (options.tags) uploadOptions.tags = options.tags;
 
-      let uploadResult;
+      let uploadResult: { url: string; secure_url: string; public_id: string };
 
       if (Buffer.isBuffer(file)) {
         // Upload buffer via stream (more efficient than base64)
-        uploadResult = await new Promise((resolve, reject) => {
+        uploadResult = await new Promise<{ url: string; secure_url: string; public_id: string }>((resolve, reject) => {
           const uploadStream = cloudinary.uploader.upload_stream(
             uploadOptions,
             (error, result) => {
               if (error) {
                 console.error('Cloudinary upload error:', error);
                 reject(error);
+              } else if (result) {
+                resolve({
+                  url: result.url || '',
+                  secure_url: result.secure_url || '',
+                  public_id: result.public_id || '',
+                });
               } else {
-                resolve(result);
+                reject(new Error('Upload failed: no result'));
               }
             }
           );
           uploadStream.end(file);
         });
       } else if (typeof file === 'string') {
-        uploadResult = await cloudinary.uploader.upload(file, uploadOptions);
+        const result = await cloudinary.uploader.upload(file, uploadOptions);
+        uploadResult = {
+          url: result.url || '',
+          secure_url: result.secure_url || '',
+          public_id: result.public_id || '',
+        };
       } else {
         throw new Error('Invalid file type - only Buffer and string supported');
       }

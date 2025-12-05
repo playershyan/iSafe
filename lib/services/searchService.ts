@@ -127,7 +127,6 @@ export async function unifiedSearchByName(query: string): Promise<UnifiedSearchR
           gender: person.gender,
           nic: person.nic || undefined,
           photoUrl: person.photo_url || undefined,
-          healthStatus: person.health_status,
           shelter: person.shelter
             ? {
                 name: person.shelter.name,
@@ -289,7 +288,6 @@ export async function unifiedSearchByNIC(nic: string): Promise<UnifiedSearchResu
           gender: person.gender,
           nic: person.nic || undefined,
           photoUrl: person.photo_url || undefined,
-          healthStatus: person.health_status,
           shelter: person.shelter
             ? {
                 name: person.shelter.name,

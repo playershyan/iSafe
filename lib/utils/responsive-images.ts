@@ -1,4 +1,4 @@
-export type ImageQuality = 'thumbnail' | 'listing' | 'gallery' | number;
+export type ImageQuality = 'thumbnail' | 'listing' | 'gallery' | 'auto:eco' | 'auto:best' | 'auto:good' | 'auto:low' | number;
 
 export interface OptimizedImageOptions {
   width?: number;
