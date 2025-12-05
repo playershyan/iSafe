@@ -1,5 +1,4 @@
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AnonymousUserInitializer } from '@/components/features/AnonymousUserInitializer';
@@ -13,7 +12,9 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const messages = await getMessages();
+  
+  // Dynamically import messages based on locale
+  const messages = (await import(`../../messages/${locale}.json`)).default;
   
   return (
     <html lang={locale}>
