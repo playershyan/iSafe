@@ -60,6 +60,15 @@ export interface UnifiedSearchResultPerson {
   createdAt: Date;
 }
 
+// Type alias for PersonCard component which expects shelter to be required
+export type PersonSearchResult = Omit<UnifiedSearchResultPerson, 'shelter'> & {
+  shelter: {
+    name: string;
+    district: string;
+    contactNumber?: string;
+  };
+};
+
 export interface UnifiedSearchResultMissingReport {
   id: string;
   posterCode: string;
