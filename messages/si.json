@@ -16,7 +16,7 @@
     "optional": "විකල්ප",
     "next": "ඊළඟ",
     "submitting": "Submitting...",
-    "copyright": "© 2025 iSafe. සියල්ල හිමිකම් ඇවිරිණි."
+    "copyright": "© 2025 iSafe. සියලු හිමිකම් ඇවිරිණි."
   },
   "nav": {
     "home": "මුල් පිටුව",
@@ -35,6 +35,10 @@
     "shelterSection": "රජයේ කාර්‍යය මණ්ඩල සඳහා",
     "registerButton": "අලුත් පුද්ගලයින් ලියාපදිංචි කරන්න(රජයේ කාර්‍යය මණ්ඩල සඳහා පමණි)",
     "statsTitle": "සජීවී දත්ත",
+    "liveStats": "සජීවී දත්ත",
+    "missing": "අතුරුදහන්",
+    "found": "සොයාගත්",
+    "sheltered": "අවතැන්වූ",
     "personsRegistered": "ලියාපදිංචි කර ඇති පුද්ගලයින්",
     "sheltersActive": "අවතැන් කඳවුරු ගණන",
     "matchesMade": "ගැළපීම්"
@@ -79,7 +83,7 @@
     "uploadPhoto": "ඡායා රූපය upload කරන්න",
     "fullName": "නම",
     "fullNamePlaceholder": "e.g., Nimal Perera",
-    "age": "වය",
+    "age": "වයස",
     "gender": "ලිංගය",
     "male": "පිරිමි",
     "female": "ගැහැණු",
@@ -111,9 +115,9 @@
     "notification": "We'll notify you if someone is found",
     "reported": "වාර්තා කරන ලදී",
     "statusMissing": "අතුරුදහන්",
-    "statusFound": "සොයාගත්",
+    "statusFound": "සොයාගත් ලදී",
     "statusClosed": "වසා දමන ලදී",
-    "ageLabel": "වය",
+    "ageLabel": "වයස",
     "lastSeen": "අවසන් වරට දැක ඇත",
     "lastSeenLocationLabel": "අවසන් වරට දැක ඇති ස්ථානය",
     "phone": "දූරකථන",
@@ -226,25 +230,25 @@
     "about": {
       "title": "iSafe පිළිබඳව",
       "whatIs": "iSafe යනු කුමක්ද?",
-      "howItWorks": "එය ක්‍රියා කරන ආකාරය",
+      "howItWorks": "මෙය ක්‍රියා කරන ආකාරය",
       "forFamilies": "සෙවීමේ යෙදී සිටින පවුල් සඳහා",
       "forReporting": "අතුරුදහන් වූ පුද්ගලයන් වාර්තා කිරීම සඳහා",
-      "forShelterStaff": "ශරණාගාර කාර්ය මණ්ඩලය සඳහා",
-      "emergencyContacts": "අනතුරුදායක සම්බන්ධතා",
+      "forShelterStaff": "අවතැන් කඳවුරු කාර්ය මණ්ඩලය සඳහා",
+      "emergencyContacts": "හදිසි ඇමතුම් අංක",
       "disasterManagement": "ව්‍යසන කළමනාකරණ මධ්‍යස්ථානය",
-      "policeEmergency": "පොලිස් අනතුරුදායක",
-      "ambulance": "රථය"
+      "policeEmergency": "පොලිස් හදිසි ඇමතුම්",
+      "ambulance": "ගිලන් රථය රථය"
     },
     "contact": {
       "title": "අපව සම්බන්ධ කරගන්න",
       "urgentAssistance": "ව්‍යසනයක් අතරතුර අත්‍යවශ්‍ය උදව් සඳහා, කරුණාකර පහත ලැයිස්තුගත කර ඇති අනතුරුදායක අංක භාවිතා කරන්න. iSafe පිළිබඳ සාමාන්‍ය විමසීම් සඳහා, ඔබට පහත නාලිකා හරහා අපව සම්බන්ධ කරගත හැකිය.",
-      "emergencyContacts": "අනතුරුදායක සම්බන්ධතා",
+      "emergencyContacts": "හදිසි ඇමතුම් අංක",
       "generalInquiries": "සාමාන්‍ය විමසීම්",
       "generalInquiriesText": "iSafe භාවිතා කිරීම පිළිබඳ ප්‍රශ්න හෝ ප්‍රතිචාර ලබා දීම සඳහා, කරුණාකර වැඩි විස්තර සඳහා අපගේ",
       "aboutPage": "පිළිබඳ පිටුව",
       "disasterManagement": "ව්‍යසන කළමනාකරණ මධ්‍යස්ථානය",
-      "policeEmergency": "පොලිස් අනතුරුදායක",
-      "ambulance": "රථය"
+      "policeEmergency": "පොලිස් හදිසි ඇමතුම්",
+      "ambulance": "ගිලන් රථය"
     },
     "privacy": {
       "title": "රහස්‍යතා ප්‍රතිපත්තිය",
@@ -253,22 +257,22 @@
       "dataSecurity": "දත්ත ආරක්ෂණය",
       "dataRetention": "දත්ත රඳවා තබා ගැනීම",
       "yourRights": "ඔබගේ අයිතිවාසිකම්",
-      "consent": "එකඟතාවය"
+      "consent": "එකඟතාවයස"
     },
     "terms": {
       "title": "සේවා කොන්දේසි",
       "purpose": "අරමුණ",
       "acceptableUse": "පිළිගත හැකි භාවිතය",
-      "accuracy": "තොරතුරුවල නිරවද්‍යතාවය",
+      "accuracy": "තොරතුරුවල නිරවද්‍යතාවයස",
       "noWarranty": "වගකීම් නැත",
       "limitation": "වගකීම් සීමා කිරීම",
       "changes": "කොන්දේසි වෙනස් කිරීම්"
     }
   },
   "compensation": {
-    "title": "ව්‍යසන වන්දි අයදුම් කරන්න",
+    "title": "ව්‍යසන දීමනා අයදුම් කරන්න",
     "subtitle": "රජයේ හදිසි ව්‍යසන සහන වැඩසටහන (ගැසට් අංක 2464/30 දින 28-11-2025)",
-    "description": "මෑතකදී සිදු වූ ව්‍යසනයකින් සිදු වූ හානි සඳහා රජයේ වන්දි අයදුම් කරන්න. ඔබගේ තත්ත්වය මත පදනම්ව අදාළ සියලුම අයදුම් තෝරන්න.",
+    "description": "මෑතකදී සිදු වූ ව්‍යසනයකින් සිදු වූ හානි සඳහා රජයේ දීමනා අයදුම් කරන්න. ඔබගේ තත්ත්වයස මත පදනම්ව අදාළ සියලුම දීමනා තෝරන්න.",
     "steps": {
       "personal": "පුද්ගලික තොරතුරු",
       "location": "ස්ථානයේ විස්තර",
@@ -300,9 +304,9 @@
     },
     "claimsSelection": {
       "title": "ඔබගේ අයදුම් තෝරන්න",
-      "description": "ඔබට ලැබුණු හානි මත පදනම්ව ඔබට සුදුසුකම් ලැබෙන සියලුම වන්දි වර්ග පරීක්ෂා කරන්න",
-      "selectAtLeastOne": "කරුණාකර අවම වශයෙන් එක් අයදුම් වර්ගයක්වත් තෝරන්න",
-      "selectedClaims": "තෝරාගත් අයදුම්: {count}"
+      "description": "ඔබට ලැබුණු හානි මත පදනම්ව ඔබට සුදුසුකම් ලැබෙන සියලුම දීමනා වර්ග පරීක්ෂා කරන්න",
+      "selectAtLeastOne": "කරුණාකර අවම වශයෙන් එක් දීමනා වර්ගයක්වත් තෝරන්න",
+      "selectedClaims": "තෝරාගත් දීමනා: {count}"
     },
     "verification": {
       "title": "දූරකථන සත්‍යාපනය",
@@ -313,11 +317,11 @@
       "description": "ඉදිරිපත් කිරීමට පෙර සියලුම තොරතුරු ප්‍රවේශමෙන් සමාලෝචනය කරන්න",
       "applicantDetails": "අයදුම්කරුගේ විස්තර",
       "locationDetails": "ස්ථානයේ විස්තර",
-      "selectedClaims": "තෝරාගත් අයදුම්",
+      "selectedClaims": "තෝරාගත් දීමනා",
       "claimsCount": "{count} අයදුම්(ය) තෝරාගෙන ඇත",
-      "editSection": "සංස්කරණය",
+      "editSection": "සංස්කරණය කරන්න",
       "confirmSubmit": "සපයන ලද සියලුම තොරතුරු නිවැරදි බව මම තහවුරු කරමි",
-      "submitApplication": "අයදුම් ඉදිරිපත් කරන්න",
+      "submitApplication": "අයදුම් කිර්‍රිම කරන්න",
       "labels": {
         "name": "නම",
         "nic": "NIC",
@@ -329,13 +333,13 @@
       }
     },
     "messages": {
-      "submitSuccess": "අයදුම් සාර්ථකව ඉදිරිපත් කරන ලදී! ඔබගේ අයදුම් කේතය: {code}",
-      "submitError": "අයදුම් ඉදිරිපත් කිරීමට අසමත් විය. කරුණාකර නැවත උත්සාහ කරන්න.",
-      "updateSuccess": "අයදුම් තත්ත්වය සාර්ථකව යාවත්කාලීන කරන ලදී",
-      "updateError": "අයදුම් තත්ත්වය යාවත්කාලීන කිරීමට අසමත් විය",
+      "submitSuccess": "සාර්ථකව අයදුම් කරන ලදී! ඔබගේ අයදුම්පත් කේතය: {code}",
+      "submitError": "අයදුම් කිර්‍රිම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.",
+      "updateSuccess": "අයදුම්පත සාර්ථකව යාවත්කාලීන කරන ලදී",
+      "updateError": "අයදුම්පත යාවත්කාලීන කිරීම අසාර්ථක විය",
       "loadError": "අයදුම් පූරණය කිරීමට අසමත් විය",
       "phoneVerificationRequired": "කරුණාකර මුලින්ම ඔබගේ දූරකථන අංකය සත්‍යාපනය කරන්න",
-      "selectAtLeastOneClaim": "කරුණාකර අවම වශයෙන් එක් අයදුම් වර්ගයක්වත් තෝරන්න",
+      "selectAtLeastOneClaim": "කරුණාකර අවම වශයෙන් එක් දීමනා වර්ගයක්වත් තෝරන්න",
       "confirmAllInfo": "කරුණාකර සියලුම තොරතුරු නිවැරදි බව තහවුරු කරන්න"
     },
     "errors": {
@@ -346,12 +350,12 @@
       "districtRequired": "දිස්ත්‍රික්කය අවශ්‍ය වේ",
       "divisionalSecretariatRequired": "දිසා කාර්යාලය අවශ්‍ය වේ",
       "gramaNiladhariRequired": "ග්‍රාම නිලධාරී කොට්ඨාශය අවශ්‍ය වේ",
-      "selectAtLeastOneClaim": "අවම වශයෙන් එක් අයදුම් වර්ගයක්වත් තෝරන්න",
-      "phoneVerificationRequired": "දූරකථන සත්‍යාපනය අවශ්‍ය වේ"
+      "selectAtLeastOneClaim": "අවම වශයෙන් එක් දීමනා වර්ගයක්වත් තෝරන්න",
+      "phoneVerificationRequired": "දූරකථන අංකය සත්‍යාපනය අවශ්‍ය වේ"
     }
   },
   "errors": {
-    "required": "This field is required",
+    "required": "මෙය පිරවීම අවශ්‍ය වේ",
     "invalidEmail": "Invalid email address",
     "invalidPhone": "Invalid phone number",
     "invalidNIC": "Invalid NIC number",
@@ -359,9 +363,9 @@
     "maxLength": "Must be at most {max} characters",
     "minValue": "Must be at least {min}",
     "maxValue": "Must be at most {max}",
-    "uploadFailed": "Upload failed. Please try again.",
-    "networkError": "Network error. Please check your connection.",
-    "serverError": "Server error. Please try again later."
+    "uploadFailed": "Upload කිර්‍රිම අසාර්ථක විය. නැවත උත්සහ කරන්න.",
+    "networkError": "ජාල දෝෂයක්. කරුණාකර ඔබගේ සම්බන්ධතාව පරීක්ෂා කරන්න.",
+    "serverError": "සේවාදායක දෝෂයක්. කරුණාකර නැවත උත්සාහ කරන්න."
   },
   "notifications": {
     "matchFound": "iSafe: {personName} නම් පුද්ගලයෙකු {shelterName} ශරණාගාරයට ඇතුළත් වී ඇත. {shelterContact}. විස්තර: {viewLink}\n\nමෙය හැකි ගැලපීමක් විය හැක. කරුණාකර සත්‍යාපනය කරන්න.",

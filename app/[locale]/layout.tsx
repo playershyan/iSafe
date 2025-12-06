@@ -1,6 +1,7 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { LanguageToggle } from '@/components/layout/LanguageToggle';
 import { AnonymousUserInitializer } from '@/components/features/AnonymousUserInitializer';
 import { HtmlLangSetter } from '@/components/layout/HtmlLangSetter';
 import { LowBandwidthProvider } from '@/lib/contexts/LowBandwidthContext';
@@ -38,6 +39,12 @@ export default async function LocaleLayout({
         <HtmlLangSetter />
         <AnonymousUserInitializer />
         <Header locale={locale} />
+        {/* Language Toggle - Fixed position at top right of page body */}
+        <div className="fixed top-20 right-4 z-40 md:top-4">
+          <div className="rounded-lg bg-white shadow-md border border-gray-200 px-3 py-2">
+            <LanguageToggle />
+          </div>
+        </div>
         <main className="flex-1">{children}</main>
         <Footer />
       </LowBandwidthProvider>

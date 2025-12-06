@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface StatsSectionProps {
@@ -11,6 +12,7 @@ interface StatsSectionProps {
 }
 
 export function StatsSection({ stats }: StatsSectionProps) {
+  const t = useTranslations('home');
   const { isLowBandwidth } = useLowBandwidth();
 
   if (isLowBandwidth) {
@@ -18,7 +20,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
       <div className="mt-12">
         <div className="mx-auto rounded-lg border border-gray-300 bg-white p-8 md:max-w-3xl md:p-12">
           <h2 className="mb-8 text-center text-2xl font-bold text-gray-900 md:text-3xl">
-            Live Stats
+            {t('liveStats')}
           </h2>
           <div className="grid grid-cols-3 gap-6 text-center md:gap-8">
             <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8">
@@ -26,7 +28,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
                 {stats.totalMissing.toLocaleString()}
               </div>
               <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
-                Missing
+                {t('missing')}
               </div>
             </div>
             <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8">
@@ -34,7 +36,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
                 {stats.totalMatches.toLocaleString()}
               </div>
               <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
-                Found
+                {t('found')}
               </div>
             </div>
             <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8">
@@ -42,7 +44,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
                 {stats.totalPersons.toLocaleString()}
               </div>
               <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
-                Sheltered
+                {t('sheltered')}
               </div>
             </div>
           </div>
@@ -59,7 +61,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75"></span>
             <span className="relative inline-flex h-3 w-3 rounded-full bg-red-600"></span>
           </span>
-          Live Stats
+          {t('liveStats')}
         </h2>
         <div className="grid grid-cols-3 gap-6 text-center md:gap-8">
           <div className="rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 md:p-8">
@@ -67,7 +69,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
               {stats.totalMissing.toLocaleString()}
             </div>
             <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
-              Missing
+              {t('missing')}
             </div>
           </div>
           <div className="rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 md:p-8">
@@ -75,7 +77,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
               {stats.totalMatches.toLocaleString()}
             </div>
             <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
-              Found
+              {t('found')}
             </div>
           </div>
           <div className="rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 md:p-8">
@@ -83,7 +85,7 @@ export function StatsSection({ stats }: StatsSectionProps) {
               {stats.totalPersons.toLocaleString()}
             </div>
             <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
-              Sheltered
+              {t('sheltered')}
             </div>
           </div>
         </div>

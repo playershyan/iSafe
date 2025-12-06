@@ -35,6 +35,10 @@
     "shelterSection": "For Shelter Staff:",
     "registerButton": "Register New Arrivals",
     "statsTitle": "Live Statistics",
+    "liveStats": "Live Stats",
+    "missing": "Missing",
+    "found": "Found",
+    "sheltered": "Sheltered",
     "personsRegistered": "people registered",
     "sheltersActive": "shelters active",
     "matchesMade": "matches made"

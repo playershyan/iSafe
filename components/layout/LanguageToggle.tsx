@@ -20,26 +20,25 @@ export function LanguageToggle() {
     router.push(`/${newLocale}/${currentPath}`);
   };
 
+  // Filter out current language - only show other languages
+  const otherLanguages = languages.filter(lang => lang.code !== locale);
+
   return (
     <div className="flex items-center gap-1" role="group" aria-label="Language selection">
-      {languages.map((lang, index) => (
+      {otherLanguages.map((lang, index) => (
         <div key={lang.code} className="flex items-center">
           <button
             onClick={() => handleLanguageChange(lang.code)}
             className={clsx(
               'rounded px-2 py-1 text-sm font-medium transition-colors',
-              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-              {
-                'font-bold text-primary': locale === lang.code,
-                'text-gray-600 hover:text-gray-900': locale !== lang.code,
-              }
+              'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
+              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
             )}
             aria-label={`Switch to ${lang.name}`}
-            aria-pressed={locale === lang.code}
           >
             {lang.label}
           </button>
-          {index < languages.length - 1 && (
+          {index < otherLanguages.length - 1 && (
             <span className="mx-1 text-gray-400" aria-hidden="true">
               |
             </span>
