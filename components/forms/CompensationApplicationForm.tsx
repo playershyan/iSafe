@@ -459,7 +459,7 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
             <p className="text-gray-600 mb-4">{t('claimsSelection.description')}</p>
 
             {errors.claims && (
-              <Alert type="error" className="mb-4">
+              <Alert variant="error" className="mb-4">
                 {errors.claims}
               </Alert>
             )}
@@ -509,7 +509,7 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
             <p className="text-gray-600 mb-4">{t('verification.description')}</p>
 
             <PhoneVerificationField
-              phoneNumber={formData.applicantPhone}
+              phone={formData.applicantPhone}
               onVerified={(phone) => {
                 updateField('phoneVerified', true);
               }}
@@ -517,7 +517,7 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
             />
 
             {errors.phoneVerified && (
-              <Alert type="error" className="mt-4">
+              <Alert variant="error" className="mt-4">
                 {errors.phoneVerified}
               </Alert>
             )}
