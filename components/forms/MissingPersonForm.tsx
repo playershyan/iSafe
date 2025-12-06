@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button, Input, Toast } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
 import { PhoneVerificationField } from '@/components/features/PhoneVerificationField';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 import clsx from 'clsx';
 
 type Gender = 'MALE' | 'FEMALE' | 'OTHER';
@@ -39,6 +40,7 @@ const DISTRICTS = [
 ];
 
 export function MissingPersonForm({ locale }: MissingPersonFormProps) {
+  const { isLowBandwidth } = useLowBandwidth();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -283,7 +285,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
               errors.photoFile ? 'border-danger bg-red-50' : 'border-gray-400 bg-gray-50 hover:border-primary'
             )}
           >
-            {formData.photoPreview ? (
+            {formData.photoPreview && !isLowBandwidth ? (
               <img
                 src={formData.photoPreview}
                 alt="Preview"
@@ -291,9 +293,12 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
               />
             ) : (
               <div className="text-center">
-                <span className="mb-2 block text-5xl" aria-hidden="true">📷</span>
+                {!isLowBandwidth && <span className="mb-2 block text-5xl" aria-hidden="true">📷</span>}
                 <span className="block text-base font-medium text-primary">Click to Upload</span>
                 <span className="mt-1 block text-sm text-gray-600">Maximum 5MB (Optional)</span>
+                {isLowBandwidth && photoUrl && (
+                  <span className="mt-2 block text-sm text-green-600">Photo uploaded</span>
+                )}
               </div>
             )}
           </label>
@@ -308,7 +313,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
           <p className="mt-1 text-sm text-primary">Uploading photo...</p>
         )}
         {photoUrl && !uploadingPhoto && (
-          <p className="mt-1 text-sm text-green-600">✓ Photo uploaded successfully</p>
+          <p className="mt-1 text-sm text-green-600">{isLowBandwidth ? 'Photo uploaded successfully' : '✓ Photo uploaded successfully'}</p>
         )}
       </div>
 

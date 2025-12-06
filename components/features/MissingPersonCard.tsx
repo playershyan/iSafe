@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import { User, MapPin, Phone, Share2 } from 'lucide-react';
 import { useState } from 'react';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 export interface MissingPersonReport {
   id: string;
@@ -35,6 +36,7 @@ const statusColors = {
 };
 
 export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
+  const { isLowBandwidth } = useLowBandwidth();
   const lastSeenDate = new Date(report.lastSeenDate);
   const createdAt = new Date(report.createdAt);
   const [shareSuccess, setShareSuccess] = useState(false);
@@ -72,7 +74,7 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
   };
 
   return (
-    <Card className="hover:border-primary transition-colors relative">
+    <Card className={isLowBandwidth ? 'relative' : 'hover:border-primary transition-colors relative'}>
       {/* Top Right: Reported Date and Status Badge - Desktop */}
       <div className="hidden md:flex absolute top-4 right-4 items-center gap-3">
         <p className="text-xs text-gray-500">
@@ -110,8 +112,8 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
             />
           </div>
         ) : (
-          <div className="flex h-32 w-32 items-center justify-center rounded bg-gray-200">
-            <User className="h-16 w-16 text-gray-400" />
+          <div className="flex h-32 w-32 items-center justify-center rounded bg-gray-200 text-sm text-gray-600">
+            {isLowBandwidth ? 'No photo' : <User className="h-16 w-16 text-gray-400" />}
           </div>
         )}
       </div>
@@ -135,9 +137,9 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
 
         {/* Last Seen Section */}
         <div className="flex items-start gap-2">
-          <MapPin className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />
+          {!isLowBandwidth && <MapPin className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />}
           <div className="text-sm">
-            <p className="font-medium text-gray-900">Last seen: {report.lastSeenLocation}</p>
+            <p className="font-medium text-gray-900">{isLowBandwidth ? 'Last seen: ' : ''}{report.lastSeenLocation}</p>
             {report.lastSeenDistrict && (
               <p className="text-gray-600">{report.lastSeenDistrict}</p>
             )}
@@ -149,8 +151,8 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
 
         {/* Contact Number */}
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <Phone className="h-4 w-4 flex-shrink-0" />
-          <span>{report.reporterPhone}</span>
+          {!isLowBandwidth && <Phone className="h-4 w-4 flex-shrink-0" />}
+          <span>{isLowBandwidth ? 'Phone: ' : ''}{report.reporterPhone}</span>
         </div>
 
         {/* Description Section */}
@@ -167,14 +169,14 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
             onClick={handleShare}
             className="flex flex-1 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            <Share2 className="h-5 w-5" />
+            {!isLowBandwidth && <Share2 className="h-5 w-5" />}
             {shareSuccess ? 'Copied!' : 'Share'}
           </button>
           <a
             href={`tel:${report.reporterPhone}`}
             className="flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            <Phone className="h-5 w-5" />
+            {!isLowBandwidth && <Phone className="h-5 w-5" />}
             Contact
           </a>
         </div>

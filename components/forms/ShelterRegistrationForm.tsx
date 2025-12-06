@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { useTranslations } from 'next-intl';
 import { Button, Input, Alert, Card } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 const registrationFormSchema = z.object({
   photoFile: z.instanceof(File).optional(),
@@ -53,6 +54,7 @@ interface ShelterRegistrationFormProps {
 }
 
 export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistrationFormProps) {
+  const { isLowBandwidth } = useLowBandwidth();
   const t = useTranslations('register');
   const tCommon = useTranslations('common');
   const router = useRouter();
@@ -218,12 +220,17 @@ export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistra
           {potentialMatches.map((match) => (
             <Card key={match.missingPersonId}>
               <div className="flex gap-4">
-                {match.photoUrl && (
+                {match.photoUrl && !isLowBandwidth && (
                   <img
                     src={match.photoUrl}
                     alt={match.fullName}
                     className="w-24 h-24 object-cover rounded"
                   />
+                )}
+                {match.photoUrl && isLowBandwidth && (
+                  <div className="w-24 h-24 flex items-center justify-center bg-gray-200 text-xs text-gray-600 rounded">
+                    Photo
+                  </div>
                 )}
                 <div className="flex-1">
                   <h3 className="font-bold text-lg">{match.fullName}</h3>
@@ -283,7 +290,7 @@ export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistra
           {t('photo')} ({tCommon('optional')})
         </label>
 
-        {photoPreview && (
+        {photoPreview && !isLowBandwidth && (
           <div className="mb-3">
             <img
               src={photoPreview}
@@ -291,6 +298,9 @@ export function ShelterRegistrationForm({ locale, shelterInfo }: ShelterRegistra
               className="w-32 h-32 object-cover rounded-lg border-2 border-gray-300"
             />
           </div>
+        )}
+        {photoPreview && isLowBandwidth && (
+          <div className="mb-3 text-sm text-green-600">Photo uploaded</div>
         )}
 
         <input

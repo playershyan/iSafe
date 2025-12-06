@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MissingPersonModal } from './MissingPersonModal';
 import OptimizedImage from '@/components/ui/OptimizedImage';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface StatusPersonCardProps {
   result: UnifiedSearchResult;
@@ -44,6 +45,7 @@ const statusStyles: Record<
 };
 
 export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProps) {
+  const { isLowBandwidth } = useLowBandwidth();
   const { person, missingReport, status } = result;
   const styles = statusStyles[status];
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,7 +80,7 @@ export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProp
       >
         <Card
           padding="small"
-          className={`relative flex items-center gap-3 rounded-2xl border-2 ${styles.card} shadow-sm`}
+          className={`relative flex items-center gap-3 rounded-2xl border-2 ${isLowBandwidth ? 'bg-white border-gray-300' : styles.card} ${isLowBandwidth ? '' : 'shadow-sm'}`}
         >
           {/* Top Right: Reported Date and Time - Only for MISSING status */}
           {status === 'MISSING' && missingReport && (
@@ -102,10 +104,8 @@ export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProp
                 className="h-16 w-16 rounded-full object-cover sm:h-20 sm:w-20"
               />
             ) : (
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 sm:h-20 sm:w-20">
-                <span className="text-3xl text-gray-400" aria-hidden="true">
-                  👤
-                </span>
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 text-sm text-gray-600 sm:h-20 sm:w-20">
+                {isLowBandwidth ? 'No photo' : <span className="text-3xl text-gray-400" aria-hidden="true">👤</span>}
               </div>
             )}
           </div>
@@ -132,10 +132,8 @@ export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProp
 
             {showShelterInfo && person?.shelter && (
               <p className="text-xs text-gray-700 sm:text-sm">
-                <span className="mr-1" aria-hidden="true">
-                  📍
-                </span>
-                <span className="font-medium">{person.shelter.name}</span>
+                {!isLowBandwidth && <span className="mr-1" aria-hidden="true">📍</span>}
+                <span className="font-medium">{isLowBandwidth ? 'Location: ' : ''}{person.shelter.name}</span>
                 <span className="text-gray-600"> — {person.shelter.district}</span>
               </p>
             )}
@@ -191,7 +189,7 @@ export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProp
                 onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center justify-center rounded bg-primary px-3 py-1.5 text-sm font-bold text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
-                📞 Call shelter
+                {!isLowBandwidth && '📞 '}Call shelter
               </a>
             </div>
           )}

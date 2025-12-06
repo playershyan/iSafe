@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { getOptimizedUrl, getThumbnailUrl, ImageQuality } from '@/lib/utils/responsive-images';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 import clsx from 'clsx';
 
 interface OptimizedImageProps {
@@ -36,6 +37,7 @@ export default function OptimizedImage({
   objectFit = 'cover',
   onError,
 }: OptimizedImageProps) {
+  const { isLowBandwidth } = useLowBandwidth();
   const [imageSrc, setImageSrc] = useState<string>('');
   const [blurDataUrl, setBlurDataUrl] = useState<string | undefined>();
   const [hasError, setHasError] = useState(false);
@@ -99,6 +101,21 @@ export default function OptimizedImage({
     setHasError(true);
     if (onError) onError();
   };
+
+  // Low-bandwidth mode: show text placeholder instead of image
+  if (isLowBandwidth) {
+    return (
+      <div
+        className={clsx(
+          'flex items-center justify-center bg-gray-200 text-gray-600 text-sm',
+          className
+        )}
+        style={fill ? undefined : { width, height }}
+      >
+        Photo available
+      </div>
+    );
+  }
 
   if (hasError || !imageSrc) {
     return (

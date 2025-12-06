@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { verifyShelterToken } from '@/lib/auth/jwt';
 import { getStaffStatistics, getCenterPersons } from '@/lib/services/staffStatisticsService';
 import { SearchablePeopleTable } from '@/components/features/SearchablePeopleTable';
+import { StatsDisplay } from './StatsDisplay';
+import { HeaderDisplay } from './HeaderDisplay';
 
 interface StaffDashboardPageProps {
   params: Promise<{
@@ -42,42 +44,17 @@ export default async function StaffDashboardPage({ params }: StaffDashboardPageP
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       {/* Header Bar */}
-      <div className="mb-6">
-        <form action={handleLogout}>
-          <button
-            type="submit"
-            className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-          >
-            ← Logout
-          </button>
-        </form>
-        <div className="mt-2 flex items-start gap-2">
-          <span className="text-lg" aria-hidden="true">🏛️</span>
-          <div>
-            <p className="text-sm font-medium text-gray-700">Government Staff Dashboard</p>
-            <p className="text-xs text-gray-500">{session.shelterName} ({session.shelterCode})</p>
-          </div>
-        </div>
-      </div>
+      <HeaderDisplay 
+        sessionName={session.shelterName}
+        sessionCode={session.shelterCode}
+        handleLogout={handleLogout}
+      />
 
       {/* Statistics Section */}
-      <div className="mb-6 flex flex-wrap items-center gap-6 md:gap-8">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl" aria-hidden="true">📊</span>
-          <div>
-            <p className="text-2xl font-bold text-gray-900">{stats.centerPersonsCount.toLocaleString()}</p>
-            <p className="text-sm text-gray-600">People admitted in this center</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-2xl" aria-hidden="true">🌐</span>
-          <div>
-            <p className="text-2xl font-bold text-gray-900">{stats.totalPersonsCount.toLocaleString()}</p>
-            <p className="text-sm text-gray-600">Total people in all centers</p>
-          </div>
-        </div>
-      </div>
+      <StatsDisplay 
+        centerPersonsCount={stats.centerPersonsCount}
+        totalPersonsCount={stats.totalPersonsCount}
+      />
 
       {/* Action Card */}
       <div className="mb-8">

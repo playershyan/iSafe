@@ -1,5 +1,8 @@
+'use client';
+
 import { HTMLAttributes, forwardRef } from 'react';
 import clsx from 'clsx';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   padding?: 'none' | 'small' | 'medium' | 'large';
@@ -7,11 +10,14 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ padding = 'medium', className, children, ...props }, ref) => {
+    const { isLowBandwidth } = useLowBandwidth();
+    
     return (
       <div
         ref={ref}
         className={clsx(
-          'rounded-lg border border-gray-200 bg-white shadow-sm',
+          'rounded-lg border border-gray-200 bg-white',
+          !isLowBandwidth && 'shadow-sm',
           {
             'p-0': padding === 'none',
             'p-4': padding === 'small',

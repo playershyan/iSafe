@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyShelterToken } from '@/lib/auth/jwt';
 import { BulkRegistrationForm } from '@/components/forms/BulkRegistrationForm';
 import { getCenterPersons } from '@/lib/services/staffStatisticsService';
+import { HeaderDisplay } from './HeaderDisplay';
 
 interface StaffRegistrationPageProps {
   params: Promise<{
@@ -32,21 +32,11 @@ export default async function StaffRegistrationPage({ params }: StaffRegistratio
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       {/* Header Bar */}
-      <div className="mb-6">
-        <Link
-          href={`/${locale}/staff/dashboard`}
-          className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-        >
-          ← Back to Dashboard
-        </Link>
-        <div className="mt-2 flex items-start gap-2">
-          <span className="text-lg" aria-hidden="true">🏛️</span>
-          <div>
-            <p className="text-sm font-medium text-gray-700">Registration</p>
-            <p className="text-xs text-gray-500">{session.shelterName} ({session.shelterCode})</p>
-          </div>
-        </div>
-      </div>
+      <HeaderDisplay 
+        locale={locale}
+        shelterName={session.shelterName}
+        shelterCode={session.shelterCode}
+      />
 
       {/* Page Title */}
       <div className="mb-6">

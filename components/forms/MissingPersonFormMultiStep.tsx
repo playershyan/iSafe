@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button, Input, Toast } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
 import { PhoneVerificationField } from '@/components/features/PhoneVerificationField';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 import clsx from 'clsx';
 
 type Step = 1 | 2 | 3;
@@ -44,6 +45,7 @@ const DISTRICTS = [
 ];
 
 export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
+  const { isLowBandwidth } = useLowBandwidth();
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -372,7 +374,7 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
                   errors.photoFile ? 'border-danger bg-red-50' : 'border-gray-400 bg-gray-50 hover:border-primary'
                 )}
               >
-                {formData.photoPreview ? (
+                {formData.photoPreview && !isLowBandwidth ? (
                   <img
                     src={formData.photoPreview}
                     alt="Preview"
@@ -380,9 +382,12 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
                   />
                 ) : (
                   <div className="text-center">
-                    <span className="mb-2 block text-5xl" aria-hidden="true">📷</span>
+                    {!isLowBandwidth && <span className="mb-2 block text-5xl" aria-hidden="true">📷</span>}
                     <span className="block text-base font-medium text-primary">Click to Upload</span>
                     <span className="mt-1 block text-sm text-gray-600">Maximum 5MB</span>
+                    {isLowBandwidth && photoUrl && (
+                      <span className="mt-2 block text-sm text-green-600">Photo uploaded</span>
+                    )}
                   </div>
                 )}
               </label>

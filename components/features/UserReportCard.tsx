@@ -9,6 +9,7 @@ import { User, MapPin, Phone, Edit, Trash2, CheckCircle } from 'lucide-react';
 import { MissingPersonReport } from './MissingPersonCard';
 import { Button, Alert } from '@/components/ui';
 import { EditReportModal } from './EditReportModal';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface UserReportCardProps {
   report: MissingPersonReport;
@@ -22,6 +23,7 @@ const statusColors = {
 };
 
 export function UserReportCard({ report, locale }: UserReportCardProps) {
+  const { isLowBandwidth } = useLowBandwidth();
   const router = useRouter();
   const lastSeenDate = new Date(report.lastSeenDate);
   const createdAt = new Date(report.createdAt);
@@ -92,7 +94,7 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
 
   return (
     <>
-      <Card className="hover:border-primary transition-colors relative">
+      <Card className={isLowBandwidth ? 'relative' : 'hover:border-primary transition-colors relative'}>
         {/* Status Badge - Top Right */}
         <span
           className={`absolute top-4 right-4 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[report.status]}`}
@@ -107,7 +109,7 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
             className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             aria-label="Edit report"
           >
-            <Edit className="h-4 w-4" />
+            {isLowBandwidth ? 'Edit' : <Edit className="h-4 w-4" />}
           </button>
           <button
             onClick={handleDelete}
@@ -115,7 +117,7 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
             className="inline-flex items-center justify-center rounded-md border border-red-300 bg-white p-2 text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red focus:ring-offset-2 disabled:opacity-50"
             aria-label="Delete report"
           >
-            <Trash2 className="h-4 w-4" />
+            {isLowBandwidth ? 'Delete' : <Trash2 className="h-4 w-4" />}
           </button>
         </div>
 
@@ -141,8 +143,8 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
               />
             </div>
           ) : (
-            <div className="flex h-32 w-32 items-center justify-center rounded bg-gray-200">
-              <User className="h-16 w-16 text-gray-400" />
+            <div className="flex h-32 w-32 items-center justify-center rounded bg-gray-200 text-sm text-gray-600">
+              {isLowBandwidth ? 'No photo' : <User className="h-16 w-16 text-gray-400" />}
             </div>
           )}
         </div>
@@ -166,9 +168,9 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
 
           {/* Last Seen Section */}
           <div className="flex items-start gap-2">
-            <MapPin className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />
+            {!isLowBandwidth && <MapPin className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />}
             <div className="text-sm">
-              <p className="font-medium text-gray-900">Last seen: {report.lastSeenLocation}</p>
+              <p className="font-medium text-gray-900">{isLowBandwidth ? 'Last seen: ' : ''}{report.lastSeenLocation}</p>
               {report.lastSeenDistrict && (
                 <p className="text-gray-600">{report.lastSeenDistrict}</p>
               )}
@@ -180,8 +182,8 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
 
           {/* Contact Number */}
           <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Phone className="h-4 w-4 flex-shrink-0" />
-            <span>{report.reporterPhone}</span>
+            {!isLowBandwidth && <Phone className="h-4 w-4 flex-shrink-0" />}
+            <span>{isLowBandwidth ? 'Phone: ' : ''}{report.reporterPhone}</span>
           </div>
 
           {/* Description Section */}
@@ -199,7 +201,7 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
               disabled={isMarkingFound}
               className="flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-3 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              <CheckCircle className="h-5 w-5" />
+              {!isLowBandwidth && <CheckCircle className="h-5 w-5" />}
               {isMarkingFound ? 'Marking as Found...' : 'Mark as Found'}
             </button>
           )}

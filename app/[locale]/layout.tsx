@@ -3,6 +3,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AnonymousUserInitializer } from '@/components/features/AnonymousUserInitializer';
 import { HtmlLangSetter } from '@/components/layout/HtmlLangSetter';
+import { LowBandwidthProvider } from '@/lib/contexts/LowBandwidthContext';
 import { locales } from '@/i18n';
 import { notFound } from 'next/navigation';
 
@@ -33,11 +34,13 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <HtmlLangSetter />
-      <AnonymousUserInitializer />
-      <Header locale={locale} />
-      <main className="flex-1">{children}</main>
-      <Footer />
+      <LowBandwidthProvider>
+        <HtmlLangSetter />
+        <AnonymousUserInitializer />
+        <Header locale={locale} />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </LowBandwidthProvider>
     </NextIntlClientProvider>
   );
 }

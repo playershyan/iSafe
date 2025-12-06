@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Trash2, Plus, AlertCircle } from 'lucide-react';
 import { Button, Alert } from '@/components/ui';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface PersonRow {
   id: string;
@@ -22,6 +23,7 @@ interface BulkRegistrationFormProps {
 
 export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }: BulkRegistrationFormProps) {
   const router = useRouter();
+  const { isLowBandwidth } = useLowBandwidth();
   const [rows, setRows] = useState<PersonRow[]>([
     { id: '1', fullName: '', gender: '', age: '' },
   ]);
@@ -340,10 +342,14 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
                       type="button"
                       onClick={() => deleteRow(row.id)}
                       disabled={rows.length === 1}
-                      className="text-red-600 hover:text-red-800 disabled:text-gray-300 disabled:cursor-not-allowed"
+                      className={isLowBandwidth 
+                        ? "text-red-600 disabled:text-gray-300 disabled:cursor-not-allowed"
+                        : "text-red-600 hover:text-red-800 disabled:text-gray-300 disabled:cursor-not-allowed"
+                      }
                       aria-label="Delete row"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      {!isLowBandwidth && <Trash2 className="h-4 w-4" />}
+                      {isLowBandwidth && 'Delete'}
                     </button>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">
@@ -359,7 +365,7 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
                         }`}
                         placeholder="Enter name"
                       />
-                      {row.duplicateWarning && (
+                      {row.duplicateWarning && !isLowBandwidth && (
                         <div className="absolute right-2 top-1/2 -translate-y-1/2">
                           <AlertCircle className="h-4 w-4 text-red-500" />
                         </div>
@@ -402,9 +408,12 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
           <button
             type="button"
             onClick={addRow}
-            className="inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            className={isLowBandwidth 
+              ? "inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              : "inline-flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            }
           >
-            <Plus className="h-4 w-4" />
+            {!isLowBandwidth && <Plus className="h-4 w-4" />}
             Add Row
           </button>
         </div>
@@ -413,7 +422,10 @@ export function BulkRegistrationForm({ locale, centerId, existingPersons = [] }:
       {/* Cancel Confirmation Dialog */}
       {showCancelConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-lg">
+          <div className={isLowBandwidth 
+            ? "w-full max-w-md rounded-lg border border-gray-200 bg-white p-6"
+            : "w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-lg"
+          }>
             <h3 className="mb-4 text-lg font-semibold text-gray-900">Cancel Registration?</h3>
             <p className="mb-6 text-sm text-gray-600">
               You have unsaved changes. Are you sure you want to cancel? All entered data will be lost.

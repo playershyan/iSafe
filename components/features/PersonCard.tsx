@@ -5,6 +5,7 @@ import { PersonSearchResult } from '@/types';
 import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';
 import OptimizedImage from '@/components/ui/OptimizedImage';
+import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface PersonCardProps {
   person: PersonSearchResult;
@@ -12,9 +13,10 @@ interface PersonCardProps {
 
 export function PersonCard({ person }: PersonCardProps) {
   const t = useTranslations('search');
+  const { isLowBandwidth } = useLowBandwidth();
 
   return (
-    <Card className="hover:border-primary">
+    <Card className={isLowBandwidth ? '' : 'hover:border-primary'}>
       <div className="flex gap-4">
         {/* Photo */}
         {person.photoUrl ? (
@@ -30,8 +32,8 @@ export function PersonCard({ person }: PersonCardProps) {
             />
           </div>
         ) : (
-          <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded bg-gray-200">
-            <span className="text-4xl text-gray-400">👤</span>
+          <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded bg-gray-200 text-sm text-gray-600">
+            {isLowBandwidth ? 'No photo' : <span className="text-4xl text-gray-400">👤</span>}
           </div>
         )}
 
@@ -47,9 +49,9 @@ export function PersonCard({ person }: PersonCardProps) {
           )}
 
           <div className="mb-2 flex items-center gap-2">
-            <span className="text-sm">📍</span>
+            {!isLowBandwidth && <span className="text-sm">📍</span>}
             <div className="text-sm">
-              <p className="font-medium text-gray-900">{person.shelter.name}</p>
+              <p className="font-medium text-gray-900">{isLowBandwidth ? 'Location: ' : ''}{person.shelter.name}</p>
               <p className="text-gray-600">{person.shelter.district}</p>
             </div>
           </div>
@@ -60,7 +62,7 @@ export function PersonCard({ person }: PersonCardProps) {
                 href={`tel:${person.shelter.contactNumber}`}
                 className="inline-flex items-center gap-1 rounded bg-primary px-3 py-1.5 text-sm font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
-                📞 {t('contactShelter')}
+                {!isLowBandwidth && '📞 '}{t('contactShelter')}
               </a>
             </div>
           )}
