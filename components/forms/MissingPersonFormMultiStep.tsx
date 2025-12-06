@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Input, Toast } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
+import { PhoneVerificationField } from '@/components/features/PhoneVerificationField';
 import clsx from 'clsx';
 
 type Step = 1 | 2 | 3;
@@ -27,7 +28,6 @@ interface FormData {
   reporterName: string;
   reporterPhone: string;
   alternativeContact: string;
-  consent: boolean;
 }
 
 interface MissingPersonFormProps {
@@ -52,6 +52,9 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null); // Already uploaded URL
   const [showToast, setShowToast] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [verifiedPhone, setVerifiedPhone] = useState<string>('');
+  const [anonymousUserId, setAnonymousUserId] = useState<string>('');
   
   const [formData, setFormData] = useState<FormData>({
     photoFile: null,
@@ -66,8 +69,17 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
     reporterName: '',
     reporterPhone: '',
     alternativeContact: '',
-    consent: false,
   });
+
+  // Initialize anonymous user ID on mount
+  useEffect(() => {
+    const initAnonymousUser = async () => {
+      const { getOrCreateAnonymousUserId } = await import('@/lib/utils/anonymousUser');
+      const userId = getOrCreateAnonymousUserId();
+      setAnonymousUserId(userId);
+    };
+    initAnonymousUser();
+  }, []);
 
   const updateField = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -188,8 +200,8 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
     if (!formData.reporterPhone || !/^0\d{9}$/.test(formData.reporterPhone)) {
       newErrors.reporterPhone = 'Valid phone number required (10 digits starting with 0)';
     }
-    if (!formData.consent) {
-      newErrors.consent = 'You must authorize sharing this information';
+    if (!phoneVerified || verifiedPhone !== formData.reporterPhone) {
+      newErrors.reporterPhone = 'Phone number must be verified before submitting';
     }
     
     setErrors(newErrors);
@@ -228,6 +240,13 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
     try {
       // Use already uploaded photo URL (uploaded in background)
       const finalPhotoUrl = photoUrl || '';
+
+      // Ensure phone is verified before submitting
+      if (!phoneVerified || verifiedPhone !== formData.reporterPhone) {
+        alert('Please verify your phone number before submitting');
+        setIsSubmitting(false);
+        return;
+      }
 
       // Get or create anonymous user ID
       const { getOrCreateAnonymousUserId, setAnonymousUserIdCookieClient } = await import('@/lib/utils/anonymousUser');
@@ -406,24 +425,23 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
 
           {/* Gender */}
           <div>
-            <label className="mb-2 block text-base font-medium text-gray-700">Gender</label>
-            <div className="flex gap-6">
-              {(['MALE', 'FEMALE', 'OTHER'] as const).map((g) => (
-                <label key={g} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={g}
-                    checked={formData.gender === g}
-                    onChange={(e) => updateField('gender', e.target.value as Gender)}
-                    className="h-5 w-5 text-primary focus:ring-primary"
-                  />
-                  <span className="text-base">
-                    {g === 'MALE' ? 'Male' : g === 'FEMALE' ? 'Female' : 'Other'}
-                  </span>
-                </label>
-              ))}
-            </div>
+            <label className="mb-2 block text-base font-medium text-gray-700">
+              Gender <span className="text-danger">*</span>
+            </label>
+            <select
+              value={formData.gender}
+              onChange={(e) => updateField('gender', e.target.value as Gender)}
+              className={clsx(
+                'w-full rounded-md border px-3 py-2 text-base min-h-touch focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20',
+                errors.gender ? 'border-danger' : 'border-gray-300'
+              )}
+              required
+            >
+              <option value="">Select Gender</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
             {errors.gender && (
               <p className="mt-1 text-sm text-danger">{errors.gender}</p>
             )}
@@ -524,49 +542,39 @@ export function MissingPersonFormMultiStep({ locale }: MissingPersonFormProps) {
             error={errors.reporterName}
           />
 
-          <Input
-            label="Phone Number"
-            type="tel"
-            value={formData.reporterPhone}
-            onChange={(e) => updateField('reporterPhone', e.target.value)}
-            placeholder="e.g., 0771234567"
-            required
+          <PhoneVerificationField
+            phone={formData.reporterPhone}
+            onPhoneChange={(phone) => updateField('reporterPhone', phone)}
+            onVerified={(phone) => {
+              setPhoneVerified(true);
+              setVerifiedPhone(phone);
+              setFormData(prev => ({ ...prev, reporterPhone: phone }));
+            }}
             error={errors.reporterPhone}
+            required
+            label="Phone Number"
+            placeholder="e.g., 0771234567"
+            anonymous={true}
+            anonymousUserId={anonymousUserId}
+            purpose="missing_report"
           />
 
           <Input
-            label="Alternative Contact"
+            label={
+              <>
+                Alternative Contact <span className="text-gray-500 text-sm font-normal">(Optional)</span>
+              </>
+            }
             type="tel"
             value={formData.alternativeContact}
             onChange={(e) => updateField('alternativeContact', e.target.value)}
-            helperText="(Optional)"
           />
-
-          <div className={clsx(
-            'rounded-md border p-3',
-            errors.consent ? 'border-danger bg-red-50' : 'border-gray-300 bg-gray-50'
-          )}>
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={formData.consent}
-                onChange={(e) => updateField('consent', e.target.checked)}
-                className="mt-0.5 h-5 w-5 rounded text-primary focus:ring-primary"
-              />
-              <span className="text-sm">
-                ☑ I authorize iSafe to share this publicly
-              </span>
-            </label>
-            {errors.consent && (
-              <p className="mt-2 text-sm text-danger">{errors.consent}</p>
-            )}
-          </div>
 
           <Button
             onClick={handleSubmit}
             fullWidth
             size="large"
-            disabled={isSubmitting || !formData.consent}
+            disabled={isSubmitting || !phoneVerified || verifiedPhone !== formData.reporterPhone}
           >
             {isSubmitting ? 'Creating Poster...' : 'Create Poster'}
           </Button>

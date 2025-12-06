@@ -5,52 +5,27 @@ export async function getStatistics(): Promise<AppStatistics> {
   try {
     const supabase = await createClient();
     
-    // Try to get cached statistics
-    const { data: stats, error } = await supabase
-      .from('statistics')
-      .select('*')
-      .eq('id', 'singleton')
-      .single();
+    // Get live statistics directly from database
+    const [missingResult, foundResult, shelteredResult] = await Promise.all([
+      // Missing: count of live missing reports (status = 'MISSING')
+      supabase.from('missing_persons').select('*', { count: 'exact', head: true }).eq('status', 'MISSING'),
+      // Found: count of found reports (status = 'FOUND' or 'CLOSED')
+      supabase.from('missing_persons').select('*', { count: 'exact', head: true }).in('status', ['FOUND', 'CLOSED']),
+      // Sheltered: all people registered in all shelters
+      supabase.from('persons').select('*', { count: 'exact', head: true }),
+    ]);
 
-    // If no stats exist, create initial record
-    if (error || !stats) {
-      const now = new Date().toISOString();
-      const { data: newStats, error: createError } = await supabase
-        .from('statistics')
-        .insert({
-          id: 'singleton',
-          updated_at: now,
-          total_persons: 0,
-          total_shelters: 0,
-          active_shelters: 0,
-          total_missing: 0,
-          total_matches: 0,
-          by_district: {},
-        })
-        .select()
-        .single();
-
-      if (createError || !newStats) {
-        throw createError;
-      }
-
-      return {
-        totalPersons: newStats.total_persons,
-        totalShelters: newStats.total_shelters,
-        activeShelters: newStats.active_shelters,
-        totalMissing: newStats.total_missing,
-        totalMatches: newStats.total_matches,
-        byDistrict: newStats.by_district as Record<string, number>,
-      };
-    }
+    const missing = missingResult.count || 0;
+    const found = foundResult.count || 0;
+    const sheltered = shelteredResult.count || 0;
 
     return {
-      totalPersons: stats.total_persons,
-      totalShelters: stats.total_shelters,
-      activeShelters: stats.active_shelters,
-      totalMissing: stats.total_missing,
-      totalMatches: stats.total_matches,
-      byDistrict: stats.by_district as Record<string, number>,
+      totalPersons: sheltered,
+      totalShelters: 0,
+      activeShelters: 0,
+      totalMissing: missing,
+      totalMatches: found,
+      byDistrict: {},
     };
   } catch (error) {
     // Only log errors in development to avoid noisy source map warnings
