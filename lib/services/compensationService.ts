@@ -359,18 +359,19 @@ export async function getDistricts(): Promise<{
   try {
     const supabase = await createClient();
 
-    const { data: divisions, error } = await supabase
-      .from('administrative_divisions')
-      .select('district')
-      .eq('is_active', true);
+    // Query the districts table which contains all 25 districts
+    const { data: districts, error } = await supabase
+      .from('districts')
+      .select('name')
+      .order('name', { ascending: true });
 
     if (error) {
       console.error('Error fetching districts:', error);
       return { success: false, error: 'Failed to fetch districts' };
     }
 
-    const uniqueDistricts = [...new Set(divisions?.map((d) => d.district) || [])].sort();
-    return { success: true, districts: uniqueDistricts };
+    const districtNames = districts?.map((d) => d.name) || [];
+    return { success: true, districts: districtNames };
   } catch (error) {
     console.error('Error in getDistricts:', error);
     return { success: false, error: 'Internal server error' };
@@ -393,8 +394,7 @@ export async function getDivisionalSecretariats(
     const { data: divisions, error } = await supabase
       .from('administrative_divisions')
       .select('divisional_secretariat')
-      .eq('district', district)
-      .eq('is_active', true);
+      .eq('district', district);
 
     if (error) {
       console.error('Error fetching divisional secretariats:', error);
@@ -428,7 +428,6 @@ export async function getGramaNiladhariDivisions(
       .select('grama_niladhari_division')
       .eq('district', district)
       .eq('divisional_secretariat', divisionalSecretariat)
-      .eq('is_active', true)
       .order('grama_niladhari_division');
 
     if (error) {

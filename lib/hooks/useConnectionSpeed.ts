@@ -15,7 +15,7 @@ interface NavigatorWithConnection extends Navigator {
 }
 
 const STORAGE_KEY = 'isLowBandwidth';
-const LOW_BANDWIDTH_THRESHOLD = 1.5; // Mbps
+const LOW_BANDWIDTH_THRESHOLD = 0; // Mbps (disabled - set to 0 to make ineffective)
 
 export function useConnectionSpeed(): boolean {
   const [isLowBandwidth, setIsLowBandwidth] = useState<boolean>(() => {
@@ -41,30 +41,26 @@ export function useConnectionSpeed(): boolean {
       navigatorWithConnection.webkitConnection;
 
     const detectLowBandwidth = (): boolean => {
-      if (!connection) {
-        // Fallback: assume normal connection if API not available
-        return false;
-      }
-
-      // Check effectiveType (slow-2g, 2g, 3g trigger low-bandwidth mode)
-      if (connection.effectiveType) {
-        const slowTypes: Array<'slow-2g' | '2g' | '3g'> = ['slow-2g', '2g', '3g'];
-        if (slowTypes.includes(connection.effectiveType as 'slow-2g' | '2g' | '3g')) {
-          return true;
-        }
-      }
-
-      // Check downlink speed (< 1.5 Mbps = slow)
-      if (connection.downlink !== undefined && connection.downlink < LOW_BANDWIDTH_THRESHOLD) {
-        return true;
-      }
-
-      // Check saveData preference
-      if (connection.saveData === true) {
-        return true;
-      }
-
+      // Low bandwidth mode is disabled (threshold set to 0)
+      // Always return false regardless of connection speed
       return false;
+      
+      // Disabled checks (kept for reference):
+      // if (!connection) {
+      //   return false;
+      // }
+      // if (connection.effectiveType) {
+      //   const slowTypes: Array<'slow-2g' | '2g' | '3g'> = ['slow-2g', '2g', '3g'];
+      //   if (slowTypes.includes(connection.effectiveType as 'slow-2g' | '2g' | '3g')) {
+      //     return true;
+      //   }
+      // }
+      // if (connection.downlink !== undefined && connection.downlink < LOW_BANDWIDTH_THRESHOLD) {
+      //   return true;
+      // }
+      // if (connection.saveData === true) {
+      //   return true;
+      // }
     };
 
     const updateLowBandwidth = () => {

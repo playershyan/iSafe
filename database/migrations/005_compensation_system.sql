@@ -42,15 +42,34 @@ CREATE TABLE IF NOT EXISTS compensation_applications (
   sms_sent_at TIMESTAMPTZ
 );
 
--- Indexes for performance
-CREATE INDEX idx_comp_app_status ON compensation_applications(status);
-CREATE INDEX idx_comp_app_district ON compensation_applications(district);
-CREATE INDEX idx_comp_app_div_sec ON compensation_applications(divisional_secretariat);
-CREATE INDEX idx_comp_app_gn ON compensation_applications(grama_niladhari_division);
-CREATE INDEX idx_comp_app_created ON compensation_applications(created_at DESC);
-CREATE INDEX idx_comp_app_code ON compensation_applications(application_code);
-CREATE INDEX idx_comp_app_nic ON compensation_applications(applicant_nic);
-CREATE INDEX idx_comp_app_phone ON compensation_applications(applicant_phone);
+-- Indexes for performance (create only if they don't exist)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_status') THEN
+    CREATE INDEX idx_comp_app_status ON compensation_applications(status);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_district') THEN
+    CREATE INDEX idx_comp_app_district ON compensation_applications(district);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_div_sec') THEN
+    CREATE INDEX idx_comp_app_div_sec ON compensation_applications(divisional_secretariat);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_gn') THEN
+    CREATE INDEX idx_comp_app_gn ON compensation_applications(grama_niladhari_division);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_created') THEN
+    CREATE INDEX idx_comp_app_created ON compensation_applications(created_at DESC);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_code') THEN
+    CREATE INDEX idx_comp_app_code ON compensation_applications(application_code);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_nic') THEN
+    CREATE INDEX idx_comp_app_nic ON compensation_applications(applicant_nic);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_app_phone') THEN
+    CREATE INDEX idx_comp_app_phone ON compensation_applications(applicant_phone);
+  END IF;
+END $$;
 
 -- =====================================================
 -- 2. COMPENSATION CLAIMS TABLE
@@ -88,9 +107,19 @@ CREATE TABLE IF NOT EXISTS compensation_claims (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_comp_claims_application ON compensation_claims(application_id);
-CREATE INDEX idx_comp_claims_type ON compensation_claims(claim_type);
-CREATE INDEX idx_comp_claims_status ON compensation_claims(claim_status);
+-- Indexes for compensation_claims (create only if they don't exist)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_claims_application') THEN
+    CREATE INDEX idx_comp_claims_application ON compensation_claims(application_id);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_claims_type') THEN
+    CREATE INDEX idx_comp_claims_type ON compensation_claims(claim_type);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_claims_status') THEN
+    CREATE INDEX idx_comp_claims_status ON compensation_claims(claim_status);
+  END IF;
+END $$;
 
 -- =====================================================
 -- 3. COMPENSATION ADMINS TABLE (for dashboard access)
@@ -108,8 +137,16 @@ CREATE TABLE IF NOT EXISTS compensation_admins (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_comp_admins_username ON compensation_admins(username);
-CREATE INDEX idx_comp_admins_active ON compensation_admins(is_active);
+-- Indexes for compensation_admins (create only if they don't exist)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_admins_username') THEN
+    CREATE INDEX idx_comp_admins_username ON compensation_admins(username);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_comp_admins_active') THEN
+    CREATE INDEX idx_comp_admins_active ON compensation_admins(is_active);
+  END IF;
+END $$;
 
 -- =====================================================
 -- 4. TRIGGER: Update updated_at timestamp
@@ -122,16 +159,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Create triggers (drop and recreate to ensure they're up to date)
+DROP TRIGGER IF EXISTS update_compensation_applications_updated_at ON compensation_applications;
 CREATE TRIGGER update_compensation_applications_updated_at
   BEFORE UPDATE ON compensation_applications
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_compensation_claims_updated_at ON compensation_claims;
 CREATE TRIGGER update_compensation_claims_updated_at
   BEFORE UPDATE ON compensation_claims
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_compensation_admins_updated_at ON compensation_admins;
 CREATE TRIGGER update_compensation_admins_updated_at
   BEFORE UPDATE ON compensation_admins
   FOR EACH ROW
