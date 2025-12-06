@@ -20,6 +20,7 @@ export interface MissingPersonReport {
   clothing?: string | null;
   reporterName: string;
   reporterPhone: string;
+  altContact?: string | null;
   status: 'MISSING' | 'FOUND' | 'CLOSED';
   posterCode: string;
   createdAt: string | Date;
@@ -180,7 +181,14 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
         {/* Contact Number */}
         <div className="flex items-center gap-2 text-sm text-gray-600">
           {!isLowBandwidth && <Phone className="h-4 w-4 flex-shrink-0" />}
-          <span>{isLowBandwidth ? `${t('phone')}: ` : ''}{report.reporterPhone}</span>
+          <div className="flex-1">
+            <span>{isLowBandwidth ? `${t('phone')}: ` : ''}{report.reporterPhone}</span>
+            {report.altContact && (
+              <span className="ml-2 text-gray-500">
+                {isLowBandwidth ? ` / ${report.altContact}` : ` / ${report.altContact}`}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Description Section */}

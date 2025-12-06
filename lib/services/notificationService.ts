@@ -31,24 +31,116 @@ export async function sendMatchNotification(
     // Build the link to view details
     const viewLink = `${appUrl}/search?poster=${posterCode}`;
 
-    // Format shelter contact info
-    const shelterContact = shelterContactNumber 
-      ? `Contact: ${shelterContactNumber}` 
-      : 'Contact the shelter directly for more information';
+    // Load translations manually (getTranslations requires request context)
+    // Use a function to load the correct translation file
+    const loadMessages = async (loc: string): Promise<any> => {
+      try {
+        // Try dynamic import with the locale - try both relative and @ alias paths
+        let messages;
+        const importPath = `@/messages/${loc}.json`;
+        const relativePath = `../../messages/${loc}.json`;
+        
+        try {
+          // First try with @ alias
+          messages = (await import(importPath)).default;
+        } catch (aliasError) {
+          // Fallback to relative path
+          try {
+            messages = (await import(relativePath)).default;
+          } catch (relativeError) {
+            // If both fail, try English
+            if (loc !== 'en') {
+              logger.warn('Failed to load locale, trying English', { locale: loc, aliasError, relativeError });
+              return await loadMessages('en');
+            }
+            throw new Error(`Failed to load translations for locale: ${loc}`);
+          }
+        }
+        
+        // Validate that messages loaded correctly
+        if (!messages || typeof messages !== 'object') {
+          throw new Error(`Invalid messages structure for locale: ${loc}`);
+        }
+        
+        return messages;
+      } catch (error) {
+        logger.error('Failed to load translations, falling back to English', error as Error, { locale: loc });
+        // Always try to load English as fallback
+        if (loc !== 'en') {
+          try {
+            return await loadMessages('en');
+          } catch (fallbackError) {
+            logger.error('Failed to load English fallback translations', fallbackError as Error);
+            throw new Error('Unable to load any translation files');
+          }
+        }
+        throw error;
+      }
+    };
 
-    // Build message based on locale
-    let message: string;
-    
-    if (locale === 'si') {
-      // Sinhala message
-      message = `iSafe: ${personName} නම් පුද්ගලයෙකු ${shelterName} ශරණාගාරයට ඇතුළත් වී ඇත. ${shelterContact}. විස්තර: ${viewLink}\n\nමෙය හැකි ගැලපීමක් විය හැක. කරුණාකර සත්‍යාපනය කරන්න.`;
-    } else if (locale === 'ta') {
-      // Tamil message
-      message = `iSafe: ${personName} என்பவர் ${shelterName} தஞ்சமிடத்தில் சேர்க்கப்பட்டுள்ளார். ${shelterContact}. விவரங்கள்: ${viewLink}\n\nஇது சாத்தியமான பொருத்தமாக இருக்கலாம். தயவுசெய்து சரிபார்க்கவும்.`;
-    } else {
-      // English message (default)
-      message = `iSafe: Potential match found. ${personName} has been admitted to ${shelterName}. ${shelterContact}. View details: ${viewLink}\n\nThis is a potential match, please verify.`;
+    let messages: any;
+    try {
+      messages = await loadMessages(locale);
+      logger.debug('Loaded translations successfully', { locale, hasNotifications: !!messages.notifications });
+    } catch (error) {
+      logger.error('Failed to load translations, using English fallback', error as Error, { locale });
+      messages = await loadMessages('en');
     }
+
+    // Validate messages structure
+    if (!messages || !messages.notifications) {
+      logger.error('Invalid messages structure - missing notifications', { 
+        locale, 
+        hasMessages: !!messages,
+        hasNotifications: !!messages?.notifications 
+      });
+      throw new Error('Invalid translation structure');
+    }
+
+    // Get translation template
+    const messageTemplate = shelterContactNumber 
+      ? messages.notifications.matchFound
+      : messages.notifications.matchFoundNoContact;
+
+    // Validate template exists
+    if (!messageTemplate || typeof messageTemplate !== 'string') {
+      logger.warn('Translation template not found or invalid, using English fallback', { 
+        locale, 
+        hasContact: !!shelterContactNumber,
+        templateType: shelterContactNumber ? 'matchFound' : 'matchFoundNoContact'
+      });
+      
+      const enMessages = await loadMessages('en');
+      const fallbackTemplate = shelterContactNumber 
+        ? enMessages.notifications?.matchFound
+        : enMessages.notifications?.matchFoundNoContact;
+      
+      if (!fallbackTemplate || typeof fallbackTemplate !== 'string') {
+        logger.error('English fallback translation also missing', {
+          hasContact: !!shelterContactNumber
+        });
+        throw new Error('Failed to load notification translations');
+      }
+      
+      const message = fallbackTemplate
+        .replace('{personName}', personName)
+        .replace('{shelterName}', shelterName)
+        .replace('{shelterContactNumber}', shelterContactNumber || '')
+        .replace('{viewLink}', viewLink);
+      
+      // Send SMS with fallback
+      const result = await textlkService.sendSMS({
+        to: reporterPhone,
+        message,
+      });
+      return result;
+    }
+    
+    const message = messageTemplate
+      .replace('{personName}', personName)
+      .replace('{shelterName}', shelterName)
+      .replace('{shelterContactNumber}', shelterContactNumber || '')
+      .replace('{viewLink}', viewLink);
 
     // Send SMS
     const result = await textlkService.sendSMS({

@@ -31,6 +31,7 @@ export async function getMissingPersons(): Promise<MissingPersonReport[]> {
     clothing: item.clothing,
     reporterName: item.reporter_name,
     reporterPhone: item.reporter_phone,
+    altContact: item.alt_contact,
     status: item.status,
     posterCode: item.poster_code,
     createdAt: item.created_at,

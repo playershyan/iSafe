@@ -161,7 +161,7 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
             <div className="flex items-start gap-3">
               {!isLowBandwidth && <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />}
               <div className="flex-1">
-                <p className="text-sm font-semibold text-blue-900 mb-1">{t('physicalDescription')}</p>
+                <p className="text-sm font-semibold text-blue-900 mb-1">{t('description')}</p>
                 <p className="text-sm text-blue-800">{report.clothing}</p>
               </div>
             </div>
@@ -172,9 +172,12 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
         <div className={isLowBandwidth ? "border border-gray-200 rounded-lg p-4" : "bg-green-50 rounded-lg p-4"}>
           <div className="flex items-center gap-3">
             {!isLowBandwidth && <Phone className="h-5 w-5 text-green-600 flex-shrink-0" />}
-            <div>
+            <div className="flex-1">
               <p className="text-sm font-semibold text-green-900 mb-1">{isLowBandwidth ? `${t('contactInformation')}: ` : t('contactInformation')}</p>
               <p className="text-base font-medium text-green-800">{report.reporterPhone}</p>
+              {report.altContact && (
+                <p className="text-sm text-green-700 mt-1">{isLowBandwidth ? `Alt: ${report.altContact}` : `Alternative: ${report.altContact}`}</p>
+              )}
             </div>
           </div>
         </div>

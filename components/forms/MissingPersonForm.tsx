@@ -179,6 +179,9 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
     if (!phoneVerified || verifiedPhone !== formData.reporterPhone) {
       newErrors.reporterPhone = 'Phone number must be verified before submitting';
     }
+    if (formData.clothing && formData.clothing.trim().length > 500) {
+      newErrors.clothing = 'Description must be at most 500 characters';
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -228,11 +231,12 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
           lastSeenLocation: formData.lastSeenLocation.trim(),
           lastSeenDistrict: formData.lastSeenDistrict,
           lastSeenDate: formData.lastSeenDate,
-          clothing: formData.clothing.trim(),
+          clothing: formData.clothing.trim() || undefined,
           reporterName: formData.reporterName.trim(),
           reporterPhone: formData.reporterPhone.trim(),
-          alternativeContact: formData.alternativeContact.trim(),
+          alternativeContact: formData.alternativeContact.trim() || undefined,
           anonymousUserId,
+          locale,
         }),
       });
 
@@ -431,8 +435,23 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
             onChange={(e) => updateField('clothing', e.target.value)}
             placeholder={t('clothingPlaceholder')}
             rows={4}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20"
+            maxLength={500}
+            className={clsx(
+              'w-full rounded-md border px-3 py-2 text-base focus:ring-2 focus:ring-primary focus:ring-opacity-20',
+              errors.clothing ? 'border-danger focus:border-danger' : 'border-gray-300 focus:border-primary'
+            )}
           />
+          <div className="mt-1 flex items-center justify-between">
+            {errors.clothing && (
+              <p className="text-sm text-danger">{errors.clothing}</p>
+            )}
+            <p className={clsx(
+              'text-xs ml-auto',
+              formData.clothing.length > 500 ? 'text-danger' : formData.clothing.length > 450 ? 'text-yellow-600' : 'text-gray-500'
+            )}>
+              {formData.clothing.length}/500
+            </p>
+          </div>
         </div>
       </div>
 

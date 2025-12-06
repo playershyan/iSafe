@@ -8,6 +8,7 @@
     "continue": "Continue",
     "back": "Back",
     "backHome": "Back to Home",
+    "backToHome": "Back to Home",
     "close": "Close",
     "loading": "Loading...",
     "error": "Error",
@@ -95,7 +96,7 @@
     "selectDistrict": "Select District",
     "selectGender": "Select Gender",
     "lastSeenDate": "Last Seen Date",
-    "clothing": "Clothing Description",
+    "clothing": "Description",
     "clothingPlaceholder": "Describe what they were wearing...",
     "yourName": "Your Name",
     "yourNamePlaceholder": "Your full name",
@@ -522,7 +523,7 @@
     "serverError": "Server error. Please try again later."
   },
   "notifications": {
-    "matchFound": "iSafe: Potential match found. {personName} has been admitted to {shelterName}. {shelterContact}. View details: {viewLink}\n\nThis is a potential match, please verify.",
+    "matchFound": "iSafe: Potential match found. {personName} has been admitted to {shelterName}. Contact: {shelterContactNumber}. View details: {viewLink}\n\nThis is a potential match, please verify.",
     "matchFoundNoContact": "iSafe: Potential match found. {personName} has been admitted to {shelterName}. Contact the shelter directly for more information. View details: {viewLink}\n\nThis is a potential match, please verify."
   }
 }

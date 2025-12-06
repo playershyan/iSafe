@@ -68,6 +68,7 @@ export async function unifiedSearchByName(query: string): Promise<UnifiedSearchR
           )
         `)
         .ilike('full_name', `%${trimmed}%`)
+        .eq('status', 'MISSING') // Only show active missing reports
         .limit(50),
     ]);
 
@@ -193,7 +194,7 @@ export async function unifiedSearchByName(query: string): Promise<UnifiedSearchR
       });
     }
 
-    // Sort by status and similarity (found & sheltered first, then sheltered, found, missing)
+    // Sort by status, similarity, then creation date (newest first)
     const statusOrder: Record<SearchStatus, number> = {
       FOUND_AND_SHELTERED: 0,
       SHELTERED: 1,
@@ -203,9 +204,20 @@ export async function unifiedSearchByName(query: string): Promise<UnifiedSearchR
 
     return results
       .sort((a, b) => {
+        // First, sort by status priority
         const statusDiff = statusOrder[a.status] - statusOrder[b.status];
         if (statusDiff !== 0) return statusDiff;
-        return (b.similarityScore || 0) - (a.similarityScore || 0);
+        
+        // Then by similarity score (higher is better)
+        const similarityDiff = (b.similarityScore || 0) - (a.similarityScore || 0);
+        if (similarityDiff !== 0) return similarityDiff;
+        
+        // Finally, sort by creation date (newest first)
+        // For missing reports, use missingReport.createdAt
+        // For persons, use person.createdAt
+        const aDate = a.missingReport?.createdAt?.getTime() || a.person?.createdAt?.getTime() || 0;
+        const bDate = b.missingReport?.createdAt?.getTime() || b.person?.createdAt?.getTime() || 0;
+        return bDate - aDate; // Newest first
       })
       .slice(0, 50);
   } catch (error) {
@@ -252,6 +264,7 @@ export async function unifiedSearchByNIC(nic: string): Promise<UnifiedSearchResu
           )
         `)
         .ilike('nic', normalizedNIC)
+        .eq('status', 'MISSING') // Only show active missing reports
         .limit(10),
     ]);
 
@@ -357,9 +370,16 @@ export async function unifiedSearchByNIC(nic: string): Promise<UnifiedSearchResu
     };
 
     return results.sort((a, b) => {
+      // First, sort by status priority
       const statusDiff = statusOrder[a.status] - statusOrder[b.status];
       if (statusDiff !== 0) return statusDiff;
-      return (b.person?.createdAt?.getTime() || 0) - (a.person?.createdAt?.getTime() || 0);
+      
+      // Then sort by creation date (newest first)
+      // For missing reports, use missingReport.createdAt
+      // For persons, use person.createdAt
+      const aDate = a.missingReport?.createdAt?.getTime() || a.person?.createdAt?.getTime() || 0;
+      const bDate = b.missingReport?.createdAt?.getTime() || b.person?.createdAt?.getTime() || 0;
+      return bDate - aDate; // Newest first
     });
   } catch (error) {
     console.error('Unified search by NIC error:', error);

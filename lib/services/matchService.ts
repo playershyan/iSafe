@@ -15,6 +15,7 @@ export interface MatchResult {
   reporterPhone: string;
   matchScore: number;
   matchReasons: string[];
+  locale?: string; // Locale from missing person report
 }
 
 export interface PersonData {
@@ -90,6 +91,7 @@ export async function findMatches(personData: PersonData): Promise<MatchResult[]
           reporterPhone: missing.reporter_phone,
           matchScore: Math.round(matchScore),
           matchReasons,
+          locale: missing.locale || 'en',
         });
       }
     }
@@ -185,14 +187,14 @@ export async function sendNotificationsForMatches(
           }
         }
 
-        // Send SMS notification
+        // Send SMS notification using locale from missing person report
         const notificationResult = await sendMatchNotification({
           personName,
           shelterName: shelter.name,
           shelterContactNumber: shelter.contact_number,
           posterCode: match.posterCode,
           reporterPhone: match.reporterPhone,
-          locale: 'en', // Default to English, can be enhanced later
+          locale: match.locale || 'en', // Use locale from missing person report
         });
 
         // Update match record with notification status

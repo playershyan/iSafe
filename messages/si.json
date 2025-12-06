@@ -93,8 +93,9 @@
     "lastLocation": "අවසන් වරට සිටි ස්ථානය",
     "district": "දිස්ත්‍රික්කය",
     "selectDistrict": "Select District",
+    "selectGender": "ලිංගය තෝරන්න",
     "lastSeenDate": "අතුරුදහන් වූ දිනය",
-    "clothing": "Clothing Description",
+    "clothing": "විස්තරය",
     "clothingPlaceholder": "Describe what they were wearing...",
     "yourName": "ඔබේ නම",
     "yourNamePlaceholder": "ඔබේ නම",
@@ -168,7 +169,13 @@
     "staffOnly": "Staff Only",
     "staffOnlyText": "This area is restricted to authorized shelter staff. If you need to search for someone, please use the public search.",
     "needHelp": "Need help?",
-    "needHelpText": "Contact your shelter administrator if you don't have access codes or need assistance."
+    "needHelpText": "Contact your shelter administrator if you don't have access codes or need assistance.",
+    "govStaffTitle": "රජයේ කාර්‍යය මණ්ඩල පිවිසීම",
+    "govStaffSubtitle": "ලියාපදිංචි කිරීමේ මෙවලම් වෙත ප්‍රවේශය ලබා ගැනීමට ඔබගේ අක්තපත්‍ර ඇතුළත් කරන්න.",
+    "govStaffOnly": "රජයේ කාර්‍යය මණ්ඩල සඳහා පමණි",
+    "govStaffOnlyText": "මෙම කොටස සත්‍යාපනය කරන ලද රජයේ කාර්‍යය මණ්ඩල සඳහා පමණි.",
+    "centerCode": "මධ්‍ය කේතය",
+    "logIn": "පිවිසීම"
   },
   "register": {
     "title": "Register New Person",
@@ -368,7 +375,7 @@
     "serverError": "සේවාදායක දෝෂයක්. කරුණාකර නැවත උත්සාහ කරන්න."
   },
   "notifications": {
-    "matchFound": "iSafe: {personName} නම් පුද්ගලයෙකු {shelterName} ශරණාගාරයට ඇතුළත් වී ඇත. {shelterContact}. විස්තර: {viewLink}\n\nමෙය හැකි ගැලපීමක් විය හැක. කරුණාකර සත්‍යාපනය කරන්න.",
+    "matchFound": "iSafe: {personName} නම් පුද්ගලයෙකු {shelterName} ශරණාගාරයට ඇතුළත් වී ඇත. සම්බන්ධ වන්න: {shelterContactNumber}. විස්තර: {viewLink}\n\nමෙය හැකි ගැලපීමක් විය හැක. කරුණාකර සත්‍යාපනය කරන්න.",
     "matchFoundNoContact": "iSafe: {personName} නම් පුද්ගලයෙකු {shelterName} ශරණාගාරයට ඇතුළත් වී ඇත. වැඩි විස්තර සඳහා ශරණාගාරයට සෘජුවම සම්බන්ධ වන්න. විස්තර: {viewLink}\n\nමෙය හැකි ගැලපීමක් විය හැක. කරුණාකර සත්‍යාපනය කරන්න."
   }
 }

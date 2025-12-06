@@ -104,13 +104,16 @@ export function UserReportCard({ report, locale }: UserReportCardProps) {
 
         {/* Action Buttons - Top Left */}
         <div className="absolute top-4 left-4 flex items-center gap-2">
-          <button
-            onClick={() => setIsEditing(true)}
-            className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            aria-label="Edit report"
-          >
-            {isLowBandwidth ? 'Edit' : <Edit className="h-4 w-4" />}
-          </button>
+          {/* Edit button - only show for MISSING status */}
+          {report.status === 'MISSING' && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="inline-flex items-center justify-center rounded-md border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              aria-label="Edit report"
+            >
+              {isLowBandwidth ? 'Edit' : <Edit className="h-4 w-4" />}
+            </button>
+          )}
           <button
             onClick={handleDelete}
             disabled={isDeleting}

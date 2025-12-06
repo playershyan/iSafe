@@ -73,19 +73,26 @@ export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProp
 
   return (
     <>
-      <button
-        type="button"
+      <div
         onClick={handleClick}
-        className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl"
+        role={status === 'MISSING' ? 'button' : undefined}
+        tabIndex={status === 'MISSING' ? 0 : undefined}
+        onKeyDown={(e) => {
+          if (status === 'MISSING' && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        className={`w-full text-left ${status === 'MISSING' ? 'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 cursor-pointer' : ''} rounded-xl`}
       >
         <Card
           padding="small"
           className={`relative flex items-center gap-3 rounded-2xl border-2 ${isLowBandwidth ? 'bg-white border-gray-300' : styles.card} ${isLowBandwidth ? '' : 'shadow-sm'}`}
         >
-          {/* Top Right: Reported Date and Time - Only for MISSING status */}
-          {status === 'MISSING' && missingReport && (
-            <div className="absolute top-2 right-2 text-right">
-              <p className="text-[10px] text-gray-500 sm:text-xs">
+          {/* Top Right: Reported Date and Time - For MISSING and FOUND statuses */}
+          {missingReport && (status === 'MISSING' || status === 'FOUND') && (
+            <div className="absolute top-2 right-2 text-right z-10">
+              <p className="text-[10px] text-gray-500 sm:text-xs whitespace-nowrap">
                 Reported: {format(new Date(missingReport.createdAt), 'MMM dd, yyyy HH:mm')}
               </p>
             </div>
@@ -111,8 +118,8 @@ export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProp
           </div>
 
           {/* Content */}
-          <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-1 flex-col gap-1 pr-20 sm:pr-24">
+            <div className="flex items-center gap-2 flex-wrap">
               <h3 className="truncate text-base font-semibold text-gray-900 sm:text-lg">
                 {primary.fullName}
               </h3>
@@ -194,7 +201,7 @@ export function StatusPersonCard({ result, locale = 'en' }: StatusPersonCardProp
             </div>
           )}
         </Card>
-      </button>
+      </div>
 
       {missingReport && (
         <MissingPersonModal
