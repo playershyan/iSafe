@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
@@ -21,7 +21,13 @@ export function AnnouncementBanner({
   locale = 'en',
 }: AnnouncementBannerProps) {
   const [isDismissed, setIsDismissed] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { isLowBandwidth } = useLowBandwidth();
+
+  // Fix hydration mismatch by only using low-bandwidth mode after mount
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   if (isDismissed || !text) {
     return null;
@@ -67,11 +73,11 @@ export function AnnouncementBanner({
             e.stopPropagation();
             setIsDismissed(true);
           }}
-          className={`flex-shrink-0 ${styles.text} ${isLowBandwidth ? '' : 'hover:opacity-70'} focus:outline-none focus:ring-2 focus:ring-offset-2`}
+          className={`flex-shrink-0 ${styles.text} ${isMounted && isLowBandwidth ? '' : 'hover:opacity-70'} focus:outline-none focus:ring-2 focus:ring-offset-2`}
           aria-label="Dismiss announcement"
         >
-          {!isLowBandwidth && <X className="h-5 w-5" />}
-          {isLowBandwidth && 'Close'}
+          {(!isMounted || !isLowBandwidth) && <X className="h-5 w-5" />}
+          {isMounted && isLowBandwidth && 'Close'}
         </button>
       )}
     </div>

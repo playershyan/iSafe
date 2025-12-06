@@ -4,6 +4,7 @@ import { HeroSearchBar } from '@/components/features/HeroSearchBar';
 import { StatsSection } from './StatsSection';
 import { HomePageButtons } from './HomePageButtons';
 import { AnnouncementBanner } from '@/components/features/AnnouncementBanner';
+import { HeroBanner } from '@/components/features/HeroBanner';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -17,6 +18,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const announcementHref = process.env.NEXT_PUBLIC_ANNOUNCEMENT_HREF || undefined;
   const announcementVariant = (process.env.NEXT_PUBLIC_ANNOUNCEMENT_VARIANT as 'info' | 'warning' | 'success' | 'error') || 'info';
   const announcementDismissible = process.env.NEXT_PUBLIC_ANNOUNCEMENT_DISMISSIBLE === 'true';
+
+  // Get hero banner images from environment variable (JSON format)
+  let heroBannerImages: Array<{ imageUrlDesktop: string; imageUrlMobile: string; linkUrl?: string; alt?: string }> = [];
+  try {
+    const bannerConfig = process.env.NEXT_PUBLIC_HERO_BANNER_IMAGES;
+    if (bannerConfig) {
+      heroBannerImages = JSON.parse(bannerConfig);
+    }
+  } catch (error) {
+    console.error('Error parsing hero banner images config:', error);
+  }
 
   return (
     <>
@@ -32,7 +44,14 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           />
         </div>
       )}
+
       <div className="mx-auto max-w-4xl px-4 py-6 md:py-12">
+        {/* Hero Banner - With margins */}
+        {heroBannerImages.length > 0 && (
+          <div className="mb-6 md:mb-12">
+            <HeroBanner images={heroBannerImages} height="medium" locale={locale} />
+          </div>
+        )}
         {/* Hero Section */}
       <div className="mb-6 text-center md:mb-12">
         <h1 className="text-2xl font-bold text-gray-900 md:text-[32px]">
