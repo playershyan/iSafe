@@ -17,7 +17,18 @@ function generateOTP(): string {
 
 export async function POST(request: NextRequest) {
   try {
-    const { phoneNumber, anonymousUserId } = await request.json()
+    let body
+    try {
+      body = await request.json()
+    } catch (parseError) {
+      console.error('Failed to parse request body:', parseError)
+      return NextResponse.json({ 
+        error: 'Invalid request body',
+        message: 'Request body must be valid JSON'
+      }, { status: 400 })
+    }
+
+    const { phoneNumber, anonymousUserId } = body
 
     if (!phoneNumber) {
       return NextResponse.json({ error: 'Phone number is required' }, { status: 400 })
@@ -42,7 +53,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Use admin client to bypass RLS for phone_verifications table
-    const adminClient = createAdminClient()
+    let adminClient
+    try {
+      adminClient = createAdminClient()
+    } catch (adminError) {
+      console.error('Failed to create admin client:', adminError)
+      return NextResponse.json({
+        error: 'Server configuration error',
+        details: process.env.NODE_ENV === 'development' 
+          ? (adminError instanceof Error ? adminError.message : 'Unknown error')
+          : undefined
+      }, { status: 500 })
+    }
 
     // For anonymous users, use anonymousUserId or null
     const userId = anonymousUserId || null
@@ -57,7 +79,11 @@ export async function POST(request: NextRequest) {
       .is('user_id', null) // Only check anonymous requests (user_id is null)
 
     if (countError) {
-      return NextResponse.json({ error: 'Database error' }, { status: 500 })
+      console.error('Database error checking rate limit:', countError)
+      return NextResponse.json({ 
+        error: 'Database error',
+        details: process.env.NODE_ENV === 'development' ? countError.message : undefined
+      }, { status: 500 })
     }
 
     if (recentOtps && recentOtps.length >= 3) {
@@ -91,9 +117,12 @@ export async function POST(request: NextRequest) {
       })
 
     if (insertError) {
+      console.error('Database error inserting OTP:', insertError)
       return NextResponse.json({
         error: 'Failed to generate OTP',
-        details: insertError
+        details: process.env.NODE_ENV === 'development' 
+          ? (insertError.message || JSON.stringify(insertError))
+          : undefined
       }, { status: 500 })
     }
 
@@ -117,7 +146,18 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    console.error('Send OTP anonymous error:', error)
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorStack = error instanceof Error ? error.stack : undefined
+
+    // Log full error details for debugging
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Production error details:', {
+        message: errorMessage,
+        stack: errorStack,
+        name: error instanceof Error ? error.name : undefined
+      })
+    }
 
     return NextResponse.json({
       error: 'Internal server error',
