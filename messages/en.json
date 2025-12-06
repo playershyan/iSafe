@@ -53,6 +53,10 @@
     "noResults": "No Match Found",
     "noResultsText": "We couldn't find anyone matching your search.",
     "tryAgain": "Try Different Search",
+    "noResultsFound": "No results found.",
+    "foundResults": "Found {count} result{plural}",
+    "foundResults_one": "Found {count} result",
+    "foundResults_other": "Found {count} results",
     "createPoster": "Create Missing Poster",
     "resultFound": "Found!",
     "location": "Location",
@@ -85,6 +89,7 @@
     "lastLocation": "Last Known Location",
     "district": "District",
     "selectDistrict": "Select District",
+    "selectGender": "Select Gender",
     "lastSeenDate": "Last Seen Date",
     "clothing": "Clothing Description",
     "clothingPlaceholder": "Describe what they were wearing...",
@@ -104,7 +109,23 @@
     "shareWhatsApp": "Share on WhatsApp",
     "shareFacebook": "Share on Facebook",
     "copyLink": "Copy Link",
-    "notification": "We'll notify you if someone is found"
+    "notification": "We'll notify you if someone is found",
+    "reported": "Reported",
+    "statusMissing": "Missing",
+    "statusFound": "Found",
+    "statusClosed": "Closed",
+    "ageLabel": "Age",
+    "lastSeen": "Last seen",
+    "lastSeenLocationLabel": "Last Seen Location",
+    "phone": "Phone",
+    "contact": "Contact",
+    "contactInformation": "Contact Information",
+    "description": "Description",
+    "physicalDescription": "Physical Description",
+    "share": "Share",
+    "copied": "Copied!",
+    "noReportsFound": "No missing person reports found.",
+    "reportAMissingPerson": "Report a Missing Person"
   },
   "poster": {
     "title": "Missing Person Poster",
@@ -144,7 +165,14 @@
     "staffOnly": "Staff Only",
     "staffOnlyText": "This area is restricted to authorized shelter staff. If you need to search for someone, please use the public search.",
     "needHelp": "Need help?",
-    "needHelpText": "Contact your shelter administrator if you don't have access codes or need assistance."
+    "needHelpText": "Contact your shelter administrator if you don't have access codes or need assistance.",
+    "govStaffTitle": "Gov Staff Login",
+    "govStaffSubtitle": "Enter your credentials to access the registration tools.",
+    "govStaffOnly": "Government staff only",
+    "govStaffOnlyText": "This section is intended only for verified government staff.",
+    "centerCode": "Center code",
+    "accessCode": "Access code",
+    "logIn": "Log in"
   },
   "register": {
     "title": "Register New Person",
@@ -409,6 +437,71 @@
       "phoneVerificationRequired": "Please verify your phone number first",
       "selectAtLeastOneClaim": "Please select at least one claim type",
       "confirmAllInfo": "Please confirm that all information is accurate"
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "nicRequired": "NIC is required",
+      "phoneRequired": "Phone is required",
+      "addressRequired": "Address is required",
+      "districtRequired": "District is required",
+      "divisionalSecretariatRequired": "Divisional Secretariat is required",
+      "gramaNiladhariRequired": "Grama Niladhari Division is required",
+      "selectAtLeastOneClaim": "Select at least one claim type",
+      "phoneVerificationRequired": "Phone verification is required"
+    },
+    "review": {
+      "labels": {
+        "name": "Name",
+        "nic": "NIC",
+        "phone": "Phone",
+        "address": "Address",
+        "district": "District",
+        "divisionalSecretariat": "DS",
+        "gramaNiladhari": "GN"
+      }
+    }
+  },
+  "pages": {
+    "about": {
+      "title": "About iSafe",
+      "whatIs": "What is iSafe",
+      "howItWorks": "How it Works",
+      "forFamilies": "For families searching",
+      "forReporting": "For reporting missing persons",
+      "forShelterStaff": "For shelter staff",
+      "emergencyContacts": "Emergency Contacts",
+      "disasterManagement": "Disaster Management Centre",
+      "policeEmergency": "Police Emergency",
+      "ambulance": "Ambulance"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "urgentAssistance": "For urgent assistance during a disaster, please use the emergency numbers listed below. For general inquiries about iSafe, you can reach us through the following channels.",
+      "emergencyContacts": "Emergency Contacts",
+      "generalInquiries": "General Inquiries",
+      "generalInquiriesText": "For questions about using iSafe or to provide feedback, please visit our",
+      "aboutPage": "About page",
+      "disasterManagement": "Disaster Management Centre",
+      "policeEmergency": "Police Emergency",
+      "ambulance": "Ambulance"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "dataCollection": "Data Collection",
+      "dataUsage": "Data Usage",
+      "dataSecurity": "Data Security",
+      "dataRetention": "Data Retention",
+      "yourRights": "Your Rights",
+      "consent": "Consent"
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "purpose": "Purpose",
+      "acceptableUse": "Acceptable Use",
+      "accuracy": "Accuracy of Information",
+      "noWarranty": "No Warranty",
+      "limitation": "Limitation of Liability",
+      "changes": "Changes to Terms"
     }
   },
   "errors": {

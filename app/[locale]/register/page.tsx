@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { verifyShelterToken } from '@/lib/auth/jwt';
 import { ShelterRegistrationForm } from '@/components/forms/ShelterRegistrationForm';
 import { Alert } from '@/components/ui';
@@ -13,6 +14,7 @@ interface RegisterPageProps {
 
 export default async function RegisterPage({ params }: RegisterPageProps) {
   const { locale } = await params;
+  const t = await getTranslations('register');
   
   // Get token from cookies
   const cookieStore = await cookies();
@@ -43,7 +45,7 @@ export default async function RegisterPage({ params }: RegisterPageProps) {
 
       {/* Stats Badge */}
       <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-900">
-        Registered today: 0
+        {t('registeredToday')}: 0
       </div>
 
       <ShelterRegistrationForm

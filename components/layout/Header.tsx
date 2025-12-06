@@ -36,12 +36,6 @@ export async function Header({ locale }: HeaderProps) {
             >
               {t('reportMissing')}
             </Link>
-            <Link
-              href={`/${locale}/compensation/apply`}
-              className="rounded text-base text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base"
-            >
-              {t('compensation')}
-            </Link>
             <UserIconButton locale={locale} />
           <LanguageToggle />
           </div>

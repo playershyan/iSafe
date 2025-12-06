@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import { User, MapPin, Phone, Calendar, FileText, Share2 } from 'lucide-react';
 import { MissingPersonReport } from './MissingPersonCard';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface MissingPersonCardNoPhotoProps {
@@ -19,19 +20,46 @@ const statusColors = {
 };
 
 export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNoPhotoProps) {
+  const t = useTranslations('missing');
   const { isLowBandwidth } = useLowBandwidth();
   const lastSeenDate = new Date(report.lastSeenDate);
   const createdAt = new Date(report.createdAt);
   const [shareSuccess, setShareSuccess] = useState(false);
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'MISSING':
+        return t('statusMissing');
+      case 'FOUND':
+        return t('statusFound');
+      case 'CLOSED':
+        return t('statusClosed');
+      default:
+        return status;
+    }
+  };
+
+  const getGenderLabel = (gender: string) => {
+    switch (gender) {
+      case 'MALE':
+        return t('male');
+      case 'FEMALE':
+        return t('female');
+      case 'OTHER':
+        return t('other');
+      default:
+        return gender;
+    }
+  };
+
   const handleShare = async () => {
     const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}/missing`;
-    const shareText = `Missing Person: ${report.fullName}\nAge: ${report.age} | ${report.gender}\nLast seen: ${report.lastSeenLocation}${report.lastSeenDistrict ? `, ${report.lastSeenDistrict}` : ''}\nContact: ${report.reporterPhone}\n\nView more details: ${shareUrl}`;
+    const shareText = `${t('title')}: ${report.fullName}\n${t('ageLabel')}: ${report.age} | ${getGenderLabel(report.gender)}\n${t('lastSeen')}: ${report.lastSeenLocation}${report.lastSeenDistrict ? `, ${report.lastSeenDistrict}` : ''}\n${t('contact')}: ${report.reporterPhone}\n\nView more details: ${shareUrl}`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: `Missing Person: ${report.fullName}`,
+          title: `${t('title')}: ${report.fullName}`,
           text: shareText,
           url: shareUrl,
         });
@@ -61,12 +89,12 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
       {/* Top Right: Reported Date and Status Badge - Desktop */}
       <div className="hidden md:flex absolute top-4 right-4 items-center gap-3">
         <p className="text-xs text-gray-500">
-          Reported: {format(createdAt, 'MMM dd, yyyy HH:mm')}
+          {t('reported')}: {format(createdAt, 'MMM dd, yyyy HH:mm')}
         </p>
         <span
           className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[report.status]}`}
         >
-          {report.status}
+          {getStatusLabel(report.status)}
         </span>
       </div>
 
@@ -74,7 +102,7 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
       <span
         className={`md:hidden absolute top-4 right-4 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[report.status]}`}
       >
-        {report.status}
+        {getStatusLabel(report.status)}
       </span>
 
       {/* Icon Header - Prominent */}
@@ -94,7 +122,7 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
           <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
             <span className="flex items-center gap-1">
               {!isLowBandwidth && <User className="h-4 w-4" />}
-              Age: {report.age} | {report.gender}
+              {t('ageLabel')}: {report.age} | {getGenderLabel(report.gender)}
             </span>
           </div>
         </div>
@@ -102,7 +130,7 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
         {/* Mobile: Reported Date - Below Name */}
         <div className="md:hidden text-center">
           <p className="text-xs text-gray-500">
-            Reported: {format(createdAt, 'MMM dd, yyyy HH:mm')}
+            {t('reported')}: {format(createdAt, 'MMM dd, yyyy HH:mm')}
           </p>
         </div>
 
@@ -114,7 +142,7 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
           <div className="flex items-start gap-3">
             {!isLowBandwidth && <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />}
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-700 mb-1">{isLowBandwidth ? 'Last Seen Location: ' : 'Last Seen Location'}</p>
+              <p className="text-sm font-semibold text-gray-700 mb-1">{isLowBandwidth ? `${t('lastSeenLocationLabel')}: ` : t('lastSeenLocationLabel')}</p>
               <p className="text-base font-medium text-gray-900 mb-1">{report.lastSeenLocation}</p>
               {report.lastSeenDistrict && (
                 <p className="text-sm text-gray-600 mb-2">{report.lastSeenDistrict}</p>
@@ -133,7 +161,7 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
             <div className="flex items-start gap-3">
               {!isLowBandwidth && <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />}
               <div className="flex-1">
-                <p className="text-sm font-semibold text-blue-900 mb-1">Physical Description</p>
+                <p className="text-sm font-semibold text-blue-900 mb-1">{t('physicalDescription')}</p>
                 <p className="text-sm text-blue-800">{report.clothing}</p>
               </div>
             </div>
@@ -145,7 +173,7 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
           <div className="flex items-center gap-3">
             {!isLowBandwidth && <Phone className="h-5 w-5 text-green-600 flex-shrink-0" />}
             <div>
-              <p className="text-sm font-semibold text-green-900 mb-1">{isLowBandwidth ? 'Contact Information: ' : 'Contact Information'}</p>
+              <p className="text-sm font-semibold text-green-900 mb-1">{isLowBandwidth ? `${t('contactInformation')}: ` : t('contactInformation')}</p>
               <p className="text-base font-medium text-green-800">{report.reporterPhone}</p>
             </div>
           </div>
@@ -158,14 +186,14 @@ export function MissingPersonCardNoPhoto({ report, locale }: MissingPersonCardNo
             className="flex flex-1 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             {!isLowBandwidth && <Share2 className="h-5 w-5" />}
-            {shareSuccess ? 'Copied!' : 'Share'}
+            {shareSuccess ? t('copied') : t('share')}
           </button>
           <a
             href={`tel:${report.reporterPhone}`}
             className="flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             {!isLowBandwidth && <Phone className="h-5 w-5" />}
-            Contact
+            {t('contact')}
           </a>
         </div>
       </div>

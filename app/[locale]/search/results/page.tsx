@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 import { StatusPersonCard } from '@/components/features/StatusPersonCard';
 import { HeroSearchBar } from '@/components/features/HeroSearchBar';
 import { unifiedSearchByName, unifiedSearchByNIC } from '@/lib/services/searchService';
@@ -12,6 +13,8 @@ interface SearchResultsPageProps {
 
 export default async function SearchResultsPage({ params, searchParams }: SearchResultsPageProps) {
   const { locale } = await params;
+  const t = await getTranslations('search');
+  const tCommon = await getTranslations('common');
   const { type, query, nic } = await searchParams;
 
   let results: any[] = [];
@@ -34,7 +37,7 @@ export default async function SearchResultsPage({ params, searchParams }: Search
           href={`/${locale}`}
           className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          ← Back to Home
+          ← {tCommon('backToHome')}
         </Link>
       </div>
 
@@ -46,21 +49,21 @@ export default async function SearchResultsPage({ params, searchParams }: Search
       {/* Results */}
       {results.length === 0 ? (
         <div className="rounded-lg border border-gray-200 bg-white px-6 py-12 text-center">
-          <p className="text-gray-500 mb-4">No results found.</p>
+          <p className="text-gray-500 mb-4">{t('noResultsFound')}</p>
           <p className="text-sm text-gray-400 mb-4">
-            We couldn't find anyone matching your search.
+            {t('noResultsText')}
           </p>
           <Link
             href={`/${locale}`}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
-            Try a Different Search
+            {t('tryAgain')}
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            Found {results.length} result{results.length !== 1 ? 's' : ''}
+            {t('foundResults', { count: results.length })}
           </p>
           {results.map((result) => (
             <StatusPersonCard key={result.id} result={result} locale={locale} />
