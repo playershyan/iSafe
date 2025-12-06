@@ -22,6 +22,7 @@
     "search": "Search",
     "reportMissing": "Missing",
     "register": "Register",
+    "compensation": "Compensation",
     "about": "About",
     "contact": "Contact",
     "privacy": "Privacy",
@@ -200,6 +201,215 @@
     "MINOR_INJURIES": "Minor Injuries",
     "REQUIRES_CARE": "Requires Medical Care",
     "CRITICAL": "Critical"
+  },
+  "compensation": {
+    "title": "Apply for Disaster Compensation",
+    "subtitle": "Government Relief Program for Emergency Disaster (Gazette No. 2464/30 dated 28-11-2025)",
+    "description": "Apply for government compensation for damages caused by the recent disaster. Select all applicable claims based on your situation.",
+    "steps": {
+      "personal": "Personal Information",
+      "location": "Location Details",
+      "claims": "Select Claims",
+      "verification": "Phone Verification",
+      "review": "Review & Submit"
+    },
+    "personalInfo": {
+      "title": "Applicant Information",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "Enter your full name as per NIC",
+      "nic": "National Identity Card (NIC)",
+      "nicPlaceholder": "e.g., 199512345678 or 951234567V",
+      "phone": "Phone Number",
+      "phonePlaceholder": "e.g., 0771234567",
+      "address": "Complete Address",
+      "addressPlaceholder": "Enter your complete address",
+      "addressHint": "Provide detailed address including street, area, and landmarks"
+    },
+    "locationInfo": {
+      "title": "Location Information",
+      "description": "Select your administrative location to help us process your application",
+      "district": "District",
+      "selectDistrict": "Select your district",
+      "divisionalSecretariat": "Divisional Secretariat",
+      "selectDS": "Select divisional secretariat",
+      "gramaNiladhari": "Grama Niladhari Division",
+      "selectGN": "Select GN division"
+    },
+    "claimsSelection": {
+      "title": "Select Your Claims",
+      "description": "Check all compensation types you are eligible for based on damages you suffered",
+      "selectAtLeastOne": "Please select at least one claim type",
+      "selectedClaims": "Selected Claims: {count}"
+    },
+    "claims": {
+      "CLEANING_ALLOWANCE": {
+        "title": "Cleaning & Resettlement Allowance",
+        "description": "One-time payment for cleaning and safely resettling in your house",
+        "amount": "Rs. 25,000 per housing unit"
+      },
+      "KITCHEN_UTENSILS": {
+        "title": "Kitchen Utensils Allowance",
+        "description": "One-time payment to purchase essential kitchen items",
+        "amount": "Rs. 50,000 per housing unit"
+      },
+      "LIVELIHOOD_ALLOWANCE": {
+        "title": "Livelihood Allowance",
+        "description": "Monthly allowance for 3 months (Dec 2025 - Feb 2026) for families unable to continue livelihoods",
+        "amount": "Rs. 25,000 (2 or fewer members) / Rs. 50,000 (more than 2 members)"
+      },
+      "RENTAL_ALLOWANCE": {
+        "title": "Rental Allowance",
+        "description": "Monthly rental allowance for house owners who lost their houses",
+        "amount": "Rs. 25,000 per month (max 6 months)"
+      },
+      "CROP_DAMAGE_PADDY": {
+        "title": "Crop Damage - Paddy/Grains/Maize",
+        "description": "Allowance for crop damages or replanting of paddy, grains, maize, and field crops",
+        "amount": "Rs. 150,000 per hectare"
+      },
+      "CROP_DAMAGE_VEGETABLES": {
+        "title": "Crop Damage - Vegetables",
+        "description": "Allowance for crop damages or replanting of vegetable cultivations",
+        "amount": "Rs. 200,000 per hectare"
+      },
+      "LIVESTOCK_FARM": {
+        "title": "Livestock Farm Damage",
+        "description": "Allowance for livestock farms (only for registered farm owners)",
+        "amount": "Rs. 200,000 per farm owner"
+      },
+      "SMALL_ENTERPRISE": {
+        "title": "Small & Micro Enterprises",
+        "description": "Allowance to bring enterprises to a condition suitable for recommencing operations",
+        "amount": "Rs. 200,000 per unit"
+      },
+      "FISHING_BOAT": {
+        "title": "Fishing Boat Damage",
+        "description": "Damage compensation for disaster-affected fishing boats",
+        "amount": "Maximum Rs. 400,000 per fishing boat"
+      },
+      "SCHOOL_SUPPLIES": {
+        "title": "School Supplies",
+        "description": "Allowance for affected school children to purchase books and clothing",
+        "amount": "Rs. 15,000 per school child"
+      },
+      "BUSINESS_BUILDING": {
+        "title": "Business Building Damage",
+        "description": "Compensation for damaged business buildings (based on damage assessment)",
+        "amount": "Up to Rs. 5,000,000 per unit"
+      },
+      "NEW_HOUSE_CONSTRUCTION": {
+        "title": "New House Construction",
+        "description": "Allowance to build a new house for completely damaged and uninhabitable houses",
+        "amount": "Rs. 5,000,000 per housing unit"
+      },
+      "LAND_PURCHASE": {
+        "title": "Land Purchase",
+        "description": "Allowance to purchase suitable land to build a new house when government land cannot be provided",
+        "amount": "Maximum Rs. 5,000,000 per housing unit"
+      },
+      "HOUSE_REPAIR": {
+        "title": "House Repair",
+        "description": "Allowance to repair partially damaged houses (based on damage assessment)",
+        "amount": "Up to Rs. 2,500,000"
+      },
+      "DEATH_DISABILITY": {
+        "title": "Death or Disability",
+        "description": "Compensation to the closest relative of a person who died or became completely disabled",
+        "amount": "Rs. 1,000,000 per person"
+      }
+    },
+    "verification": {
+      "title": "Phone Verification",
+      "description": "Verify your phone number to receive updates about your application",
+      "sendOTP": "Send OTP",
+      "verifyOTP": "Verify OTP",
+      "otpSent": "OTP sent to {phone}",
+      "otpPlaceholder": "Enter 6-digit OTP",
+      "resendOTP": "Resend OTP",
+      "phoneVerified": "Phone number verified",
+      "verificationRequired": "Phone verification is required to submit your application"
+    },
+    "review": {
+      "title": "Review Your Application",
+      "description": "Please review all information carefully before submitting",
+      "applicantDetails": "Applicant Details",
+      "locationDetails": "Location Details",
+      "selectedClaims": "Selected Claims",
+      "claimsCount": "{count} claim(s) selected",
+      "editSection": "Edit",
+      "confirmSubmit": "I confirm that all information provided is accurate",
+      "submitApplication": "Submit Application"
+    },
+    "success": {
+      "title": "Application Submitted Successfully!",
+      "message": "Your disaster compensation application has been submitted.",
+      "applicationCode": "Application Code",
+      "saveCode": "Please save this code for your records",
+      "nextSteps": "What happens next?",
+      "step1": "Your application will be reviewed by the relevant authorities",
+      "step2": "You will be contacted via phone if you are eligible",
+      "step3": "Additional documents may be requested during verification",
+      "smsConfirmation": "A confirmation SMS has been sent to your phone number",
+      "contactInfo": "For inquiries, contact:",
+      "contactMinistry": "Ministry of Defence: 011-2430860",
+      "contactDMC": "Disaster Management Centre: 117",
+      "backToHome": "Back to Home"
+    },
+    "dashboard": {
+      "title": "Compensation Applications Dashboard",
+      "stats": "Statistics",
+      "filters": "Filters",
+      "applications": "Applications",
+      "totalApplications": "Total Applications",
+      "pendingApplications": "Pending",
+      "approvedApplications": "Approved",
+      "rejectedApplications": "Rejected",
+      "filterByStatus": "Filter by Status",
+      "filterByDistrict": "Filter by District",
+      "filterByClaimType": "Filter by Claim Type",
+      "searchPlaceholder": "Search by name, NIC, or application code",
+      "exportCSV": "Export to CSV",
+      "applicationCode": "Application Code",
+      "applicantName": "Applicant Name",
+      "applicantNIC": "NIC",
+      "applicantPhone": "Phone",
+      "location": "Location",
+      "claims": "Claims",
+      "status": "Status",
+      "submittedDate": "Submitted",
+      "actions": "Actions",
+      "viewDetails": "View Details",
+      "updateStatus": "Update Status",
+      "noApplications": "No applications found",
+      "pagination": "Page {page} of {total}",
+      "loadingApplications": "Loading applications..."
+    },
+    "status": {
+      "PENDING": "Pending",
+      "UNDER_REVIEW": "Under Review",
+      "APPROVED": "Approved",
+      "REJECTED": "Rejected",
+      "PAID": "Paid"
+    },
+    "admin": {
+      "login": "Admin Login",
+      "username": "Username",
+      "password": "Password",
+      "loginButton": "Login",
+      "logout": "Logout",
+      "loginRequired": "Please login to access the dashboard",
+      "invalidCredentials": "Invalid username or password"
+    },
+    "messages": {
+      "submitSuccess": "Application submitted successfully! Your application code is: {code}",
+      "submitError": "Failed to submit application. Please try again.",
+      "updateSuccess": "Application status updated successfully",
+      "updateError": "Failed to update application status",
+      "loadError": "Failed to load applications",
+      "phoneVerificationRequired": "Please verify your phone number first",
+      "selectAtLeastOneClaim": "Please select at least one claim type",
+      "confirmAllInfo": "Please confirm that all information is accurate"
+    }
   },
   "errors": {
     "required": "This field is required",

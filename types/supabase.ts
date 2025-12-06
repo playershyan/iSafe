@@ -273,6 +273,164 @@ export type Database = {
           by_district?: Json
         }
       }
+      administrative_divisions: {
+        Row: {
+          id: string
+          district: string
+          divisional_secretariat: string
+          grama_niladhari_division: string
+          gn_code: string | null
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          district: string
+          divisional_secretariat: string
+          grama_niladhari_division: string
+          gn_code?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          district?: string
+          divisional_secretariat?: string
+          grama_niladhari_division?: string
+          gn_code?: string | null
+          is_active?: boolean
+          created_at?: string
+        }
+      }
+      compensation_applications: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          applicant_name: string
+          applicant_nic: string
+          applicant_phone: string
+          applicant_address: string
+          district: string
+          divisional_secretariat: string
+          grama_niladhari_division: string
+          status: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED' | 'PAID'
+          admin_notes: string | null
+          reviewed_by: string | null
+          reviewed_at: string | null
+          application_code: string
+          submitted_from_ip: string | null
+          phone_verified: boolean
+          sms_sent: boolean
+          sms_sent_at: string | null
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          applicant_name: string
+          applicant_nic: string
+          applicant_phone: string
+          applicant_address: string
+          district: string
+          divisional_secretariat: string
+          grama_niladhari_division: string
+          status?: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED' | 'PAID'
+          admin_notes?: string | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          application_code: string
+          submitted_from_ip?: string | null
+          phone_verified?: boolean
+          sms_sent?: boolean
+          sms_sent_at?: string | null
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          applicant_name?: string
+          applicant_nic?: string
+          applicant_phone?: string
+          applicant_address?: string
+          district?: string
+          divisional_secretariat?: string
+          grama_niladhari_division?: string
+          status?: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED' | 'PAID'
+          admin_notes?: string | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          application_code?: string
+          submitted_from_ip?: string | null
+          phone_verified?: boolean
+          sms_sent?: boolean
+          sms_sent_at?: string | null
+        }
+      }
+      compensation_claims: {
+        Row: {
+          id: string
+          application_id: string
+          claim_type: 'CLEANING_ALLOWANCE' | 'KITCHEN_UTENSILS' | 'LIVELIHOOD_ALLOWANCE' | 'RENTAL_ALLOWANCE' | 'CROP_DAMAGE_PADDY' | 'CROP_DAMAGE_VEGETABLES' | 'LIVESTOCK_FARM' | 'SMALL_ENTERPRISE' | 'FISHING_BOAT' | 'SCHOOL_SUPPLIES' | 'BUSINESS_BUILDING' | 'NEW_HOUSE_CONSTRUCTION' | 'LAND_PURCHASE' | 'HOUSE_REPAIR' | 'DEATH_DISABILITY'
+          claim_status: 'PENDING' | 'APPROVED' | 'REJECTED'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          application_id: string
+          claim_type: 'CLEANING_ALLOWANCE' | 'KITCHEN_UTENSILS' | 'LIVELIHOOD_ALLOWANCE' | 'RENTAL_ALLOWANCE' | 'CROP_DAMAGE_PADDY' | 'CROP_DAMAGE_VEGETABLES' | 'LIVESTOCK_FARM' | 'SMALL_ENTERPRISE' | 'FISHING_BOAT' | 'SCHOOL_SUPPLIES' | 'BUSINESS_BUILDING' | 'NEW_HOUSE_CONSTRUCTION' | 'LAND_PURCHASE' | 'HOUSE_REPAIR' | 'DEATH_DISABILITY'
+          claim_status?: 'PENDING' | 'APPROVED' | 'REJECTED'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          application_id?: string
+          claim_type?: 'CLEANING_ALLOWANCE' | 'KITCHEN_UTENSILS' | 'LIVELIHOOD_ALLOWANCE' | 'RENTAL_ALLOWANCE' | 'CROP_DAMAGE_PADDY' | 'CROP_DAMAGE_VEGETABLES' | 'LIVESTOCK_FARM' | 'SMALL_ENTERPRISE' | 'FISHING_BOAT' | 'SCHOOL_SUPPLIES' | 'BUSINESS_BUILDING' | 'NEW_HOUSE_CONSTRUCTION' | 'LAND_PURCHASE' | 'HOUSE_REPAIR' | 'DEATH_DISABILITY'
+          claim_status?: 'PENDING' | 'APPROVED' | 'REJECTED'
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      compensation_admins: {
+        Row: {
+          id: string
+          username: string
+          password_hash: string
+          full_name: string
+          email: string | null
+          role: 'ADMIN' | 'SUPER_ADMIN'
+          is_active: boolean
+          last_login_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          username: string
+          password_hash: string
+          full_name: string
+          email?: string | null
+          role?: 'ADMIN' | 'SUPER_ADMIN'
+          is_active?: boolean
+          last_login_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          username?: string
+          password_hash?: string
+          full_name?: string
+          email?: string | null
+          role?: 'ADMIN' | 'SUPER_ADMIN'
+          is_active?: boolean
+          last_login_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -285,6 +443,10 @@ export type Database = {
       health_status: 'HEALTHY' | 'MINOR_INJURIES' | 'REQUIRES_CARE' | 'CRITICAL'
       missing_status: 'MISSING' | 'FOUND' | 'CLOSED'
       match_method: 'MANUAL' | 'AUTOMATIC' | 'PHOTO_MATCH'
+      compensation_status: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED' | 'PAID'
+      claim_type: 'CLEANING_ALLOWANCE' | 'KITCHEN_UTENSILS' | 'LIVELIHOOD_ALLOWANCE' | 'RENTAL_ALLOWANCE' | 'CROP_DAMAGE_PADDY' | 'CROP_DAMAGE_VEGETABLES' | 'LIVESTOCK_FARM' | 'SMALL_ENTERPRISE' | 'FISHING_BOAT' | 'SCHOOL_SUPPLIES' | 'BUSINESS_BUILDING' | 'NEW_HOUSE_CONSTRUCTION' | 'LAND_PURCHASE' | 'HOUSE_REPAIR' | 'DEATH_DISABILITY'
+      claim_status: 'PENDING' | 'APPROVED' | 'REJECTED'
+      admin_role: 'ADMIN' | 'SUPER_ADMIN'
     }
   }
 }
