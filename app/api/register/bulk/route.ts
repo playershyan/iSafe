@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { verifyShelterToken } from '@/lib/auth/jwt';
 import { generateId } from '@/lib/utils/helpers';
+import { findMatches, sendNotificationsForMatches } from '@/lib/services/matchService';
 
 const personSchema = z.object({
   fullName: z.string().min(2).max(100),
@@ -87,6 +88,38 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Check for matches and send notifications for each person (non-blocking)
+    // Process in background - don't wait for completion
+    Promise.all(
+      insertedPersons.map(async (person) => {
+        try {
+          // Find potential matches for this person
+          const matches = await findMatches({
+            fullName: person.full_name,
+            age: person.age,
+            gender: person.gender,
+            nic: person.nic || undefined,
+          });
+
+          // Send notifications if matches found
+          if (matches && matches.length > 0) {
+            await sendNotificationsForMatches(
+              person.id,
+              person.full_name,
+              matches,
+              person.shelter_id
+            );
+          }
+        } catch (error) {
+          // Log error but don't fail - continue with other persons
+          console.error(`Error processing matches for person ${person.id}:`, error);
+        }
+      })
+    ).catch((error) => {
+      // Log overall error but don't throw
+      console.error('Error in background match processing:', error);
+    });
 
     return NextResponse.json({
       success: true,
