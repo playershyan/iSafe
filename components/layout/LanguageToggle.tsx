@@ -30,16 +30,16 @@ export function LanguageToggle() {
           <button
             onClick={() => handleLanguageChange(lang.code)}
             className={clsx(
-              'rounded px-2 py-1 text-sm font-medium transition-colors',
-              'text-gray-600 hover:text-gray-900 hover:bg-gray-100',
-              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+              'rounded px-2 py-1 text-sm font-semibold transition-colors',
+              'text-white hover:text-white hover:bg-primary-dark',
+              'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary'
             )}
             aria-label={`Switch to ${lang.name}`}
           >
             {lang.label}
           </button>
           {index < otherLanguages.length - 1 && (
-            <span className="mx-1 text-gray-400" aria-hidden="true">
+            <span className="mx-1 text-white/60" aria-hidden="true">
               |
             </span>
           )}

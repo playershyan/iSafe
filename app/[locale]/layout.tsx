@@ -39,13 +39,13 @@ export default async function LocaleLayout({
         <HtmlLangSetter />
         <AnonymousUserInitializer />
         <Header locale={locale} />
-        {/* Language Toggle - Fixed position at top right of page body */}
-        <div className="fixed top-20 right-4 z-40 md:top-4">
-          <div className="rounded-lg bg-white shadow-md border border-gray-200 px-3 py-2">
+        <main className="flex-1">{children}</main>
+        {/* Language Toggle - Fixed position at bottom right */}
+        <div className="fixed bottom-4 right-4 z-40">
+          <div className="rounded-lg bg-primary shadow-lg border-2 border-primary-dark px-3 py-2">
             <LanguageToggle />
           </div>
         </div>
-        <main className="flex-1">{children}</main>
         <Footer />
       </LowBandwidthProvider>
     </NextIntlClientProvider>
