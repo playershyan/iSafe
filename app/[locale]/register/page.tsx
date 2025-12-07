@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { verifyShelterToken } from '@/lib/auth/jwt';
 import { ShelterRegistrationForm } from '@/components/forms/ShelterRegistrationForm';
-import { Alert } from '@/components/ui';
+import { Alert } from '@/components/ui/Alert';
 import { HeaderDisplay } from './HeaderDisplay';
 
 interface RegisterPageProps {

@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui';
+import { Card } from '@/components/ui/Card';
 import { format } from 'date-fns';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import { User, MapPin, Phone, Edit, Trash2, CheckCircle } from 'lucide-react';
 import { MissingPersonReport } from './MissingPersonCard';
-import { Button, Alert } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Alert } from '@/components/ui/Alert';
 import { EditReportModal } from './EditReportModal';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 

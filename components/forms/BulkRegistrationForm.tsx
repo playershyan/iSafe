@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Trash2, Plus, AlertCircle } from 'lucide-react';
-import { Button, Alert } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Alert } from '@/components/ui/Alert';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface PersonRow {

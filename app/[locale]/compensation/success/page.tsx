@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 
 export default function CompensationSuccessPage({

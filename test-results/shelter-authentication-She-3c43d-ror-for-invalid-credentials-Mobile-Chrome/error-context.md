@@ -1,0 +1,85 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "iSafe Home" [ref=e5] [cursor=pointer]:
+        - /url: /en
+        - text: iSafe
+      - generic [ref=e6]:
+        - link "Home" [ref=e7] [cursor=pointer]:
+          - /url: /en
+        - link "Missing" [ref=e8] [cursor=pointer]:
+          - /url: /en/missing
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - link "← Back to Home" [ref=e12] [cursor=pointer]:
+        - /url: /en
+      - generic [ref=e13]:
+        - heading "Shelter Staff Login" [level=1] [ref=e14]
+        - paragraph [ref=e15]: Enter your shelter code to register new arrivals
+      - alert [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: ⚠️
+          - generic [ref=e19]:
+            - heading "Staff Only" [level=3] [ref=e20]
+            - generic [ref=e21]: This area is restricted to authorized shelter staff. If you need to search for someone, please use the public search.
+      - generic [ref=e23]:
+        - alert [ref=e24]:
+          - generic [ref=e25]:
+            - generic [ref=e26]: ❌
+            - generic [ref=e27]:
+              - heading "Error" [level=3] [ref=e28]
+              - generic [ref=e29]: Invalid credentials
+        - generic [ref=e30]:
+          - generic [ref=e31]: Shelter Code *
+          - textbox "Shelter Code *" [ref=e32]:
+            - /placeholder: CMB-CC-001
+            - text: INVALID-CODE
+        - generic [ref=e33]:
+          - generic [ref=e34]: Access code *
+          - textbox "Access code *" [ref=e35]:
+            - /placeholder: ••••••
+            - text: INVALID-PASS
+        - alert [ref=e36]:
+          - generic [ref=e37]:
+            - generic [ref=e38]: ℹ️
+            - generic [ref=e40]: Your shelter administrator should have provided you with these codes
+        - button "Login" [ref=e41] [cursor=pointer]
+      - generic [ref=e42]:
+        - heading "Need help?" [level=3] [ref=e43]
+        - paragraph [ref=e44]: Contact your shelter administrator if you don't have access codes or need assistance.
+  - group "Language selection" [ref=e47]:
+    - generic [ref=e48]:
+      - button "Switch to Sinhala" [ref=e49] [cursor=pointer]: සිං
+      - generic [ref=e50]: "|"
+    - button "Switch to Tamil" [ref=e52] [cursor=pointer]: த
+  - contentinfo [ref=e53]:
+    - generic [ref=e55]:
+      - navigation [ref=e56]:
+        - link "About" [ref=e57] [cursor=pointer]:
+          - /url: /en/about
+        - generic [ref=e58]: "|"
+        - link "Contact" [ref=e59] [cursor=pointer]:
+          - /url: /en/contact
+        - generic [ref=e60]: "|"
+        - link "Privacy" [ref=e61] [cursor=pointer]:
+          - /url: /en/privacy
+        - generic [ref=e62]: "|"
+        - link "Terms" [ref=e63] [cursor=pointer]:
+          - /url: /en/terms
+      - paragraph [ref=e64]: © 2025 iSafe. All rights reserved.
+  - generic [ref=e69] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e70]:
+      - img [ref=e71]
+    - generic [ref=e74]:
+      - button "Open issues overlay" [ref=e75]:
+        - generic [ref=e76]:
+          - generic [ref=e77]: "0"
+          - generic [ref=e78]: "1"
+        - generic [ref=e79]: Issue
+      - button "Collapse issues badge" [ref=e80]:
+        - img [ref=e81]
+  - alert [ref=e83]
+```

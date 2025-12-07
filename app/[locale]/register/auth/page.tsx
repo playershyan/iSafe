@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { ShelterAuthForm } from '@/components/forms/ShelterAuthForm';
-import { Alert } from '@/components/ui';
+import { Alert } from '@/components/ui/Alert';
 
 export default async function ShelterAuthPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

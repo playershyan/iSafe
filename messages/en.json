@@ -386,7 +386,8 @@
       "contactInfo": "For inquiries, contact:",
       "contactMinistry": "Ministry of Defence: 011-2430860",
       "contactDMC": "Disaster Management Centre: 117",
-      "backToHome": "Back to Home"
+      "backToHome": "Back to Home",
+      "smsMessage": "Your disaster compensation application has been submitted successfully. Application Code: {applicationCode}. The relevant authorities will contact you if you are eligible. For inquiries: Ministry of Defence 011-2430860, Disaster Management Centre 117."
     },
     "dashboard": {
       "title": "Compensation Applications Dashboard",

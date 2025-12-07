@@ -22,6 +22,7 @@ export interface CreateApplicationData {
   claims: ClaimType[];
   phoneVerified: boolean;
   submittedFromIp?: string;
+  locale?: string;
 }
 
 export interface ApplicationWithClaims extends CompensationApplication {
@@ -87,6 +88,7 @@ export async function createApplication(
         application_code: applicationCode,
         phone_verified: data.phoneVerified,
         submitted_from_ip: data.submittedFromIp,
+        locale: data.locale || 'en',
         status: 'PENDING',
       })
       .select()

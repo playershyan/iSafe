@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Edit, Download, Trash2, Save, X } from 'lucide-react';
-import jsPDF from 'jspdf';
-import { Button, Alert } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Alert } from '@/components/ui/Alert';
 
 interface Person {
   id: string;
@@ -182,8 +182,13 @@ export function SearchablePeopleTable({ persons }: SearchablePeopleTableProps) {
     try {
       setError(null);
       
-      // Dynamically import jspdf-autotable
-      const autoTableModule = await import('jspdf-autotable');
+      // Dynamically import jspdf and jspdf-autotable to reduce initial bundle size
+      const [jsPDFModule, autoTableModule] = await Promise.all([
+        import('jspdf'),
+        import('jspdf-autotable')
+      ]);
+      
+      const jsPDF = jsPDFModule.default;
       const autoTable = autoTableModule.autoTable || autoTableModule.default;
       
       if (typeof autoTable !== 'function') {

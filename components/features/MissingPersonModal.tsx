@@ -1,7 +1,8 @@
 'use client';
 
 import { UnifiedSearchResult } from '@/types';
-import { Button, Card } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { format } from 'date-fns';
 import { formatPhoneNumber } from '@/lib/utils/helpers';
 import OptimizedImage from '@/components/ui/OptimizedImage';

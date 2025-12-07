@@ -1,0 +1,135 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "iSafe Home" [ref=e5] [cursor=pointer]:
+        - /url: /en
+        - text: iSafe
+      - generic [ref=e6]:
+        - link "Home" [ref=e7] [cursor=pointer]:
+          - /url: /en
+        - link "Missing" [ref=e8] [cursor=pointer]:
+          - /url: /en/missing
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - link "← Back to Home" [ref=e12] [cursor=pointer]:
+        - /url: /en
+      - generic [ref=e13]:
+        - heading "Report Missing Person" [level=2] [ref=e14]
+        - generic [ref=e15]:
+          - generic [ref=e16]:
+            - text: Photo
+            - generic [ref=e17]: (optional)
+          - generic [ref=e18]:
+            - button "Upload Photo JPG, PNG or WebP. Max 5MB. Will be compressed automatically." [ref=e19]
+            - generic [ref=e21] [cursor=pointer]:
+              - generic [ref=e22]: 📷
+              - generic [ref=e23]: Upload Photo
+              - generic [ref=e24]: JPG, PNG or WebP. Max 5MB. Will be compressed automatically.
+          - paragraph [ref=e25]: Please upload a JPG, PNG, or WebP image
+        - generic [ref=e26]:
+          - heading "Person Details" [level=3] [ref=e27]
+          - generic [ref=e28]:
+            - generic [ref=e29]: Full Name*
+            - textbox "Full Namerequired" [ref=e30]:
+              - /placeholder: e.g., Nimal Perera
+          - generic [ref=e31]:
+            - generic [ref=e32]: Age*
+            - spinbutton "Agerequired" [ref=e33]
+          - generic [ref=e34]:
+            - generic [ref=e35]: Gender *
+            - combobox [ref=e36]:
+              - option "Select Gender" [selected]
+              - option "Male"
+              - option "Female"
+              - option "Other"
+          - generic [ref=e37]:
+            - generic [ref=e38]:
+              - text: NIC Number
+              - generic [ref=e39]: (optional)
+            - textbox "e.g., 951234567V or 199512345678" [ref=e40]
+        - generic [ref=e41]:
+          - heading "Last Known Details" [level=3] [ref=e42]
+          - generic [ref=e43]:
+            - generic [ref=e44]: Last Seen Location*
+            - textbox "Last Seen Locationrequired" [ref=e45]:
+              - /placeholder: e.g., Near Galle Fort
+          - generic [ref=e46]:
+            - generic [ref=e47]: District *
+            - combobox [ref=e48]:
+              - option "Select District" [selected]
+              - option "Colombo"
+              - option "Gampaha"
+              - option "Kalutara"
+              - option "Kandy"
+              - option "Matale"
+              - option "Nuwara Eliya"
+              - option "Galle"
+              - option "Matara"
+              - option "Hambantota"
+              - option "Jaffna"
+              - option "Kilinochchi"
+              - option "Mannar"
+              - option "Vavuniya"
+              - option "Mullaitivu"
+              - option "Batticaloa"
+              - option "Ampara"
+              - option "Trincomalee"
+              - option "Kurunegala"
+              - option "Puttalam"
+              - option "Anuradhapura"
+              - option "Polonnaruwa"
+              - option "Badulla"
+              - option "Monaragala"
+              - option "Ratnapura"
+              - option "Kegalle"
+          - generic [ref=e49]:
+            - generic [ref=e50]: Last Seen Date
+            - textbox "Last Seen Date" [ref=e51]: 2025-12-07
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - text: Description
+              - generic [ref=e54]: (optional)
+            - textbox "Describe what they were wearing..." [ref=e55]
+            - paragraph [ref=e57]: 0/500
+        - generic [ref=e58]:
+          - heading "Your Contact Information" [level=3] [ref=e59]
+          - generic [ref=e60]:
+            - generic [ref=e61]: Your Name*
+            - textbox "Your Namerequired" [ref=e62]:
+              - /placeholder: Your full name
+          - generic [ref=e63]:
+            - generic [ref=e64]: Your Phone Number *
+            - textbox "e.g., 0771234567" [ref=e67]
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - text: Alternative Contact
+              - generic [ref=e70]: (optional)
+            - textbox [ref=e71]
+        - button "Create Poster" [disabled] [ref=e72]
+  - group "Language selection" [ref=e75]:
+    - generic [ref=e76]:
+      - button "Switch to Sinhala" [ref=e77] [cursor=pointer]: සිං
+      - generic [ref=e78]: "|"
+    - button "Switch to Tamil" [ref=e80] [cursor=pointer]: த
+  - contentinfo [ref=e81]:
+    - generic [ref=e84]:
+      - paragraph [ref=e85]: © 2025 iSafe. All rights reserved.
+      - navigation [ref=e86]:
+        - link "About" [ref=e87] [cursor=pointer]:
+          - /url: /en/about
+        - generic [ref=e88]: "|"
+        - link "Contact" [ref=e89] [cursor=pointer]:
+          - /url: /en/contact
+        - generic [ref=e90]: "|"
+        - link "Privacy" [ref=e91] [cursor=pointer]:
+          - /url: /en/privacy
+        - generic [ref=e92]: "|"
+        - link "Terms" [ref=e93] [cursor=pointer]:
+          - /url: /en/terms
+  - button "Open Next.js Dev Tools" [ref=e99] [cursor=pointer]:
+    - img [ref=e100]
+  - alert [ref=e103]
+```

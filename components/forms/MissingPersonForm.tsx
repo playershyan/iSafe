@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button, Input, Toast } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Toast } from '@/components/ui/Toast';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
 import { PhoneVerificationField } from '@/components/features/PhoneVerificationField';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';

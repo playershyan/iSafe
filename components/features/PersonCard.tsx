@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@/components/ui';
+import { Card } from '@/components/ui/Card';
 import { PersonSearchResult } from '@/types';
 import { format } from 'date-fns';
 import { useTranslations } from 'next-intl';

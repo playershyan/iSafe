@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { CompensationApplicationForm } from '@/components/forms/CompensationApplicationForm';
-import { Loading } from '@/components/ui';
+import { Loading } from '@/components/ui/Loading';
 
 interface CompensationApplyPageProps {
   params: Promise<{ locale: string }>;

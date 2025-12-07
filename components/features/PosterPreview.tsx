@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Alert } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Alert } from '@/components/ui/Alert';
 import Link from 'next/link';
 
 interface PosterPreviewProps {

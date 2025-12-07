@@ -1,0 +1,52 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "iSafe Home" [ref=e5] [cursor=pointer]:
+        - /url: /en
+        - text: iSafe
+      - generic [ref=e6]:
+        - link "Home" [ref=e7] [cursor=pointer]:
+          - /url: /en
+        - link "Missing" [ref=e8] [cursor=pointer]:
+          - /url: /en/missing
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - link "← Back to Home" [ref=e12] [cursor=pointer]:
+        - /url: /en
+      - form "Search for a person by name or NIC" [ref=e14]:
+        - generic [ref=e15]:
+          - textbox "Search by name or NIC number" [ref=e16]
+          - button "Search" [disabled] [ref=e17]:
+            - img [ref=e18]
+      - generic [ref=e21]:
+        - paragraph [ref=e22]: No results found.
+        - paragraph [ref=e23]: We couldn't find anyone matching your search.
+        - link "Try Different Search" [ref=e24] [cursor=pointer]:
+          - /url: /en
+  - group "Language selection" [ref=e27]:
+    - generic [ref=e28]:
+      - button "Switch to Sinhala" [ref=e29] [cursor=pointer]: සිං
+      - generic [ref=e30]: "|"
+    - button "Switch to Tamil" [ref=e32] [cursor=pointer]: த
+  - contentinfo [ref=e33]:
+    - generic [ref=e35]:
+      - navigation [ref=e36]:
+        - link "About" [ref=e37] [cursor=pointer]:
+          - /url: /en/about
+        - generic [ref=e38]: "|"
+        - link "Contact" [ref=e39] [cursor=pointer]:
+          - /url: /en/contact
+        - generic [ref=e40]: "|"
+        - link "Privacy" [ref=e41] [cursor=pointer]:
+          - /url: /en/privacy
+        - generic [ref=e42]: "|"
+        - link "Terms" [ref=e43] [cursor=pointer]:
+          - /url: /en/terms
+      - paragraph [ref=e44]: © 2025 iSafe. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e50] [cursor=pointer]:
+    - img [ref=e51]
+  - alert [ref=e54]
+```

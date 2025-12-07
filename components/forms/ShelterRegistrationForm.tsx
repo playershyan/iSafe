@@ -6,7 +6,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
-import { Button, Input, Alert, Card } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Alert } from '@/components/ui/Alert';
+import { Card } from '@/components/ui/Card';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 

@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Button, Input, Toast, Alert } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Toast } from '@/components/ui/Toast';
+import { Alert } from '@/components/ui/Alert';
 import { PhoneVerificationField } from '@/components/features/PhoneVerificationField';
 import type { ClaimType } from '@/lib/utils/validation';
 import clsx from 'clsx';
@@ -318,6 +321,7 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
           gramaNiladhariDivision: formData.gramaNiladhariDivision,
           claims: formData.claims,
           phoneVerified: formData.phoneVerified,
+          locale: locale,
         }),
       });
 

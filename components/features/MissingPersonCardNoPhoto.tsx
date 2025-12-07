@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@/components/ui';
+import { Card } from '@/components/ui/Card';
 import { format } from 'date-fns';
 import { User, MapPin, Phone, Calendar, FileText, Share2 } from 'lucide-react';
 import { MissingPersonReport } from './MissingPersonCard';

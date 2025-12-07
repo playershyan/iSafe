@@ -1,0 +1,67 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "iSafe Home" [ref=e5] [cursor=pointer]:
+        - /url: /en
+        - text: iSafe
+      - generic [ref=e6]:
+        - link "Home" [ref=e7] [cursor=pointer]:
+          - /url: /en
+        - link "Missing" [ref=e8] [cursor=pointer]:
+          - /url: /en/missing
+  - main [ref=e9]:
+    - generic [ref=e10]:
+      - link "Claims banner" [ref=e12] [cursor=pointer]:
+        - /url: /compensation/apply
+        - img "Claims banner" [ref=e15]
+      - heading "Search Missing Persons" [level=1] [ref=e17]
+      - form "Search for a person by name or NIC" [ref=e19]:
+        - generic [ref=e20]:
+          - textbox "Search by name or NIC number" [ref=e21]
+          - button "Search" [disabled] [ref=e22]:
+            - img [ref=e23]
+      - link "REPORT MISSING PERSON" [ref=e27] [cursor=pointer]:
+        - /url: /en/missing/report
+        - generic [ref=e28]: +
+        - generic [ref=e29]: REPORT MISSING PERSON
+      - link "Register New Arrivals" [ref=e32] [cursor=pointer]:
+        - /url: /en/staff
+    - generic [ref=e35]:
+      - heading "Live Stats" [level=2] [ref=e36]: Live Stats
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - generic [ref=e42]: "13"
+          - generic [ref=e43]: Missing
+        - generic [ref=e44]:
+          - generic [ref=e45]: "4"
+          - generic [ref=e46]: Found
+        - generic [ref=e47]:
+          - generic [ref=e48]: "5"
+          - generic [ref=e49]: Sheltered
+  - group "Language selection" [ref=e52]:
+    - generic [ref=e53]:
+      - button "Switch to Sinhala" [ref=e54] [cursor=pointer]: සිං
+      - generic [ref=e55]: "|"
+    - button "Switch to Tamil" [ref=e57] [cursor=pointer]: த
+  - contentinfo [ref=e58]:
+    - generic [ref=e60]:
+      - navigation [ref=e61]:
+        - link "About" [ref=e62] [cursor=pointer]:
+          - /url: /en/about
+        - generic [ref=e63]: "|"
+        - link "Contact" [ref=e64] [cursor=pointer]:
+          - /url: /en/contact
+        - generic [ref=e65]: "|"
+        - link "Privacy" [ref=e66] [cursor=pointer]:
+          - /url: /en/privacy
+        - generic [ref=e67]: "|"
+        - link "Terms" [ref=e68] [cursor=pointer]:
+          - /url: /en/terms
+      - paragraph [ref=e69]: © 2025 iSafe. All rights reserved.
+  - button "Open Next.js Dev Tools" [ref=e75] [cursor=pointer]:
+    - img [ref=e76]
+  - alert [ref=e79]
+```

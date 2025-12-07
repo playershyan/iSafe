@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { X } from 'lucide-react';
-import { Button, Input, Alert } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Alert } from '@/components/ui/Alert';
 import { MissingPersonReport } from './MissingPersonCard';
 
 interface EditReportModalProps {

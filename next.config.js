@@ -26,6 +26,9 @@ const nextConfig = {
   },
   compress: true,
   productionBrowserSourceMaps: false,
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'date-fns', 'zod', '@headlessui/react'],
+  },
   async headers() {
     return [
       {

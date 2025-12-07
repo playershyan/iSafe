@@ -1,116 +1,140 @@
 # Database Migrations
 
-This folder contains SQL migration files for the iSafe database.
+This folder contains all SQL migration files for the iSafe platform.
+
+## Quick Start (New Database)
+
+For a **new Supabase database**, run these migrations in order:
+
+1. `001_initial_schema.sql` ⭐
+2. `002_staff_centers_and_auth.sql` ⭐
+3. `003_phone_verifications.sql` ⭐
+4. `005_compensation_system.sql` ⭐
+5. `006_insert_gn_data.sql` ⭐
+
+See [SETUP_GUIDE.md](../SETUP_GUIDE.md) for complete instructions.
 
 ## Migration Files
 
-### 20241205_update_missing_person_form.sql
-- Made `lastSeenDate` required (NOT NULL)
-- Made `lastSeenDistrict` optional (nullable)
-- **Note**: This migration used camelCase column names (quoted identifiers)
+### Core Migrations (Required)
 
-### 20241205_convert_to_snake_case.sql ⭐ **NEW - REQUIRED**
-- **Purpose**: Converts all column names from camelCase to snake_case
-- **Why**: Aligns with PostgreSQL/Supabase conventions and fixes API compatibility
-- **Impact**: All tables (missing_persons, persons, shelters, shelter_auth, matches, statistics)
-- **Status**: ⚠️ **MUST BE RUN TO FIX CURRENT ERRORS**
+| File | Purpose | Status |
+|------|---------|--------|
+| `001_initial_schema.sql` | Core tables (missing_persons, persons, shelters, etc.) | ✅ Required |
+| `002_staff_centers_and_auth.sql` | Staff centers and authentication | ✅ Required |
+| `003_phone_verifications.sql` | OTP verification system | ✅ Required |
+| `004_anonymous_users.sql` | Placeholder (no changes) | ⚪ Optional |
+| `005_compensation_system.sql` | Compensation application system | ✅ Required |
+| `006_insert_gn_data.sql` | Grama Niladhari divisions data | ✅ Required |
 
-## Current Issue
+### Legacy Migrations (For Existing Databases Only)
 
-The error you're experiencing:
+These migrations should **NOT** be run on new databases. Their changes are already included in `001_initial_schema.sql`:
+
+| File | Purpose | When to Use |
+|------|---------|-------------|
+| `20241205_convert_to_snake_case.sql` | Convert camelCase to snake_case | Only if tables have camelCase columns |
+| `20241205_update_missing_person_form.sql` | Update form requirements | Only if `last_seen_date` constraints differ |
+| `20241206_add_locale_to_missing_persons.sql` | Add locale column | Only if `locale` column missing |
+| `20241206_add_nic_to_missing_persons.sql` | Add NIC column | Only if `nic` column missing |
+
+### Rollback Scripts
+
+Rollback scripts are available for legacy migrations:
+
+- `rollback_20241205_convert_to_snake_case.sql`
+- `rollback_20241205_update_missing_person_form.sql`
+- `rollback_20241206_add_locale_to_missing_persons.sql`
+- `rollback_20241206_add_nic_to_missing_persons.sql`
+
+## Documentation
+
+- **[SETUP_GUIDE.md](../SETUP_GUIDE.md)** - Complete setup instructions
+- **[MIGRATION_ORDER.md](./MIGRATION_ORDER.md)** - Detailed migration order guide
+- **[MIGRATION_SUMMARY.md](./MIGRATION_SUMMARY.md)** - Complete migration summary
+
+## Execution Order
+
+### New Database
 ```
-Could not find the 'full_name' column of 'missing_persons' in the schema cache
+1 → 2 → 3 → 5 → 6
 ```
 
-This happens because:
-1. The database currently has columns like `"fullName"` (camelCase with quotes)
-2. The API code is trying to use `full_name` (snake_case)
-3. PostgreSQL is case-sensitive with quoted identifiers
+### Existing Database (camelCase)
+```
+1 → 20241205_convert → 20241205_update → 20241206_locale → 20241206_nic → 2 → 3 → 5 → 6
+```
 
-**Solution**: Run the `20241205_convert_to_snake_case.sql` migration to rename all columns.
+### Existing Database (snake_case)
+```
+1 → 2 → 3 → 5 → 6
+(Skip legacy migrations)
+```
+
+## Tables Created
+
+After running all migrations, you should have **14 tables**:
+
+1. `administrative_divisions`
+2. `compensation_admins`
+3. `compensation_applications`
+4. `compensation_claims`
+5. `districts`
+6. `matches`
+7. `missing_persons`
+8. `persons`
+9. `phone_verifications`
+10. `shelters`
+11. `shelter_auth`
+12. `staff_auth`
+13. `staff_centers`
+14. `statistics`
 
 ## Running Migrations
 
-### Option 1: Supabase SQL Editor (⭐ Recommended)
+### Using Supabase SQL Editor (Recommended)
 
-1. Go to your Supabase project dashboard
-2. Navigate to **SQL Editor**
-3. Create a new query
-4. Copy the entire contents of the migration file
-5. Execute the SQL
+1. Open Supabase Dashboard
+2. Go to **SQL Editor**
+3. Copy migration file contents
+4. Paste and execute
+5. Verify success
 
-**For the current fix:**
-```sql
--- Copy and paste the contents of:
--- database/migrations/20241205_convert_to_snake_case.sql
-```
-
-### Option 2: Command Line (if tsx is installed)
+### Using Command Line
 
 ```bash
-# Run the snake_case conversion migration
-tsx scripts/run-supabase-migration.ts 20241205_convert_to_snake_case.sql
-```
+# With psql
+psql $DATABASE_URL -f database/migrations/001_initial_schema.sql
 
-### Option 3: Using psql
-
-If you have PostgreSQL command-line tools installed:
-
-```bash
-# Get your DATABASE_URL from .env.local
-psql "your-database-url-here" -f database/migrations/20241205_convert_to_snake_case.sql
-```
-
-## After Running the Migration
-
-Once the snake_case migration is complete:
-
-1. All database columns will use snake_case (e.g., `full_name`, `last_seen_date`)
-2. The Prisma schema has been updated with correct `@map` attributes
-3. The API routes will work correctly with Supabase client
-4. You can create missing person reports without errors
-
-## Rollback
-
-If you need to rollback the snake_case conversion:
-
-```bash
-# Using Supabase SQL Editor, run:
-# database/migrations/rollback_20241205_convert_to_snake_case.sql
+# Or use Supabase CLI
+supabase db reset
 ```
 
 ## Verification
 
-After running the migration, verify the changes:
+After running migrations, verify:
 
 ```sql
--- Check column names in missing_persons table
-SELECT column_name
-FROM information_schema.columns
-WHERE table_name = 'missing_persons'
-ORDER BY ordinal_position;
+-- Check all tables exist
+SELECT table_name 
+FROM information_schema.tables 
+WHERE table_schema = 'public' 
+  AND table_type = 'BASE TABLE'
+ORDER BY table_name;
 ```
-
-Expected columns should now be:
-- `id`
-- `created_at` (not `"createdAt"`)
-- `full_name` (not `"fullName"`)
-- `age`
-- `gender`
-- `photo_url` (not `"photoUrl"`)
-- `last_seen_location` (not `"lastSeenLocation"`)
-- etc.
-
-## Future Migrations
-
-When creating new migrations:
-1. Use snake_case for all new column names
-2. Add corresponding `@map` attributes in Prisma schema
-3. Test in development environment first
-4. Create rollback scripts for safety
 
 ## Notes
 
-- Always backup your database before running migrations in production
-- Test migrations in a development environment first
-- Review the SQL carefully before executing
+- All migrations use `IF NOT EXISTS` for safety
+- Migrations are idempotent (can be run multiple times safely)
+- Foreign keys are properly configured
+- Indexes created for performance
+- Triggers handle automatic `updated_at` timestamps
+
+## Support
+
+For issues or questions:
+1. Check [SETUP_GUIDE.md](../SETUP_GUIDE.md)
+2. Review error messages carefully
+3. Verify migration order
+4. Check table dependencies

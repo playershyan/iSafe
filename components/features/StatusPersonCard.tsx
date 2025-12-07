@@ -1,6 +1,6 @@
 'use client';
 
-import { Card } from '@/components/ui';
+import { Card } from '@/components/ui/Card';
 import { UnifiedSearchResult } from '@/types';
 import { format } from 'date-fns';
 import { useState } from 'react';

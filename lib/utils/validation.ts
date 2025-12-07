@@ -109,6 +109,7 @@ export const compensationApplicationSchema = z.object({
   gramaNiladhariDivision: z.string().min(1, 'Grama Niladhari Division is required'),
   claims: z.array(claimTypeEnum).min(1, 'Please select at least one claim type'),
   phoneVerified: z.boolean().refine((val) => val === true, 'Phone number must be verified'),
+  locale: z.enum(['en', 'si', 'ta']).optional().default('en'),
 });
 
 export type CompensationApplicationInput = z.infer<typeof compensationApplicationSchema>;

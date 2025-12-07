@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
       claims: validated.claims,
       phoneVerified: validated.phoneVerified,
       submittedFromIp: ip,
+      locale: validated.locale || 'en',
     });
 
     if (!success || !application) {
@@ -45,7 +46,8 @@ export async function POST(request: NextRequest) {
     sendConfirmationSms(
       application.applicant_phone,
       application.application_code,
-      application.id
+      application.id,
+      application.locale || 'en'
     ).catch((err) => {
       console.error('Failed to send confirmation SMS:', err);
     });
@@ -74,15 +76,74 @@ export async function POST(request: NextRequest) {
 
 /**
  * Send confirmation SMS to applicant
+ * Uses locale from application to send message in the correct language
  */
 async function sendConfirmationSms(
   phone: string,
   applicationCode: string,
-  applicationId: string
+  applicationId: string,
+  locale: string = 'en'
 ): Promise<void> {
   try {
-    // Format message
-    const message = `Your disaster compensation application has been submitted successfully. Application Code: ${applicationCode}. The relevant authorities will contact you if you are eligible. For inquiries: Ministry of Defence 011-2430860, Disaster Management Centre 117.`;
+    // Load translations manually (similar to missing person notifications)
+    const loadMessages = async (loc: string): Promise<any> => {
+      try {
+        const importPath = `@/messages/${loc}.json`;
+        const relativePath = `../../messages/${loc}.json`;
+        
+        try {
+          return (await import(importPath)).default;
+        } catch (aliasError) {
+          try {
+            return (await import(relativePath)).default;
+          } catch (relativeError) {
+            if (loc !== 'en') {
+              return await loadMessages('en');
+            }
+            throw new Error(`Failed to load translations for locale: ${loc}`);
+          }
+        }
+      } catch (error) {
+        if (locale !== 'en') {
+          return await loadMessages('en');
+        }
+        throw error;
+      }
+    };
+
+    let messages: any;
+    try {
+      messages = await loadMessages(locale);
+    } catch (error) {
+      console.error('Failed to load translations, using English fallback', error);
+      messages = await loadMessages('en');
+    }
+
+    // Get SMS message template from translations
+    const messageTemplate = messages?.compensation?.success?.smsMessage;
+    
+    if (!messageTemplate || typeof messageTemplate !== 'string') {
+      // Fallback to English if translation missing
+      console.warn(`SMS message translation missing for locale: ${locale}, using English`);
+      const enMessages = await loadMessages('en');
+      const fallbackMessage = enMessages?.compensation?.success?.smsMessage || 
+        `Your disaster compensation application has been submitted successfully. Application Code: ${applicationCode}. The relevant authorities will contact you if you are eligible. For inquiries: Ministry of Defence 011-2430860, Disaster Management Centre 117.`;
+      
+      const message = fallbackMessage.replace('{applicationCode}', applicationCode);
+      
+      const result = await textlkService.sendSMS({
+        to: phone,
+        message,
+      });
+
+      if (result.success) {
+        await markSmsSent(applicationId);
+      }
+      return;
+    }
+
+    // Replace placeholder with actual application code
+    const message = messageTemplate.replace('{applicationCode}', applicationCode);
 
     // Send SMS
     const result = await textlkService.sendSMS({
