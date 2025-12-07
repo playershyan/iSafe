@@ -19,15 +19,11 @@
     "copyright": "© 2025 iSafe. සියලු හිමිකම් ඇවිරිණි."
   },
   "nav": {
-    "home": "Home",
-    "search": "Search",
-    "reportMissing": "Missing",
-    "register": "Register",
-    "compensation": "වන්දි",
     "home": "මුල් පිටුව",
     "search": "සොයන්න",
     "reportMissing": "අතුරුදහන් වූ පුද්ගලයන්",
     "register": "ලියාපදිංචි කරන්න",
+    "compensation": "වන්දි",
     "about": "About",
     "contact": "Contact",
     "privacy": "Privacy",
@@ -238,16 +234,6 @@
     "REQUIRES_CARE": "Requires Medical Care",
     "CRITICAL": "Critical"
   },
-  "compensation": {
-    "title": "ආපදා වන්දි සඳහා අයදුම් කරන්න",
-    "subtitle": "හදිසි ආපදා සඳහා රජයේ සහන වැඩසටහන (ගැසට් අංක 2464/30 දිනය 28-11-2025)",
-    "description": "මෑත ආපදාවෙන් සිදු වූ හානි සඳහා රජයේ වන්දි සඳහා අයදුම් කරන්න. ඔබේ තත්ත්වය අනුව අදාළ සියලුම හිමිකම් තෝරන්න.",
-    "steps": {
-      "personal": "පුද්ගලික තොරතුරු",
-      "location": "ස්ථාන විස්තර",
-      "claims": "හිමිකම් තෝරන්න",
-      "verification": "දුරකථන සත්‍යාපනය",
-      "review": "සමාලෝචනය සහ ඉදිරිපත් කරන්න"
   "pages": {
     "about": {
       "title": "iSafe පිළිබඳව",
@@ -497,7 +483,7 @@
       "loadError": "අයදුම්පත් පූරණය කිරීමට අසමත් විය",
       "phoneVerificationRequired": "කරුණාකර ඔබේ දුරකථන අංකය මුලින්ම සත්‍යාපනය කරන්න",
       "selectAtLeastOneClaim": "කරුණාකර අවම වශයෙන් එක් හිමිකම් වර්ගයක් තෝරන්න",
-      "confirmAllInfo": "කරුණාකර සියලුම තොරතුරු නිවැරදි බව සනාථ කරන්න"
+      "confirmAllInfo": "කරුණාකර සියලුම තොරතුරු නිවැරදි බව සනාථ කරන්න",
       "fullNamePlaceholder": "ඔබගේ NIC අනුව සම්පූර්ණ නම ඇතුළත් කරන්න",
       "nic": "ජාතික හැඳුනුම්පත (NIC)",
       "nicPlaceholder": "උදා: 199512345678 හෝ 951234567V",
@@ -506,56 +492,6 @@
       "address": "සම්පූර්ණ ලිපිනය",
       "addressPlaceholder": "ඔබගේ සම්පූර්ණ ලිපිනය ඇතුළත් කරන්න",
       "addressHint": "වීදිය, ප්‍රදේශය සහ සලකුණු ඇතුළුව විස්තරාත්මක ලිපිනයක් සපයන්න"
-    },
-    "locationInfo": {
-      "title": "ස්ථානයේ තොරතුරු",
-      "description": "ඔබගේ අයදුම් සැකසීමට උදව් කිරීම සඳහා ඔබගේ පරිපාලන ස්ථානය තෝරන්න",
-      "district": "දිස්ත්‍රික්කය",
-      "selectDistrict": "ඔබගේ දිස්ත්‍රික්කය තෝරන්න",
-      "divisionalSecretariat": "දිසා කාර්යාලය",
-      "selectDS": "දිසා කාර්යාලය තෝරන්න",
-      "gramaNiladhari": "ග්‍රාම නිලධාරී කොට්ඨාශය",
-      "selectGN": "GN කොට්ඨාශය තෝරන්න"
-    },
-    "claimsSelection": {
-      "title": "ඔබගේ අයදුම් තෝරන්න",
-      "description": "ඔබට ලැබුණු හානි මත පදනම්ව ඔබට සුදුසුකම් ලැබෙන සියලුම දීමනා වර්ග පරීක්ෂා කරන්න",
-      "selectAtLeastOne": "කරුණාකර අවම වශයෙන් එක් දීමනා වර්ගයක්වත් තෝරන්න",
-      "selectedClaims": "තෝරාගත් දීමනා: {count}"
-    },
-    "verification": {
-      "title": "දූරකථන සත්‍යාපනය",
-      "description": "ඔබගේ අයදුම් පිළිබඳ යාවත්කාලීන කිරීම් ලබා ගැනීම සඳහා ඔබගේ දූරකථන අංකය සත්‍යාපනය කරන්න"
-    },
-    "review": {
-      "title": "ඔබගේ අයදුම් සමාලෝචනය කරන්න",
-      "description": "ඉදිරිපත් කිරීමට පෙර සියලුම තොරතුරු ප්‍රවේශමෙන් සමාලෝචනය කරන්න",
-      "applicantDetails": "අයදුම්කරුගේ විස්තර",
-      "locationDetails": "ස්ථානයේ විස්තර",
-      "selectedClaims": "තෝරාගත් දීමනා",
-      "claimsCount": "{count} අයදුම්(ය) තෝරාගෙන ඇත",
-      "editSection": "සංස්කරණය කරන්න",
-      "confirmSubmit": "සපයන ලද සියලුම තොරතුරු නිවැරදි බව මම තහවුරු කරමි",
-      "submitApplication": "අයදුම් කිර්‍රිම කරන්න",
-      "labels": {
-        "name": "නම",
-        "nic": "NIC",
-        "phone": "දූරකථන",
-        "address": "ලිපිනය",
-        "district": "දිස්ත්‍රික්කය",
-        "divisionalSecretariat": "DS",
-        "gramaNiladhari": "GN"
-      }
-    },
-    "messages": {
-      "submitSuccess": "සාර්ථකව අයදුම් කරන ලදී! ඔබගේ අයදුම්පත් කේතය: {code}",
-      "submitError": "අයදුම් කිර්‍රිම අසාර්ථක විය. කරුණාකර නැවත උත්සාහ කරන්න.",
-      "updateSuccess": "අයදුම්පත සාර්ථකව යාවත්කාලීන කරන ලදී",
-      "updateError": "අයදුම්පත යාවත්කාලීන කිරීම අසාර්ථක විය",
-      "loadError": "අයදුම් පූරණය කිරීමට අසමත් විය",
-      "phoneVerificationRequired": "කරුණාකර මුලින්ම ඔබගේ දූරකථන අංකය සත්‍යාපනය කරන්න",
-      "selectAtLeastOneClaim": "කරුණාකර අවම වශයෙන් එක් දීමනා වර්ගයක්වත් තෝරන්න",
-      "confirmAllInfo": "කරුණාකර සියලුම තොරතුරු නිවැරදි බව තහවුරු කරන්න"
     },
     "errors": {
       "nameRequired": "නම අවශ්‍ය වේ",
