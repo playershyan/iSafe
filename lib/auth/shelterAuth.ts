@@ -17,14 +17,17 @@ export async function authenticateShelter(
   try {
     const supabase = getServiceRoleClient();
     
-    // Find shelter by code
+    // Normalize shelter code - trim and uppercase for case-insensitive matching
+    const normalizedCode = shelterCode.trim().toUpperCase();
+    
+    // Find shelter by code (case-insensitive)
     const { data: shelter, error: shelterError } = await supabase
       .from('shelters')
       .select(`
         *,
         auth:shelter_auth(*)
       `)
-      .eq('code', shelterCode.toUpperCase())
+      .eq('code', normalizedCode)
       .single();
 
     if (shelterError || !shelter) {

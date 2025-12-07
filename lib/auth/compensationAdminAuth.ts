@@ -37,13 +37,26 @@ export async function authenticateCompensationAdmin(
   try {
     const supabase = getServiceRoleClient();
 
-    // Find admin by username
-    const { data: admin, error: adminError } = await supabase
+    // Normalize username - trim and lowercase for case-insensitive matching
+    const normalizedUsername = username.trim().toLowerCase();
+    
+    // Find admin by username (case-insensitive)
+    // Note: We'll fetch all active admins and filter in memory since Supabase doesn't support case-insensitive eq
+    const { data: admins, error: adminError } = await supabase
       .from('compensation_admins')
       .select('*')
-      .eq('username', username)
-      .eq('is_active', true)
-      .single();
+      .eq('is_active', true);
+    
+    if (adminError || !admins) {
+      console.error('Admin lookup error:', adminError);
+      return {
+        success: false,
+        error: 'Invalid username or password',
+      };
+    }
+    
+    // Find matching admin with case-insensitive username comparison
+    const admin = admins.find(a => a.username.toLowerCase() === normalizedUsername);
 
     if (adminError || !admin) {
       console.error('Admin lookup error:', adminError);

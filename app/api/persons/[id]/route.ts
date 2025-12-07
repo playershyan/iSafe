@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import { cookies } from 'next/headers';
 import { verifyShelterToken } from '@/lib/auth/jwt';
 import { z } from 'zod';
@@ -41,7 +41,7 @@ export async function PUT(
     // Validate request data
     const validated = updatePersonSchema.parse(body);
 
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Verify person belongs to the authenticated center
     const { data: person, error: personError } = await supabase
@@ -133,7 +133,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Verify person belongs to the authenticated center
     const { data: person, error: personError } = await supabase

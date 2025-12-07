@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations } from 'next-intl';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Alert } from '@/components/ui/Alert';
@@ -32,6 +33,7 @@ export function ShelterAuthForm({ locale, shelterCodeLabel, accessCodeLabel, sub
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [showAccessCode, setShowAccessCode] = useState(false);
 
   const {
     register,
@@ -89,13 +91,28 @@ export function ShelterAuthForm({ locale, shelterCodeLabel, accessCodeLabel, sub
         autoCapitalize="characters"
       />
 
-      <Input
-        label={`${accessCodeLabel || t('accessCode')} *`}
-        type="password"
-        {...register('accessCode')}
-        error={errors.accessCode?.message}
-        placeholder="••••••"
-      />
+      <div className="relative">
+        <Input
+          label={`${accessCodeLabel || t('accessCode')} *`}
+          type={showAccessCode ? 'text' : 'password'}
+          {...register('accessCode')}
+          error={errors.accessCode?.message}
+          placeholder="••••••"
+          className="pr-10"
+        />
+        <button
+          type="button"
+          onClick={() => setShowAccessCode(!showAccessCode)}
+          className="absolute right-3 top-[52px] text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded p-1 transition-colors"
+          aria-label={showAccessCode ? 'Hide access code' : 'Show access code'}
+        >
+          {showAccessCode ? (
+            <EyeOff className="h-5 w-5" />
+          ) : (
+            <Eye className="h-5 w-5" />
+          )}
+        </button>
+      </div>
 
       <Alert variant="info">
         {t('authHint')}
