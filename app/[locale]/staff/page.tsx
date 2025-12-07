@@ -48,6 +48,15 @@ export default async function StaffPage({ params }: { params: Promise<{ locale: 
           {t('needHelpText')}
         </p>
       </div>
+
+      <div className="mt-4 text-center">
+        <Link
+          href={`/${locale}/compensation/admin`}
+          className="text-sm text-primary hover:text-primary-dark underline"
+        >
+          Manage Staff Credentials
+        </Link>
+      </div>
     </div>
   );
 }

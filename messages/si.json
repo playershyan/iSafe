@@ -413,7 +413,16 @@
       "claimsCount": "හිමිකම් {count}ක් තෝරා ඇත",
       "editSection": "සංස්කරණය කරන්න",
       "confirmSubmit": "ලබා දුන් සියලුම තොරතුරු නිවැරදි බව මම සනාථ කරමි",
-      "submitApplication": "අයදුම්පත ඉදිරිපත් කරන්න"
+      "submitApplication": "අයදුම්පත ඉදිරිපත් කරන්න",
+      "labels": {
+        "name": "නම",
+        "nic": "NIC",
+        "phone": "දූරකථන",
+        "address": "ලිපිනය",
+        "district": "දිස්ත්‍රික්කය",
+        "divisionalSecretariat": "DS",
+        "gramaNiladhari": "GN"
+      }
     },
     "success": {
       "title": "අයදුම්පත සාර්ථකව ඉදිරිපත් කරන ලදී!",
