@@ -69,6 +69,7 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
   const [gnDivisions, setGnDivisions] = useState<string[]>([]);
   const [loadingSecretariats, setLoadingSecretariats] = useState(false);
   const [loadingGnDivisions, setLoadingGnDivisions] = useState(false);
+  const [anonymousUserId, setAnonymousUserId] = useState<string>('');
 
   const [formData, setFormData] = useState<FormData>({
     applicantName: '',
@@ -81,6 +82,16 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
     claims: [],
     phoneVerified: false,
   });
+
+  // Initialize anonymous user ID on mount
+  useEffect(() => {
+    const initAnonymousUser = async () => {
+      const { getOrCreateAnonymousUserId } = await import('@/lib/utils/anonymousUser');
+      const userId = getOrCreateAnonymousUserId();
+      setAnonymousUserId(userId);
+    };
+    initAnonymousUser();
+  }, []);
 
   // Load districts on mount
   useEffect(() => {
@@ -190,26 +201,26 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
 
     switch (currentStep) {
       case 1:
-        if (!formData.applicantName.trim()) newErrors.applicantName = 'Name is required';
-        if (!formData.applicantNic.trim()) newErrors.applicantNic = 'NIC is required';
-        if (!formData.applicantPhone.trim()) newErrors.applicantPhone = 'Phone is required';
-        if (!formData.applicantAddress.trim()) newErrors.applicantAddress = 'Address is required';
+        if (!formData.applicantName.trim()) newErrors.applicantName = t('errors.nameRequired');
+        if (!formData.applicantNic.trim()) newErrors.applicantNic = t('errors.nicRequired');
+        if (!formData.applicantPhone.trim()) newErrors.applicantPhone = t('errors.phoneRequired');
+        if (!formData.applicantAddress.trim()) newErrors.applicantAddress = t('errors.addressRequired');
         break;
 
       case 2:
-        if (!formData.district) newErrors.district = 'District is required';
+        if (!formData.district) newErrors.district = t('errors.districtRequired');
         if (!formData.divisionalSecretariat)
-          newErrors.divisionalSecretariat = 'Divisional Secretariat is required';
+          newErrors.divisionalSecretariat = t('errors.divisionalSecretariatRequired');
         if (!formData.gramaNiladhariDivision)
-          newErrors.gramaNiladhariDivision = 'Grama Niladhari Division is required';
+          newErrors.gramaNiladhariDivision = t('errors.gramaNiladhariRequired');
         break;
 
       case 3:
-        if (formData.claims.length === 0) newErrors.claims = 'Select at least one claim type';
+        if (formData.claims.length === 0) newErrors.claims = t('errors.selectAtLeastOneClaim');
         break;
 
       case 4:
-        if (!formData.phoneVerified) newErrors.phoneVerified = 'Phone verification is required';
+        if (!formData.phoneVerified) newErrors.phoneVerified = t('errors.phoneVerificationRequired');
         break;
     }
 
@@ -253,14 +264,14 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit application');
+        throw new Error(data.error || t('messages.submitError'));
       }
 
       // Redirect to success page with application code
       router.push(`/${locale}/compensation/success?code=${data.applicationCode}`);
     } catch (error: any) {
       setToastType('error');
-      setToastMessage(error.message || 'Failed to submit application');
+      setToastMessage(error.message || t('messages.submitError'));
       setShowToast(true);
     } finally {
       setIsSubmitting(false);
@@ -459,7 +470,7 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
             <p className="text-gray-600 mb-4">{t('claimsSelection.description')}</p>
 
             {errors.claims && (
-              <Alert type="error" className="mb-4">
+              <Alert variant="error" className="mb-4">
                 {errors.claims}
               </Alert>
             )}
@@ -509,15 +520,18 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
             <p className="text-gray-600 mb-4">{t('verification.description')}</p>
 
             <PhoneVerificationField
-              phoneNumber={formData.applicantPhone}
+              phone={formData.applicantPhone}
               onVerified={(phone) => {
                 updateField('phoneVerified', true);
               }}
               onPhoneChange={(phone) => updateField('applicantPhone', phone)}
+              anonymous={true}
+              anonymousUserId={anonymousUserId}
+              purpose="missing_report"
             />
 
             {errors.phoneVerified && (
-              <Alert type="error" className="mt-4">
+              <Alert variant="error" className="mt-4">
                 {errors.phoneVerified}
               </Alert>
             )}
@@ -544,10 +558,10 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
                   </button>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <p><span className="font-medium">Name:</span> {formData.applicantName}</p>
-                  <p><span className="font-medium">NIC:</span> {formData.applicantNic}</p>
-                  <p><span className="font-medium">Phone:</span> {formData.applicantPhone}</p>
-                  <p><span className="font-medium">Address:</span> {formData.applicantAddress}</p>
+                  <p><span className="font-medium">{t('review.labels.name')}:</span> {formData.applicantName}</p>
+                  <p><span className="font-medium">{t('review.labels.nic')}:</span> {formData.applicantNic}</p>
+                  <p><span className="font-medium">{t('review.labels.phone')}:</span> {formData.applicantPhone}</p>
+                  <p><span className="font-medium">{t('review.labels.address')}:</span> {formData.applicantAddress}</p>
                 </div>
               </div>
 
@@ -564,9 +578,9 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
                   </button>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <p><span className="font-medium">District:</span> {formData.district}</p>
-                  <p><span className="font-medium">DS:</span> {formData.divisionalSecretariat}</p>
-                  <p><span className="font-medium">GN:</span> {formData.gramaNiladhariDivision}</p>
+                  <p><span className="font-medium">{t('review.labels.district')}:</span> {formData.district}</p>
+                  <p><span className="font-medium">{t('review.labels.divisionalSecretariat')}:</span> {formData.divisionalSecretariat}</p>
+                  <p><span className="font-medium">{t('review.labels.gramaNiladhari')}:</span> {formData.gramaNiladhariDivision}</p>
                 </div>
               </div>
 

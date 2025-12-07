@@ -232,7 +232,7 @@ export default function CompensationDashboardPage({
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {error && (
             <div className="p-4">
-              <Alert type="error">{error}</Alert>
+              <Alert variant="error">{error}</Alert>
             </div>
           )}
 

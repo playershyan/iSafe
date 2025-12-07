@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import { User, MapPin, Phone, Share2 } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 export interface MissingPersonReport {
@@ -19,6 +20,7 @@ export interface MissingPersonReport {
   clothing?: string | null;
   reporterName: string;
   reporterPhone: string;
+  altContact?: string | null;
   status: 'MISSING' | 'FOUND' | 'CLOSED';
   posterCode: string;
   createdAt: string | Date;
@@ -36,19 +38,46 @@ const statusColors = {
 };
 
 export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
+  const t = useTranslations('missing');
   const { isLowBandwidth } = useLowBandwidth();
   const lastSeenDate = new Date(report.lastSeenDate);
   const createdAt = new Date(report.createdAt);
   const [shareSuccess, setShareSuccess] = useState(false);
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'MISSING':
+        return t('statusMissing');
+      case 'FOUND':
+        return t('statusFound');
+      case 'CLOSED':
+        return t('statusClosed');
+      default:
+        return status;
+    }
+  };
+
+  const getGenderLabel = (gender: string) => {
+    switch (gender) {
+      case 'MALE':
+        return t('male');
+      case 'FEMALE':
+        return t('female');
+      case 'OTHER':
+        return t('other');
+      default:
+        return gender;
+    }
+  };
+
   const handleShare = async () => {
     const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/${locale}/missing`;
-    const shareText = `Missing Person: ${report.fullName}\nAge: ${report.age} | ${report.gender}\nLast seen: ${report.lastSeenLocation}${report.lastSeenDistrict ? `, ${report.lastSeenDistrict}` : ''}\nContact: ${report.reporterPhone}\n\nView more details: ${shareUrl}`;
+    const shareText = `${t('title')}: ${report.fullName}\n${t('ageLabel')}: ${report.age} | ${getGenderLabel(report.gender)}\n${t('lastSeen')}: ${report.lastSeenLocation}${report.lastSeenDistrict ? `, ${report.lastSeenDistrict}` : ''}\n${t('contact')}: ${report.reporterPhone}\n\nView more details: ${shareUrl}`;
 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: `Missing Person: ${report.fullName}`,
+          title: `${t('title')}: ${report.fullName}`,
           text: shareText,
           url: shareUrl,
         });
@@ -78,12 +107,12 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
       {/* Top Right: Reported Date and Status Badge - Desktop */}
       <div className="hidden md:flex absolute top-4 right-4 items-center gap-3">
         <p className="text-xs text-gray-500">
-          Reported: {format(createdAt, 'MMM dd, yyyy HH:mm')}
+          {t('reported')}: {format(createdAt, 'MMM dd, yyyy HH:mm')}
         </p>
         <span
           className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[report.status]}`}
         >
-          {report.status}
+          {getStatusLabel(report.status)}
         </span>
       </div>
 
@@ -91,7 +120,7 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
       <span
         className={`md:hidden absolute top-4 right-4 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[report.status]}`}
       >
-        {report.status}
+        {getStatusLabel(report.status)}
       </span>
 
       {/* Photo Section - Top Center */}
@@ -124,14 +153,14 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
         <div>
           <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">{report.fullName}</h3>
           <p className="text-sm text-gray-600 text-center">
-            Age: {report.age} | {report.gender}
+            {t('ageLabel')}: {report.age} | {getGenderLabel(report.gender)}
           </p>
         </div>
 
         {/* Mobile: Reported Date - Below Name */}
         <div className="md:hidden text-center">
           <p className="text-xs text-gray-500">
-            Reported: {format(createdAt, 'MMM dd, yyyy HH:mm')}
+            {t('reported')}: {format(createdAt, 'MMM dd, yyyy HH:mm')}
           </p>
         </div>
 
@@ -139,7 +168,7 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
         <div className="flex items-start gap-2">
           {!isLowBandwidth && <MapPin className="h-4 w-4 text-gray-600 mt-0.5 flex-shrink-0" />}
           <div className="text-sm">
-            <p className="font-medium text-gray-900">{isLowBandwidth ? 'Last seen: ' : ''}{report.lastSeenLocation}</p>
+            <p className="font-medium text-gray-900">{isLowBandwidth ? `${t('lastSeen')}: ` : ''}{report.lastSeenLocation}</p>
             {report.lastSeenDistrict && (
               <p className="text-gray-600">{report.lastSeenDistrict}</p>
             )}
@@ -152,13 +181,20 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
         {/* Contact Number */}
         <div className="flex items-center gap-2 text-sm text-gray-600">
           {!isLowBandwidth && <Phone className="h-4 w-4 flex-shrink-0" />}
-          <span>{isLowBandwidth ? 'Phone: ' : ''}{report.reporterPhone}</span>
+          <div className="flex-1">
+            <span>{isLowBandwidth ? `${t('phone')}: ` : ''}{report.reporterPhone}</span>
+            {report.altContact && (
+              <span className="ml-2 text-gray-500">
+                {isLowBandwidth ? ` / ${report.altContact}` : ` / ${report.altContact}`}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Description Section */}
         {report.clothing && (
           <div className="text-sm text-gray-600">
-            <span className="font-medium">Description:</span>
+            <span className="font-medium">{t('description')}:</span>
             <p className="mt-1">{report.clothing}</p>
           </div>
         )}
@@ -170,14 +206,14 @@ export function MissingPersonCard({ report, locale }: MissingPersonCardProps) {
             className="flex flex-1 items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             {!isLowBandwidth && <Share2 className="h-5 w-5" />}
-            {shareSuccess ? 'Copied!' : 'Share'}
+            {shareSuccess ? t('copied') : t('share')}
           </button>
           <a
             href={`tel:${report.reporterPhone}`}
             className="flex flex-1 items-center justify-center gap-2 rounded-md bg-primary px-4 py-3 text-base font-medium text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             {!isLowBandwidth && <Phone className="h-5 w-5" />}
-            Contact
+            {t('contact')}
           </a>
         </div>
       </div>

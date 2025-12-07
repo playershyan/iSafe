@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { verifyShelterToken } from '@/lib/auth/jwt';
-import { findMatches } from '@/lib/services/matchService';
+import { findMatches, sendNotificationsForMatches } from '@/lib/services/matchService';
 import { generateId } from '@/lib/utils/helpers';
 
 const registerPersonSchema = z.object({
@@ -93,6 +93,19 @@ export async function POST(request: NextRequest) {
       gender: validated.gender,
       nic: validated.nic || undefined,
     });
+
+    // Send notifications for matches (non-blocking - don't fail registration if this fails)
+    if (matches && matches.length > 0) {
+      sendNotificationsForMatches(
+        person.id,
+        validated.fullName,
+        matches,
+        validated.shelterId
+      ).catch((error) => {
+        // Log error but don't throw - registration should succeed even if notifications fail
+        console.error('Error sending match notifications:', error);
+      });
+    }
 
     return NextResponse.json({
       success: true,

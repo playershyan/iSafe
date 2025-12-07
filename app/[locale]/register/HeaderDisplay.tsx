@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface HeaderDisplayProps {
@@ -8,6 +9,7 @@ interface HeaderDisplayProps {
 }
 
 export function HeaderDisplay({ shelterName, handleLogout }: HeaderDisplayProps) {
+  const t = useTranslations('register');
   const { isLowBandwidth } = useLowBandwidth();
 
   return (
@@ -17,7 +19,7 @@ export function HeaderDisplay({ shelterName, handleLogout }: HeaderDisplayProps)
           type="submit"
           className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          ← Logout
+          ← {t('logout')}
         </button>
       </form>
       <div className="mt-2 flex items-start gap-2">

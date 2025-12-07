@@ -1,9 +1,12 @@
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 import { ShelterAuthForm } from '@/components/forms/ShelterAuthForm';
 import { Alert } from '@/components/ui';
 
 export default async function StaffPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  const t = await getTranslations('auth');
+  const tCommon = await getTranslations('common');
 
   return (
     <div className="mx-auto max-w-md px-4 py-8">
@@ -18,31 +21,31 @@ export default async function StaffPage({ params }: { params: Promise<{ locale: 
 
       <div className="mb-6">
         <h1 className="mb-2 text-2xl font-bold text-gray-900 md:text-3xl">
-          Gov Staff Login
+          {t('govStaffTitle')}
         </h1>
         <p className="text-gray-600">
-          Enter your credentials to access the registration tools.
+          {t('govStaffSubtitle')}
         </p>
       </div>
 
-      <Alert variant="warning" title="Government staff only">
-        This section is intended only for verified government staff.
+      <Alert variant="warning" title={t('govStaffOnly')}>
+        {t('govStaffOnlyText')}
       </Alert>
 
       <div className="mt-6">
         <ShelterAuthForm 
           locale={locale} 
-          shelterCodeLabel="Center code"
-          accessCodeLabel="Access code"
-          submitButtonText="Log in"
+          shelterCodeLabel={t('centerCode')}
+          accessCodeLabel={t('accessCode')}
+          submitButtonText={t('logIn')}
           redirectTo={`/${locale}/staff/dashboard`}
         />
       </div>
 
       <div className="mt-6 rounded-lg bg-gray-50 p-4">
-        <h3 className="mb-2 text-sm font-bold">Need help?</h3>
+        <h3 className="mb-2 text-sm font-bold">{t('needHelp')}</h3>
         <p className="text-sm text-gray-700">
-          Contact your administrator if you don't have access codes or need assistance.
+          {t('needHelpText')}
         </p>
       </div>
     </div>

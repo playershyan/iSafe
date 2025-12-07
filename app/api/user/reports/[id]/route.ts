@@ -168,7 +168,30 @@ export async function DELETE(
       );
     }
 
-    // Delete the report
+    // First, clean up related records to avoid foreign key constraint violations
+    // 1. Remove the link from persons table (set missingReportId to NULL)
+    const { error: unlinkPersonsError } = await supabase
+      .from('persons')
+      .update({ missing_report_id: null })
+      .eq('missing_report_id', id);
+
+    if (unlinkPersonsError) {
+      console.error('Error unlinking persons from report:', unlinkPersonsError);
+      // Continue with deletion even if this fails
+    }
+
+    // 2. Delete related match records
+    const { error: deleteMatchesError } = await supabase
+      .from('matches')
+      .delete()
+      .eq('missing_person_id', id);
+
+    if (deleteMatchesError) {
+      console.error('Error deleting match records:', deleteMatchesError);
+      // Continue with deletion even if this fails
+    }
+
+    // 3. Finally, delete the report itself
     const { error: deleteError } = await supabase
       .from('missing_persons')
       .delete()

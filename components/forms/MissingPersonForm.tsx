@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Button, Input, Toast } from '@/components/ui';
 import { compressImage, validateImageFile } from '@/lib/utils/imageCompression';
 import { PhoneVerificationField } from '@/components/features/PhoneVerificationField';
@@ -40,6 +41,8 @@ const DISTRICTS = [
 ];
 
 export function MissingPersonForm({ locale }: MissingPersonFormProps) {
+  const t = useTranslations('missing');
+  const tCommon = useTranslations('common');
   const { isLowBandwidth } = useLowBandwidth();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -176,6 +179,9 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
     if (!phoneVerified || verifiedPhone !== formData.reporterPhone) {
       newErrors.reporterPhone = 'Phone number must be verified before submitting';
     }
+    if (formData.clothing && formData.clothing.trim().length > 500) {
+      newErrors.clothing = 'Description must be at most 500 characters';
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -225,11 +231,12 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
           lastSeenLocation: formData.lastSeenLocation.trim(),
           lastSeenDistrict: formData.lastSeenDistrict,
           lastSeenDate: formData.lastSeenDate,
-          clothing: formData.clothing.trim(),
+          clothing: formData.clothing.trim() || undefined,
           reporterName: formData.reporterName.trim(),
           reporterPhone: formData.reporterPhone.trim(),
-          alternativeContact: formData.alternativeContact.trim(),
+          alternativeContact: formData.alternativeContact.trim() || undefined,
           anonymousUserId,
+          locale,
         }),
       });
 
@@ -263,12 +270,12 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
         />
       )}
 
-      <h2 className="text-2xl font-bold text-gray-900">Report Missing Person</h2>
+      <h2 className="text-2xl font-bold text-gray-900">{t('title')}</h2>
 
       {/* Photo Upload - Optional */}
         <div>
         <label className="mb-2 block text-base font-medium text-gray-700">
-          Photo <span className="text-gray-500 text-sm">(Optional)</span>
+          {t('photo')} <span className="text-gray-500 text-sm">({tCommon('optional')})</span>
           </label>
         <div className="relative">
           <input
@@ -294,8 +301,8 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
             ) : (
               <div className="text-center">
                 {!isLowBandwidth && <span className="mb-2 block text-5xl" aria-hidden="true">📷</span>}
-                <span className="block text-base font-medium text-primary">Click to Upload</span>
-                <span className="mt-1 block text-sm text-gray-600">Maximum 5MB (Optional)</span>
+                <span className="block text-base font-medium text-primary">{t('uploadPhoto')}</span>
+                <span className="mt-1 block text-sm text-gray-600">{t('photoHint')}</span>
                 {isLowBandwidth && photoUrl && (
                   <span className="mt-2 block text-sm text-green-600">Photo uploaded</span>
                 )}
@@ -319,18 +326,19 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
 
       {/* Person Details */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-900">Person Details</h3>
+        <h3 className="text-xl font-semibold text-gray-900">{t('personDetails')}</h3>
 
         <Input
-          label="Full Name"
+          label={t('fullName')}
           value={formData.fullName}
           onChange={(e) => updateField('fullName', e.target.value)}
+          placeholder={t('fullNamePlaceholder')}
           required
           error={errors.fullName}
         />
 
         <Input
-          label="Age"
+          label={t('age')}
           type="number"
           value={formData.age}
           onChange={(e) => updateField('age', e.target.value)}
@@ -343,7 +351,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
 
         <div>
           <label className="mb-2 block text-base font-medium text-gray-700">
-            Gender <span className="text-danger">*</span>
+            {t('gender')} <span className="text-danger">*</span>
           </label>
           <select
             value={formData.gender}
@@ -354,10 +362,10 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
             )}
             required
           >
-            <option value="">Select Gender</option>
-            <option value="MALE">Male</option>
-            <option value="FEMALE">Female</option>
-            <option value="OTHER">Other</option>
+            <option value="">{t('selectGender')}</option>
+            <option value="MALE">{t('male')}</option>
+            <option value="FEMALE">{t('female')}</option>
+            <option value="OTHER">{t('other')}</option>
           </select>
           {errors.gender && (
             <p className="mt-1 text-sm text-danger">{errors.gender}</p>
@@ -367,7 +375,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
         <Input
           label={
             <>
-              NIC Number <span className="text-gray-500 text-sm font-normal">(Optional)</span>
+              NIC Number <span className="text-gray-500 text-sm font-normal">({tCommon('optional')})</span>
             </>
           }
           value={formData.nic}
@@ -378,20 +386,20 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
 
       {/* Last Known Details */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-900">Last Known Details</h3>
+        <h3 className="text-xl font-semibold text-gray-900">{t('lastKnownDetails')}</h3>
 
         <Input
-          label="Last Known Location"
+          label={t('lastSeenLocation')}
           value={formData.lastSeenLocation}
           onChange={(e) => updateField('lastSeenLocation', e.target.value)}
-          placeholder="e.g., Near temple, Main St"
+          placeholder={t('lastSeenLocationPlaceholder')}
           required
           error={errors.lastSeenLocation}
         />
 
         <div>
           <label className="mb-2 block text-base font-medium text-gray-700">
-            District <span className="text-danger">*</span>
+            {t('district')} <span className="text-danger">*</span>
           </label>
           <select
             value={formData.lastSeenDistrict}
@@ -401,7 +409,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
               errors.lastSeenDistrict ? 'border-danger' : 'border-gray-300'
             )}
           >
-            <option value="">Select District</option>
+            <option value="">{t('selectDistrict')}</option>
             {DISTRICTS.map(district => (
               <option key={district} value={district}>{district}</option>
             ))}
@@ -412,7 +420,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
         </div>
 
         <Input
-          label="Last Seen Date"
+          label={t('lastSeenDate')}
           type="date"
           value={formData.lastSeenDate}
           onChange={(e) => updateField('lastSeenDate', e.target.value)}
@@ -420,26 +428,42 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
 
         <div>
           <label className="mb-2 block text-base font-medium text-gray-700">
-            Description <span className="text-gray-500 text-sm">(Optional)</span>
+            {t('clothing')} <span className="text-gray-500 text-sm">({tCommon('optional')})</span>
           </label>
           <textarea
             value={formData.clothing}
             onChange={(e) => updateField('clothing', e.target.value)}
-            placeholder="e.g., Blue shirt, black trousers, physical description, or other details"
+            placeholder={t('clothingPlaceholder')}
             rows={4}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20"
+            maxLength={500}
+            className={clsx(
+              'w-full rounded-md border px-3 py-2 text-base focus:ring-2 focus:ring-primary focus:ring-opacity-20',
+              errors.clothing ? 'border-danger focus:border-danger' : 'border-gray-300 focus:border-primary'
+            )}
           />
+          <div className="mt-1 flex items-center justify-between">
+            {errors.clothing && (
+              <p className="text-sm text-danger">{errors.clothing}</p>
+            )}
+            <p className={clsx(
+              'text-xs ml-auto',
+              formData.clothing.length > 500 ? 'text-danger' : formData.clothing.length > 450 ? 'text-yellow-600' : 'text-gray-500'
+            )}>
+              {formData.clothing.length}/500
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Contact Info */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-900">Your Contact Details</h3>
+        <h3 className="text-xl font-semibold text-gray-900">{t('contactInfo')}</h3>
 
         <Input
-          label="Your Name"
+          label={t('yourName')}
           value={formData.reporterName}
           onChange={(e) => updateField('reporterName', e.target.value)}
+          placeholder={t('yourNamePlaceholder')}
           required
           error={errors.reporterName}
         />
@@ -454,7 +478,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
           }}
           error={errors.reporterPhone}
           required
-          label="Phone Number"
+          label={t('yourPhone')}
           placeholder="e.g., 0771234567"
           anonymous={true}
           anonymousUserId={anonymousUserId}
@@ -464,7 +488,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
         <Input
           label={
             <>
-              Alternative Contact <span className="text-gray-500 text-sm font-normal">(Optional)</span>
+              {t('altContact')} <span className="text-gray-500 text-sm font-normal">({tCommon('optional')})</span>
             </>
           }
           type="tel"
@@ -480,7 +504,7 @@ export function MissingPersonForm({ locale }: MissingPersonFormProps) {
         size="large"
         disabled={isSubmitting || !phoneVerified || verifiedPhone !== formData.reporterPhone}
       >
-        {isSubmitting ? 'Creating Report...' : 'Create Report'}
+        {isSubmitting ? tCommon('submitting') : t('createPoster')}
       </Button>
     </div>
   );

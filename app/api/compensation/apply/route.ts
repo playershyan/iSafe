@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { compensationApplicationSchema } from '@/lib/utils/validation';
 import { createApplication, markSmsSent } from '@/lib/services/compensationService';
 import { z } from 'zod';
-import { sendSms } from '@/lib/services/textlkService';
+import { textlkService } from '@/lib/services/textlkService';
 
 export async function POST(request: NextRequest) {
   try {
@@ -85,7 +85,10 @@ async function sendConfirmationSms(
     const message = `Your disaster compensation application has been submitted successfully. Application Code: ${applicationCode}. The relevant authorities will contact you if you are eligible. For inquiries: Ministry of Defence 011-2430860, Disaster Management Centre 117.`;
 
     // Send SMS
-    const result = await sendSms(phone, message);
+    const result = await textlkService.sendSMS({
+      to: phone,
+      message,
+    });
 
     if (result.success) {
       // Mark SMS as sent

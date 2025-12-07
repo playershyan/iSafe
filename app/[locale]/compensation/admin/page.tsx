@@ -62,7 +62,7 @@ export default function CompensationAdminLoginPage({
         <div className="bg-white rounded-lg shadow-md p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <Alert type="error">
+              <Alert variant="error">
                 {error}
               </Alert>
             )}

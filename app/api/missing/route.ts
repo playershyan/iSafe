@@ -19,11 +19,15 @@ const createMissingPersonSchema = z.object({
   lastSeenLocation: z.string().min(2, 'Location must be at least 2 characters').max(200),
   lastSeenDistrict: z.union([z.string(), z.literal('')]).optional(),
   lastSeenDate: z.string().min(1, 'Date is required'),
-  clothing: z.union([z.string().max(500), z.literal('')]).optional(),
+  clothing: z.preprocess(
+    (val) => (val === '' || val === null || val === undefined ? undefined : val),
+    z.string().max(500, 'Clothing description must be at most 500 characters').optional()
+  ),
   reporterName: z.string().min(2, 'Reporter name must be at least 2 characters').max(100),
   reporterPhone: z.string().regex(/^0\d{9}$/, 'Phone must be 10 digits starting with 0'),
   alternativeContact: z.string().regex(/^0\d{9}$/, 'Phone must be 10 digits starting with 0').optional().or(z.literal('')),
   anonymousUserId: z.string().uuid().optional(),
+  locale: z.enum(['en', 'si', 'ta']).optional().default('en'),
 });
 
 export async function POST(request: NextRequest) {
@@ -77,13 +81,14 @@ export async function POST(request: NextRequest) {
         last_seen_location: validated.lastSeenLocation,
         last_seen_district: validated.lastSeenDistrict && validated.lastSeenDistrict !== '' ? validated.lastSeenDistrict : null,
         last_seen_date: validated.lastSeenDate || null,
-        clothing: validated.clothing && validated.clothing !== '' ? validated.clothing : null,
+        clothing: validated.clothing || null,
         reporter_name: validated.reporterName,
         reporter_phone: validated.reporterPhone,
         alt_contact: validated.alternativeContact && validated.alternativeContact !== '' ? validated.alternativeContact : null,
         poster_code: posterCode,
         status: 'MISSING',
         anonymous_user_id: anonymousUserId || null,
+        locale: validated.locale || 'en',
       })
       .select()
       .single();

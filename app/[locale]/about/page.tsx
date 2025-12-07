@@ -1,15 +1,18 @@
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  const t = await getTranslations('pages.about');
+  const tCommon = await getTranslations('common');
   
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900 md:text-3xl">About iSafe</h1>
+      <h1 className="mb-6 text-2xl font-bold text-gray-900 md:text-3xl">{t('title')}</h1>
 
       {/* What is iSafe */}
       <section className="mb-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">What is iSafe</h2>
+        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">{t('whatIs')}</h2>
         <div className="space-y-4 text-base leading-relaxed text-gray-700">
           <p>
             iSafe is a disaster response platform designed to help families reunite after natural disasters
@@ -30,12 +33,12 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
       {/* How it Works */}
       <section className="mb-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">How it Works</h2>
+        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">{t('howItWorks')}</h2>
         
         <div className="space-y-6">
           {/* For families searching */}
           <div>
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">For families searching</h3>
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">{t('forFamilies')}</h3>
             <p className="text-base leading-relaxed text-gray-700">
               Use our search feature to look for missing persons by name, NIC number, or photo. Our system
               searches across all registered shelters and missing person reports to help you find your loved
@@ -46,7 +49,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
           {/* For reporting missing persons */}
           <div>
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">For reporting missing persons</h3>
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">{t('forReporting')}</h3>
             <p className="text-base leading-relaxed text-gray-700">
               If you&apos;re looking for someone who hasn&apos;t been found yet, you can create a missing person
               report. This generates a shareable poster that you can distribute on social media and within
@@ -57,7 +60,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
           {/* For shelter staff */}
           <div>
-            <h3 className="mb-2 text-lg font-semibold text-gray-900">For shelter staff</h3>
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">{t('forShelterStaff')}</h3>
             <p className="text-base leading-relaxed text-gray-700">
               Shelter staff can quickly register new arrivals with basic information including photos, health
               status, and contact details. Our system automatically checks for matches with existing missing
@@ -69,7 +72,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
       {/* Emergency Contacts */}
       <section className="mb-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">Emergency Contacts</h2>
+        <h2 className="text-xl font-bold text-gray-900 md:text-2xl">{t('emergencyContacts')}</h2>
         <div className="space-y-2 text-base text-gray-700">
           <div>
             <a
@@ -78,7 +81,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             >
               119
             </a>
-            {' - Disaster Management Centre'}
+            {' - '}{t('disasterManagement')}
           </div>
           <div>
             <a
@@ -87,7 +90,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             >
               110
             </a>
-            {' - Police Emergency'}
+            {' - '}{t('policeEmergency')}
           </div>
           <div>
             <a
@@ -96,7 +99,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             >
               1990
             </a>
-            {' - Ambulance'}
+            {' - '}{t('ambulance')}
           </div>
         </div>
       </section>
@@ -107,7 +110,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           href={`/${locale}`}
           className="inline-flex items-center rounded text-base text-primary hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
-          ← Back to Home
+          ← {tCommon('backToHome')}
         </Link>
       </div>
     </div>

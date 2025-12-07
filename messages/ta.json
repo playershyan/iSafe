@@ -8,6 +8,7 @@
     "continue": "Continue",
     "back": "Back",
     "backHome": "Back to Home",
+    "backToHome": "முகப்பிற்குத் திரும்பு",
     "close": "Close",
     "loading": "Loading...",
     "error": "Error",
@@ -35,6 +36,10 @@
     "shelterSection": "For Shelter Staff:",
     "registerButton": "Register New Arrivals",
     "statsTitle": "Live Statistics",
+    "liveStats": "நேரடி புள்ளிவிவரங்கள்",
+    "missing": "காணாமல்",
+    "found": "கண்டுபிடிக்கப்பட்டது",
+    "sheltered": "தஞ்சமிடம்",
     "personsRegistered": "people registered",
     "sheltersActive": "shelters active",
     "matchesMade": "matches made"
@@ -85,8 +90,9 @@
     "lastLocation": "Last Known Location",
     "district": "District",
     "selectDistrict": "Select District",
+    "selectGender": "பாலினத்தைத் தேர்ந்தெடுக்கவும்",
     "lastSeenDate": "Last Seen Date",
-    "clothing": "Clothing Description",
+    "clothing": "விளக்கம்",
     "clothingPlaceholder": "Describe what they were wearing...",
     "yourName": "Your Name",
     "yourNamePlaceholder": "Your full name",
@@ -104,7 +110,23 @@
     "shareWhatsApp": "Share on WhatsApp",
     "shareFacebook": "Share on Facebook",
     "copyLink": "Copy Link",
-    "notification": "We'll notify you if someone is found"
+    "notification": "We'll notify you if someone is found",
+    "reported": "பதிவு செய்யப்பட்டது",
+    "statusMissing": "காணாமல்",
+    "statusFound": "கண்டுபிடிக்கப்பட்டது",
+    "statusClosed": "மூடப்பட்டது",
+    "ageLabel": "வயது",
+    "lastSeen": "கடைசியாக பார்த்தது",
+    "lastSeenLocationLabel": "கடைசியாக பார்த்த இடம்",
+    "phone": "தொலைபேசி",
+    "contact": "தொடர்பு",
+    "contactInformation": "தொடர்பு தகவல்",
+    "description": "விளக்கம்",
+    "physicalDescription": "உடல் விளக்கம்",
+    "share": "பகிர்",
+    "copied": "நகலெடுக்கப்பட்டது!",
+    "noReportsFound": "No missing person reports found.",
+    "reportAMissingPerson": "Report a Missing Person"
   },
   "poster": {
     "title": "Missing Person Poster",
@@ -144,7 +166,13 @@
     "staffOnly": "Staff Only",
     "staffOnlyText": "This area is restricted to authorized shelter staff. If you need to search for someone, please use the public search.",
     "needHelp": "Need help?",
-    "needHelpText": "Contact your shelter administrator if you don't have access codes or need assistance."
+    "needHelpText": "Contact your shelter administrator if you don't have access codes or need assistance.",
+    "govStaffTitle": "அரசு ஊழியர் உள்நுழைவு",
+    "govStaffSubtitle": "பதிவு கருவிகளுக்கு அணுக பெற உங்கள் சான்றுகளை உள்ளிடவும்.",
+    "govStaffOnly": "அரசு ஊழியர்களுக்கு மட்டும்",
+    "govStaffOnlyText": "இந்த பிரிவு சரிபார்க்கப்பட்ட அரசு ஊழியர்களுக்கு மட்டுமே.",
+    "centerCode": "மைய குறியீடு",
+    "logIn": "உள்நுழைய"
   },
   "register": {
     "title": "Register New Person",
@@ -423,5 +451,9 @@
     "uploadFailed": "Upload failed. Please try again.",
     "networkError": "Network error. Please check your connection.",
     "serverError": "Server error. Please try again later."
+  },
+  "notifications": {
+    "matchFound": "iSafe: {personName} என்பவர் {shelterName} தஞ்சமிடத்தில் சேர்க்கப்பட்டுள்ளார். தொடர்பு: {shelterContactNumber}. விவரங்கள்: {viewLink}\n\nஇது சாத்தியமான பொருத்தமாக இருக்கலாம். தயவுசெய்து சரிபார்க்கவும்.",
+    "matchFoundNoContact": "iSafe: {personName} என்பவர் {shelterName} தஞ்சமிடத்தில் சேர்க்கப்பட்டுள்ளார். மேலும் தகவலுக்கு தஞ்சமிடத்தை நேரடியாகத் தொடர்பு கொள்ளவும். விவரங்கள்: {viewLink}\n\nஇது சாத்தியமான பொருத்தமாக இருக்கலாம். தயவுசெய்து சரிபார்க்கவும்."
   }
 }

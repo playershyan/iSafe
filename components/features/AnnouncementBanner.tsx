@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { X } from 'lucide-react';
 import { useLowBandwidth } from '@/lib/contexts/LowBandwidthContext';
 
 interface AnnouncementBannerProps {
   text: string;
-  href?: string;
+  href?: string; // Kept for backward compatibility but not used
   variant?: 'info' | 'warning' | 'success' | 'error';
   dismissible?: boolean;
   locale?: string;
@@ -62,9 +61,9 @@ export function AnnouncementBanner({
 
   const styles = variantStyles[variant];
 
-  const content = (
+  return (
     <div
-      className={`flex items-center justify-between gap-3 border-b px-4 py-3 ${styles.bg} ${styles.border} ${styles.text} ${styles.hover} ${href ? 'cursor-pointer' : ''}`}
+      className={`flex items-center justify-between gap-3 border-b px-4 py-3 ${styles.bg} ${styles.border} ${styles.text}`}
     >
       <p className="flex-1 text-sm font-medium md:text-base">{text}</p>
       {dismissible && (
@@ -82,15 +81,5 @@ export function AnnouncementBanner({
       )}
     </div>
   );
-
-  if (href) {
-    return (
-      <Link href={href} className="block">
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
 }
 

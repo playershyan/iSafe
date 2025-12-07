@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { LanguageToggle } from './LanguageToggle';
 import { UserIconButton } from '@/components/features/UserIconButton';
 
 interface HeaderProps {
@@ -23,27 +22,20 @@ export async function Header({ locale }: HeaderProps) {
             {tCommon('appName')}
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <Link
               href={`/${locale}`}
-              className="rounded text-base text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base"
+              className="rounded text-sm text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base"
             >
               {t('home')}
             </Link>
             <Link
               href={`/${locale}/missing`}
-              className="rounded text-base text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base"
+              className="rounded text-sm text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base whitespace-nowrap"
             >
               {t('reportMissing')}
             </Link>
-            <Link
-              href={`/${locale}/compensation/apply`}
-              className="rounded text-base text-gray-700 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 md:text-base"
-            >
-              {t('compensation')}
-            </Link>
             <UserIconButton locale={locale} />
-          <LanguageToggle />
           </div>
         </div>
       </div>
