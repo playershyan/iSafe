@@ -50,7 +50,13 @@ export async function sendMatchNotification(
           } catch (relativeError) {
             // If both fail, try English
             if (loc !== 'en') {
-              logger.warn('Failed to load locale, trying English', { locale: loc, aliasError, relativeError });
+              const aliasErr = aliasError instanceof Error ? aliasError : new Error(String(aliasError));
+              const relativeErr = relativeError instanceof Error ? relativeError : new Error(String(relativeError));
+              logger.warn('Failed to load locale, trying English', aliasErr, { 
+                locale: loc, 
+                aliasError: aliasErr.message, 
+                relativeError: relativeErr.message 
+              });
               return await loadMessages('en');
             }
             throw new Error(`Failed to load translations for locale: ${loc}`);
@@ -89,7 +95,7 @@ export async function sendMatchNotification(
 
     // Validate messages structure
     if (!messages || !messages.notifications) {
-      logger.error('Invalid messages structure - missing notifications', { 
+      logger.error('Invalid messages structure - missing notifications', undefined, { 
         locale, 
         hasMessages: !!messages,
         hasNotifications: !!messages?.notifications 
@@ -104,7 +110,7 @@ export async function sendMatchNotification(
 
     // Validate template exists
     if (!messageTemplate || typeof messageTemplate !== 'string') {
-      logger.warn('Translation template not found or invalid, using English fallback', { 
+      logger.warn('Translation template not found or invalid, using English fallback', undefined, { 
         locale, 
         hasContact: !!shelterContactNumber,
         templateType: shelterContactNumber ? 'matchFound' : 'matchFoundNoContact'
@@ -116,7 +122,7 @@ export async function sendMatchNotification(
         : enMessages.notifications?.matchFoundNoContact;
       
       if (!fallbackTemplate || typeof fallbackTemplate !== 'string') {
-        logger.error('English fallback translation also missing', {
+        logger.error('English fallback translation also missing', undefined, {
           hasContact: !!shelterContactNumber
         });
         throw new Error('Failed to load notification translations');
