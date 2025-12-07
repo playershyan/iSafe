@@ -45,6 +45,9 @@ Execute each migration file in sequence using the Supabase SQL Editor:
 3. Copy contents of `003_phone_verifications.sql` → Execute
 4. Copy contents of `005_compensation_system.sql` → Execute
 5. Copy contents of `006_insert_gn_data.sql` → Execute
+6. Copy contents of `007_add_locale_to_compensation_applications.sql` → Execute
+7. Copy contents of `008_enable_rls_and_policies.sql` → Execute ⚠️ **SECURITY**
+8. Copy contents of `009_fix_function_search_path.sql` → Execute ⚠️ **SECURITY**
 
 **Note:** Migrations 004, 20241205_*, and 20241206_* are not needed for new setups as 001 already includes those changes.
 
@@ -114,19 +117,19 @@ node -e "const bcrypt = require('bcryptjs'); bcrypt.hash('YourPassword123!', 10)
 3. Set as **Public bucket**
 4. Configure file size limit (recommended: 10MB)
 
-### Step 6: Set Up Row Level Security (RLS)
+### Step 6: Row Level Security (RLS)
 
-The application uses service role key for most operations, but RLS should be configured for security:
+RLS is automatically enabled by migration `008_enable_rls_and_policies.sql`. This migration:
+- Enables RLS on all tables
+- Creates appropriate policies for public/service role access
+- Maintains security while allowing the application to function
 
-```sql
--- Enable RLS on sensitive tables
-ALTER TABLE compensation_admins ENABLE ROW LEVEL SECURITY;
-ALTER TABLE shelter_auth ENABLE ROW LEVEL SECURITY;
-ALTER TABLE staff_auth ENABLE ROW LEVEL SECURITY;
+**Note:** The application uses `SUPABASE_SERVICE_ROLE_KEY` which bypasses RLS, but RLS policies protect against:
+- Direct database access via anon key
+- Accidental exposure of credentials
+- Future authentication integration
 
--- Create policies as needed for your security requirements
--- (Details depend on your access control needs)
-```
+Migration `008` handles all RLS setup automatically.
 
 ## Migration Details
 

@@ -13,6 +13,9 @@ Run migrations in this exact order:
 4. 004_anonymous_users.sql          ⚪ PLACEHOLDER (no changes)
 5. 005_compensation_system.sql      ⭐ REQUIRED - Compensation
 6. 006_insert_gn_data.sql           ⭐ REQUIRED - GN divisions data
+7. 007_add_locale_to_compensation_applications.sql  ⭐ REQUIRED - Locale support
+8. 008_enable_rls_and_policies.sql  ⚠️  SECURITY - Enable RLS on all tables
+9. 009_fix_function_search_path.sql  ⚠️  SECURITY - Fix function search_path security issue
 ```
 
 **Total time:** ~5-10 minutes (006 is large)
@@ -63,11 +66,23 @@ If you have an existing database with some tables already created:
 ### 006_insert_gn_data.sql depends on:
 - ✅ administrative_divisions table (from 001)
 
+### 007_add_locale_to_compensation_applications.sql depends on:
+- ✅ compensation_applications table (from 005)
+
+### 008_enable_rls_and_policies.sql depends on:
+- ✅ All tables from previous migrations
+- Should be run after all tables are created
+
+### 009_fix_function_search_path.sql depends on:
+- ✅ Function update_updated_at_column (from 001, 002, 003, 005)
+- Can be run at any time after function is created
+- Fixes security warning from Supabase linter
+
 ## Quick Reference
 
 **New Setup:**
 ```bash
-1 → 2 → 3 → 5 → 6
+1 → 2 → 3 → 5 → 6 → 7 → 8 → 9
 ```
 
 **Existing Setup (camelCase):**

@@ -70,15 +70,24 @@ The banner configuration uses JSON format. You need to format it like this:
 
 ### Step 5: Add to Environment File
 
-In your `.env.local` file, add or update:
+In your `.env.local` file, add or update **ONE** `NEXT_PUBLIC_HERO_BANNER_IMAGES` variable with all your images:
 
+**For a single banner:**
 ```
 NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://your-image-url.com/desktop-banner.jpg","imageUrlMobile":"https://your-image-url.com/mobile-banner.jpg","linkUrl":"https://example.com","alt":"Banner description"}]
 ```
 
+**For multiple banners (slideshow):**
+```
+NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://your-image-url.com/desktop1.jpg","imageUrlMobile":"https://your-image-url.com/mobile1.jpg","linkUrl":"en/compensation/apply","alt":"English Banner"},{"imageUrlDesktop":"https://your-image-url.com/desktop2.jpg","imageUrlMobile":"https://your-image-url.com/mobile2.jpg","linkUrl":"si/compensation/apply","alt":"Sinhala Banner"},{"imageUrlDesktop":"https://your-image-url.com/desktop3.jpg","imageUrlMobile":"https://your-image-url.com/mobile3.jpg","linkUrl":"ta/compensation/apply","alt":"Tamil Banner"}]
+```
+
 **Important:** 
+- You can only have **ONE** `NEXT_PUBLIC_HERO_BANNER_IMAGES` variable. If you define it multiple times, only the last one will be used.
+- For multiple banners, combine them all into a single JSON array separated by commas
 - Put everything on one line (remove all line breaks from the JSON)
 - Make sure the JSON is valid (use an online JSON validator if unsure)
+- When you have multiple images, they will automatically rotate in a slideshow every 2 seconds
 
 ### Step 6: Restart Your Application
 
@@ -103,9 +112,39 @@ Here's a complete example:
 NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://res.cloudinary.com/myaccount/image/upload/v123/hero-desktop.jpg","imageUrlMobile":"https://res.cloudinary.com/myaccount/image/upload/v123/hero-mobile.jpg","linkUrl":"https://isafe.gov.lk/emergency-info","alt":"Emergency Information Banner"}]
 ```
 
-## Multiple Banners (Future Feature)
+## Multiple Banners (Slideshow)
 
-Currently, the system shows the first banner in the array. If you add multiple banners, only the first one will display. Future updates may support rotating banners or carousels.
+When you add multiple banner objects to the array, they will automatically rotate in a slideshow:
+- Each image displays for 2 seconds
+- Images transition smoothly with a fade effect
+- Navigation dots appear at the bottom (users can click to jump to any image)
+- The slideshow loops continuously
+
+**Example with 3 banners:**
+```json
+[
+  {
+    "imageUrlDesktop": "https://example.com/desktop-en.jpg",
+    "imageUrlMobile": "https://example.com/mobile-en.jpg",
+    "linkUrl": "en/compensation/apply",
+    "alt": "English Banner"
+  },
+  {
+    "imageUrlDesktop": "https://example.com/desktop-si.jpg",
+    "imageUrlMobile": "https://example.com/mobile-si.jpg",
+    "linkUrl": "si/compensation/apply",
+    "alt": "Sinhala Banner"
+  },
+  {
+    "imageUrlDesktop": "https://example.com/desktop-ta.jpg",
+    "imageUrlMobile": "https://example.com/mobile-ta.jpg",
+    "linkUrl": "ta/compensation/apply",
+    "alt": "Tamil Banner"
+  }
+]
+```
+
+**Important:** All images must be in the same environment variable as a single JSON array. Do NOT create separate variables like `NEXT_PUBLIC_HERO_BANNER_IMAGES_EN`, `NEXT_PUBLIC_HERO_BANNER_IMAGES_SI`, etc. - only the last one will be used!
 
 ## Troubleshooting
 

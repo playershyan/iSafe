@@ -98,6 +98,42 @@ All tables required for a functional iSafe installation:
 - All districts, DS divisions, and GN divisions
 - GN codes included
 
+### 007_add_locale_to_compensation_applications.sql
+**Purpose:** Adds locale column to compensation applications for SMS notifications.
+
+**Changes:**
+- Adds `locale` column (VARCHAR(10), defaults to 'en')
+- Creates index on locale
+- Updates existing records to 'en'
+
+### 008_enable_rls_and_policies.sql
+**Purpose:** Enable Row Level Security (RLS) on all tables for security compliance.
+
+**Changes:**
+- Enables RLS on all 14 tables
+- Creates policies for public read access where appropriate
+- Creates service role policies for admin operations
+- Restricts sensitive tables to service role only
+
+**Security Notes:**
+- Service role key bypasses RLS (application operations unaffected)
+- Public policies allow read access to reference data and active records
+- Sensitive tables (auth, admin, phone_verifications) restricted to service role
+
+### 009_fix_function_search_path.sql
+**Purpose:** Fix security warning for function search_path.
+
+**Changes:**
+- Updates `update_updated_at_column` function
+- Sets `search_path = public, pg_temp` to prevent search path attacks
+- Adds `SECURITY DEFINER` for proper privilege handling
+- Replaces function definition from all previous migrations
+
+**Security Notes:**
+- Prevents search path manipulation attacks
+- Function now uses explicit search_path
+- Required for production security compliance
+
 ## Legacy Migrations (For Existing Databases Only)
 
 These migrations should NOT be run on new databases as their changes are already included in `001_initial_schema.sql`:

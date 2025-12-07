@@ -152,12 +152,16 @@ END $$;
 -- 4. TRIGGER: Update updated_at timestamp
 -- =====================================================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- Create triggers (drop and recreate to ensure they're up to date)
 DROP TRIGGER IF EXISTS update_compensation_applications_updated_at ON compensation_applications;

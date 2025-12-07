@@ -8,6 +8,10 @@ import { compensationApplicationSchema } from '@/lib/utils/validation';
 import { createApplication, markSmsSent } from '@/lib/services/compensationService';
 import { z } from 'zod';
 import { textlkService } from '@/lib/services/textlkService';
+// Static imports for translations (Next.js can analyze these)
+import enMessages from '@/messages/en.json';
+import siMessages from '@/messages/si.json';
+import taMessages from '@/messages/ta.json';
 
 export async function POST(request: NextRequest) {
   try {
@@ -85,38 +89,19 @@ async function sendConfirmationSms(
   locale: string = 'en'
 ): Promise<void> {
   try {
-    // Load translations manually (similar to missing person notifications)
-    const loadMessages = async (loc: string): Promise<any> => {
-      try {
-        const importPath = `@/messages/${loc}.json`;
-        const relativePath = `../../messages/${loc}.json`;
-        
-        try {
-          return (await import(importPath)).default;
-        } catch (aliasError) {
-          try {
-            return (await import(relativePath)).default;
-          } catch (relativeError) {
-            if (loc !== 'en') {
-              return await loadMessages('en');
-            }
-            throw new Error(`Failed to load translations for locale: ${loc}`);
-          }
-        }
-      } catch (error) {
-        if (locale !== 'en') {
-          return await loadMessages('en');
-        }
-        throw error;
-      }
-    };
-
+    // Get messages based on locale (using static imports for Next.js compatibility)
     let messages: any;
-    try {
-      messages = await loadMessages(locale);
-    } catch (error) {
-      console.error('Failed to load translations, using English fallback', error);
-      messages = await loadMessages('en');
+    switch (locale) {
+      case 'si':
+        messages = siMessages;
+        break;
+      case 'ta':
+        messages = taMessages;
+        break;
+      case 'en':
+      default:
+        messages = enMessages;
+        break;
     }
 
     // Get SMS message template from translations
@@ -125,7 +110,6 @@ async function sendConfirmationSms(
     if (!messageTemplate || typeof messageTemplate !== 'string') {
       // Fallback to English if translation missing
       console.warn(`SMS message translation missing for locale: ${locale}, using English`);
-      const enMessages = await loadMessages('en');
       const fallbackMessage = enMessages?.compensation?.success?.smsMessage || 
         `Your disaster compensation application has been submitted successfully. Application Code: ${applicationCode}. The relevant authorities will contact you if you are eligible. For inquiries: Ministry of Defence 011-2430860, Disaster Management Centre 117.`;
       

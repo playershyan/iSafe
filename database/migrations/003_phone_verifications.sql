@@ -63,13 +63,18 @@ $$ LANGUAGE plpgsql;
 -- 3. UPDATE TRIGGER
 -- =====================================================
 -- Function should already exist from migration 001
+-- Updated with secure search_path setting
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 DROP TRIGGER IF EXISTS update_phone_verifications_updated_at ON phone_verifications;
 CREATE TRIGGER update_phone_verifications_updated_at

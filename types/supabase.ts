@@ -38,6 +38,7 @@ export interface Database {
           phone_verified: boolean
           sms_sent: boolean
           sms_sent_at: string | null
+          locale: string | null
         }
         Insert: {
           id?: string
@@ -59,6 +60,7 @@ export interface Database {
           phone_verified?: boolean
           sms_sent?: boolean
           sms_sent_at?: string | null
+          locale?: string | null
         }
         Update: {
           id?: string
@@ -80,6 +82,7 @@ export interface Database {
           phone_verified?: boolean
           sms_sent?: boolean
           sms_sent_at?: string | null
+          locale?: string | null
         }
       }
       compensation_claims: {

@@ -11,6 +11,9 @@ For a **new Supabase database**, run these migrations in order:
 3. `003_phone_verifications.sql` ⭐
 4. `005_compensation_system.sql` ⭐
 5. `006_insert_gn_data.sql` ⭐
+6. `007_add_locale_to_compensation_applications.sql` ⭐
+7. `008_enable_rls_and_policies.sql` ⚠️ **SECURITY**
+8. `009_fix_function_search_path.sql` ⚠️ **SECURITY**
 
 See [SETUP_GUIDE.md](../SETUP_GUIDE.md) for complete instructions.
 
@@ -26,6 +29,11 @@ See [SETUP_GUIDE.md](../SETUP_GUIDE.md) for complete instructions.
 | `004_anonymous_users.sql` | Placeholder (no changes) | ⚪ Optional |
 | `005_compensation_system.sql` | Compensation application system | ✅ Required |
 | `006_insert_gn_data.sql` | Grama Niladhari divisions data | ✅ Required |
+| `007_add_locale_to_compensation_applications.sql` | Add locale column for SMS | ✅ Required |
+| `008_enable_rls_and_policies.sql` | Enable RLS on all tables | ⚠️ Security |
+| `009_fix_function_search_path.sql` | Fix function search_path security | ⚠️ Security |
+| `007_add_locale_to_compensation_applications.sql` | Add locale column for SMS | ✅ Required |
+| `008_enable_rls_and_policies.sql` | Enable RLS on all tables | ⚠️ Security |
 
 ### Legacy Migrations (For Existing Databases Only)
 
@@ -57,8 +65,10 @@ Rollback scripts are available for legacy migrations:
 
 ### New Database
 ```
-1 → 2 → 3 → 5 → 6
+1 → 2 → 3 → 5 → 6 → 7 → 8
 ```
+
+**Note:** Migration 008 (RLS) is recommended for security but can be run later if needed.
 
 ### Existing Database (camelCase)
 ```
@@ -67,8 +77,8 @@ Rollback scripts are available for legacy migrations:
 
 ### Existing Database (snake_case)
 ```
-1 → 2 → 3 → 5 → 6
-(Skip legacy migrations)
+1 → 2 → 3 → 5 → 6 → 7 → 8
+(Skip legacy migrations if already applied)
 ```
 
 ## Tables Created

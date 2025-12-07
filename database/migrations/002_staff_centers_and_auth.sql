@@ -58,13 +58,18 @@ CREATE INDEX IF NOT EXISTS idx_staff_auth_access_code ON staff_auth(access_code)
 -- 3. UPDATE TRIGGERS
 -- =====================================================
 -- Function should already exist from migration 001, but ensure it exists
+-- Updated with secure search_path setting
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
 BEGIN
   NEW.updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- Create triggers for updated_at columns
 DROP TRIGGER IF EXISTS update_staff_centers_updated_at ON staff_centers;

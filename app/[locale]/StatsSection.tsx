@@ -22,28 +22,28 @@ export function StatsSection({ stats }: StatsSectionProps) {
           <h2 className="mb-8 text-center text-2xl font-bold text-gray-900 md:text-3xl">
             {t('liveStats')}
           </h2>
-          <div className="grid grid-cols-3 gap-6 text-center md:gap-8">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8">
-              <div className="text-3xl font-bold text-blue-600 md:text-4xl lg:text-5xl">
+          <div className="grid grid-cols-3 gap-4 text-center md:gap-8">
+            <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-4 md:p-8 min-h-[120px] overflow-hidden">
+              <div className="text-2xl font-bold text-blue-600 md:text-4xl lg:text-5xl">
                 {stats.totalMissing.toLocaleString()}
               </div>
-              <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
+              <div className="mt-2 text-[10px] font-medium text-gray-700 md:text-base px-1 break-words hyphens-auto text-center w-full">
                 {t('missing')}
               </div>
             </div>
-            <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8">
-              <div className="text-3xl font-bold text-green-600 md:text-4xl lg:text-5xl">
+            <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-4 md:p-8 min-h-[120px] overflow-hidden">
+              <div className="text-2xl font-bold text-green-600 md:text-4xl lg:text-5xl">
                 {stats.totalMatches.toLocaleString()}
               </div>
-              <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
+              <div className="mt-2 text-[10px] font-medium text-gray-700 md:text-base px-1 break-words hyphens-auto text-center w-full">
                 {t('found')}
               </div>
             </div>
-            <div className="rounded-lg border border-gray-200 bg-white p-6 md:p-8">
-              <div className="text-3xl font-bold text-purple-600 md:text-4xl lg:text-5xl">
+            <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-white p-4 md:p-8 min-h-[120px] overflow-hidden">
+              <div className="text-2xl font-bold text-purple-600 md:text-4xl lg:text-5xl">
                 {stats.totalPersons.toLocaleString()}
               </div>
-              <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
+              <div className="mt-2 text-[10px] font-medium text-gray-700 md:text-base px-1 break-words hyphens-auto text-center w-full">
                 {t('sheltered')}
               </div>
             </div>
@@ -63,28 +63,28 @@ export function StatsSection({ stats }: StatsSectionProps) {
           </span>
           {t('liveStats')}
         </h2>
-        <div className="grid grid-cols-3 gap-6 text-center md:gap-8">
-          <div className="rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 md:p-8">
-            <div className="text-3xl font-bold text-blue-600 md:text-4xl lg:text-5xl">
+        <div className="grid grid-cols-3 gap-4 text-center md:gap-8">
+          <div className="flex flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md transition-transform hover:scale-105 md:p-8 min-h-[120px] overflow-hidden">
+            <div className="text-2xl font-bold text-blue-600 md:text-4xl lg:text-5xl">
               {stats.totalMissing.toLocaleString()}
             </div>
-            <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
+            <div className="mt-2 text-[10px] font-medium text-gray-700 md:text-base px-1 break-words hyphens-auto text-center w-full">
               {t('missing')}
             </div>
           </div>
-          <div className="rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 md:p-8">
-            <div className="text-3xl font-bold text-green-600 md:text-4xl lg:text-5xl">
+          <div className="flex flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md transition-transform hover:scale-105 md:p-8 min-h-[120px] overflow-hidden">
+            <div className="text-2xl font-bold text-green-600 md:text-4xl lg:text-5xl">
               {stats.totalMatches.toLocaleString()}
             </div>
-            <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
+            <div className="mt-2 text-[10px] font-medium text-gray-700 md:text-base px-1 break-words hyphens-auto text-center w-full">
               {t('found')}
             </div>
           </div>
-          <div className="rounded-xl bg-white p-6 shadow-md transition-transform hover:scale-105 md:p-8">
-            <div className="text-3xl font-bold text-purple-600 md:text-4xl lg:text-5xl">
+          <div className="flex flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md transition-transform hover:scale-105 md:p-8 min-h-[120px] overflow-hidden">
+            <div className="text-2xl font-bold text-purple-600 md:text-4xl lg:text-5xl">
               {stats.totalPersons.toLocaleString()}
             </div>
-            <div className="mt-3 text-sm font-medium text-gray-700 md:text-base">
+            <div className="mt-2 text-[10px] font-medium text-gray-700 md:text-base px-1 break-words hyphens-auto text-center w-full">
               {t('sheltered')}
             </div>
           </div>
