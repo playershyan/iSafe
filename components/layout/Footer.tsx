@@ -12,12 +12,7 @@ export function Footer() {
     <footer className="border-t border-gray-200 bg-gray-50">
       {/* Mobile Footer: Re-arranged, Stacked */}
       <div className="block md:hidden">
-        <div className="px-4 py-6">
-          {/* Company Name */}
-          <div className="mb-4 text-center">
-            <p className="text-base font-semibold text-gray-900">Capitalist One (Pvt) Ltd</p>
-          </div>
-          
+        <div className="px-4 py-6 pb-20">
           {/* Navigation Links */}
           <nav className="mb-4 flex flex-wrap items-center justify-center gap-x-2 text-sm text-gray-600">
             <Link
@@ -48,6 +43,26 @@ export function Footer() {
               {t('terms')}
             </Link>
           </nav>
+          
+          {/* Contact Info */}
+          <div className="mb-3 text-center space-y-1">
+            <div>
+              <a
+                href="tel:0783607777"
+                className="text-sm text-gray-600 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+              >
+                Mobile: 0783607777
+              </a>
+            </div>
+            <div>
+              <a
+                href="mailto:colomboshyan@gmail.com"
+                className="text-sm text-gray-600 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+              >
+                Email: colomboshyan@gmail.com
+              </a>
+            </div>
+          </div>
           
           {/* Copyright */}
           <div className="mb-3 text-center">
@@ -100,11 +115,28 @@ export function Footer() {
                 </Link>
               </nav>
             </div>
-            {/* Bottom row: Designer Credit */}
-            <div className="text-center">
-              <p className="text-sm font-bold text-gray-500">
-                {tCommon('designedBy')}
-              </p>
+            {/* Bottom row: Contact Info and Designer Credit */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <a
+                  href="tel:0783607777"
+                  className="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                >
+                  Mobile: 0783607777
+                </a>
+                <span className="text-gray-400" aria-hidden="true">|</span>
+                <a
+                  href="mailto:colomboshyan@gmail.com"
+                  className="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+                >
+                  Email: colomboshyan@gmail.com
+                </a>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-gray-500">
+                  {tCommon('designedBy')}
+                </p>
+              </div>
             </div>
           </div>
         </div>
