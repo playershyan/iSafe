@@ -42,6 +42,11 @@ export default async function StaffPage({ params }: { params: Promise<{ locale: 
         />
       </div>
 
+      <div className="mt-6 text-center text-sm text-gray-600">
+        <p className="font-bold text-red-600">Default credentials - Center code: GOVCTR001 / Access code: ACCSEC789</p>
+        <p className="text-xs mt-1">(Please change after first login)</p>
+      </div>
+
       <div className="mt-6 rounded-lg bg-gray-50 p-4">
         <h3 className="mb-2 text-sm font-bold">{t('needHelp')}</h3>
         <p className="text-sm text-gray-700">
