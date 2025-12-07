@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import bcrypt from 'bcryptjs';
 
 export async function authenticateShelter(
@@ -15,7 +15,7 @@ export async function authenticateShelter(
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
     
     // Find shelter by code
     const { data: shelter, error: shelterError } = await supabase

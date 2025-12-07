@@ -9,7 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyCompensationAdminToken } from '@/lib/auth/compensationAdminAuth';
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Get all centers with their auth info
     const { data: centers, error: centersError } = await supabase
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validated = createCenterSchema.parse(body);
 
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Check if center code already exists
     const { data: existingCenter } = await supabase

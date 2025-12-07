@@ -9,7 +9,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyCompensationAdminToken } from '@/lib/auth/compensationAdminAuth';
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 
@@ -53,7 +53,7 @@ export async function PATCH(
     const body = await request.json();
     const validated = updateCenterSchema.parse(body);
 
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Check if center exists
     const { data: existingCenter } = await supabase
@@ -173,7 +173,7 @@ export async function DELETE(
       );
     }
 
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Delete auth record first (foreign key constraint)
     await supabase.from('staff_auth').delete().eq('center_id', id);

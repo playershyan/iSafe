@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { verifyShelterToken } from '@/lib/auth/jwt';
@@ -57,11 +57,117 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Generate unique ID
     const id = generateId();
     const now = new Date().toISOString();
+
+    // Verify shelter exists before inserting
+    let { data: shelter, error: shelterCheckError } = await supabase
+      .from('shelters')
+      .select('id, name, code')
+      .eq('id', validated.shelterId)
+      .maybeSingle();
+
+    // If shelter doesn't exist, check if it's a staff center and create corresponding shelter
+    if (shelterCheckError || !shelter) {
+      console.log('Shelter not found, checking if it\'s a staff center...');
+      
+      // Check if this is a staff center
+      const { data: staffCenter, error: staffCenterError } = await supabase
+        .from('staff_centers')
+        .select('id, name, code, district')
+        .eq('id', validated.shelterId)
+        .single();
+
+      if (staffCenter && !staffCenterError) {
+        console.log('Found staff center, creating corresponding shelter...', { 
+          id: staffCenter.id, 
+          code: staffCenter.code, 
+          name: staffCenter.name 
+        });
+        
+        // Create a corresponding shelter with the same ID
+        const { data: newShelter, error: createShelterError } = await supabase
+          .from('shelters')
+          .insert({
+            id: staffCenter.id,
+            name: staffCenter.name,
+            code: staffCenter.code,
+            district: staffCenter.district,
+            is_active: true,
+            created_at: now,
+            updated_at: now,
+            current_count: 0,
+          })
+          .select()
+          .single();
+
+        if (createShelterError) {
+          console.error('Failed to create shelter for staff center:', {
+            error: createShelterError,
+            code: createShelterError.code,
+            message: createShelterError.message,
+            details: createShelterError.details,
+            hint: createShelterError.hint,
+          });
+          
+          // Check if it's a unique constraint violation (shelter already exists)
+          if (createShelterError.code === '23505') {
+            // Try to fetch the existing shelter
+            const { data: existingShelter } = await supabase
+              .from('shelters')
+              .select('id, name, code')
+              .eq('id', staffCenter.id)
+              .single();
+            
+            if (existingShelter) {
+              shelter = existingShelter;
+              console.log('Shelter already exists, using existing:', { id: shelter.id, code: shelter.code });
+            } else {
+              return NextResponse.json(
+                { error: 'Shelter with this code already exists' },
+                { status: 409 }
+              );
+            }
+          } else {
+            return NextResponse.json(
+              { error: 'Failed to create shelter record', details: createShelterError.message },
+              { status: 500 }
+            );
+          }
+        } else if (!newShelter) {
+          console.error('Shelter creation returned null');
+          return NextResponse.json(
+            { error: 'Failed to create shelter record - no data returned' },
+            { status: 500 }
+          );
+        } else {
+          shelter = newShelter;
+        }
+
+        shelter = newShelter;
+        console.log('Created shelter for staff center:', { id: shelter.id, code: shelter.code });
+      } else {
+        console.error('Shelter not found and not a staff center:', { 
+          shelterId: validated.shelterId, 
+          error: shelterCheckError,
+          staffCenterError 
+        });
+        return NextResponse.json(
+          { error: 'Shelter not found' },
+          { status: 400 }
+        );
+      }
+    }
+
+    console.log('Creating person:', {
+      id,
+      name: validated.fullName,
+      shelterId: validated.shelterId,
+      shelterName: shelter.name,
+    });
 
     // Create person record
     const { data: person, error: createError } = await supabase
@@ -82,9 +188,42 @@ export async function POST(request: NextRequest) {
       .select()
       .single();
 
-    if (createError || !person) {
-      throw createError || new Error('Failed to create person');
+    if (createError) {
+      console.error('Error creating person:', {
+        error: createError,
+        code: createError.code,
+        message: createError.message,
+        details: createError.details,
+        hint: createError.hint,
+      });
+      
+      // Provide more specific error messages
+      if (createError.code === '23503') {
+        return NextResponse.json(
+          { error: 'Invalid shelter ID. The shelter does not exist.' },
+          { status: 400 }
+        );
+      }
+      
+      if (createError.code === '23505') {
+        return NextResponse.json(
+          { error: 'A person with this NIC already exists' },
+          { status: 409 }
+        );
+      }
+      
+      throw createError;
     }
+
+    if (!person) {
+      console.error('Person creation returned null data');
+      return NextResponse.json(
+        { error: 'Failed to create person record' },
+        { status: 500 }
+      );
+    }
+
+    console.log('Person created successfully:', { personId: person.id });
 
     // Find potential matches
     const matches = await findMatches({

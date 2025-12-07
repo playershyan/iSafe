@@ -16,7 +16,8 @@
     "optional": "optional",
     "next": "Next",
     "submitting": "Submitting...",
-    "copyright": "© 2025 iSafe. All rights reserved."
+    "copyright": "© 2025 Capitalist One (Pvt) Ltd. All rights reserved.",
+    "designedBy": "Designed and Built by K. L. G. Shyan Akarsha"
   },
   "nav": {
     "home": "Home",
@@ -371,7 +372,16 @@
       "claimsCount": "{count} claim(s) selected",
       "editSection": "Edit",
       "confirmSubmit": "I confirm that all information provided is accurate",
-      "submitApplication": "Submit Application"
+      "submitApplication": "Submit Application",
+      "labels": {
+        "name": "Name",
+        "nic": "NIC",
+        "phone": "Phone",
+        "address": "Address",
+        "district": "District",
+        "divisionalSecretariat": "DS",
+        "gramaNiladhari": "GN"
+      }
     },
     "success": {
       "title": "Application Submitted Successfully!",
@@ -454,17 +464,6 @@
       "gramaNiladhariRequired": "Grama Niladhari Division is required",
       "selectAtLeastOneClaim": "Select at least one claim type",
       "phoneVerificationRequired": "Phone verification is required"
-    },
-    "review": {
-      "labels": {
-        "name": "Name",
-        "nic": "NIC",
-        "phone": "Phone",
-        "address": "Address",
-        "district": "District",
-        "divisionalSecretariat": "DS",
-        "gramaNiladhari": "GN"
-      }
     }
   },
   "pages": {

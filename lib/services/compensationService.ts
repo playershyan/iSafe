@@ -3,7 +3,7 @@
  * Handles business logic for disaster compensation applications
  */
 
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import { Database } from '@/types/supabase';
 import type { ClaimType, CompensationFilter } from '@/lib/utils/validation';
 
@@ -50,7 +50,7 @@ export async function createApplication(
   data: CreateApplicationData
 ): Promise<{ success: boolean; application?: ApplicationWithClaims; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Generate unique application code
     let applicationCode = generateApplicationCode();
@@ -96,7 +96,8 @@ export async function createApplication(
 
     if (appError || !application) {
       console.error('Error creating application:', appError);
-      return { success: false, error: 'Failed to create application' };
+      console.error('Error details:', JSON.stringify(appError, null, 2));
+      return { success: false, error: appError?.message || 'Failed to create application' };
     }
 
     // Insert claims
@@ -113,9 +114,10 @@ export async function createApplication(
 
     if (claimsError || !claims) {
       console.error('Error creating claims:', claimsError);
+      console.error('Claims error details:', JSON.stringify(claimsError, null, 2));
       // Rollback application
       await supabase.from('compensation_applications').delete().eq('id', application.id);
-      return { success: false, error: 'Failed to create claims' };
+      return { success: false, error: claimsError?.message || 'Failed to create claims' };
     }
 
     return {
@@ -127,7 +129,9 @@ export async function createApplication(
     };
   } catch (error) {
     console.error('Error in createApplication:', error);
-    return { success: false, error: 'Internal server error' };
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    return { success: false, error: error instanceof Error ? error.message : 'Internal server error' };
   }
 }
 
@@ -148,7 +152,7 @@ export async function getApplications(
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Build query
     let query = supabase
@@ -233,7 +237,7 @@ export async function getApplicationById(
   id: string
 ): Promise<{ success: boolean; application?: ApplicationWithClaims; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     const { data: application, error } = await supabase
       .from('compensation_applications')
@@ -268,7 +272,7 @@ export async function updateApplicationStatus(
   reviewedBy?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     const { error } = await supabase
       .from('compensation_applications')
@@ -297,7 +301,7 @@ export async function updateApplicationStatus(
  */
 export async function markSmsSent(id: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     const { error } = await supabase
       .from('compensation_applications')
@@ -328,7 +332,7 @@ export async function getAdministrativeDivisions(): Promise<{
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     const { data: divisions, error } = await supabase
       .from('administrative_divisions')
@@ -359,7 +363,7 @@ export async function getDistricts(): Promise<{
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Query the districts table which contains all 25 districts
     const { data: districts, error } = await supabase
@@ -391,7 +395,7 @@ export async function getDivisionalSecretariats(
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     const { data: divisions, error } = await supabase
       .from('administrative_divisions')
@@ -423,7 +427,7 @@ export async function getGramaNiladhariDivisions(
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     const { data: divisions, error } = await supabase
       .from('administrative_divisions')
@@ -458,7 +462,7 @@ export async function getStatistics(): Promise<{
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Get all applications with claims
     const { data: applications, error } = await supabase

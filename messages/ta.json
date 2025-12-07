@@ -16,7 +16,8 @@
     "optional": "optional",
     "next": "Next",
     "submitting": "Submitting...",
-    "copyright": "© 2025 iSafe. All rights reserved."
+    "copyright": "© 2025 Capitalist One (Pvt) Ltd. All rights reserved.",
+    "designedBy": "Designed and Built by K. L. G. Shyan Akarsha"
   },
   "nav": {
     "home": "Home",
@@ -366,7 +367,16 @@
       "claimsCount": "{count} உரிமைகோரல்கள் தேர்ந்தெடுக்கப்பட்டன",
       "editSection": "திருத்தவும்",
       "confirmSubmit": "வழங்கப்பட்ட அனைத்து தகவல்களும் துல்லியமானவை என்பதை நான் உறுதிப்படுத்துகிறேன்",
-      "submitApplication": "விண்ணப்பத்தை சமர்ப்பிக்கவும்"
+      "submitApplication": "விண்ணப்பத்தை சமர்ப்பிக்கவும்",
+      "labels": {
+        "name": "பெயர்",
+        "nic": "NIC",
+        "phone": "தொலைபேசி",
+        "address": "முகவரி",
+        "district": "மாவட்டம்",
+        "divisionalSecretariat": "DS",
+        "gramaNiladhari": "GN"
+      }
     },
     "success": {
       "title": "விண்ணப்பம் வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது!",

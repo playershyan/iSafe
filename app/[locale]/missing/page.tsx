@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { getMissingPersons } from '@/lib/services/missingPersonsService';
 import { MissingPersonCard } from '@/components/features/MissingPersonCard';
 import { MissingPersonCardNoPhoto } from '@/components/features/MissingPersonCardNoPhoto';
+import { HeroSearchBar } from '@/components/features/HeroSearchBar';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -30,6 +31,11 @@ export default async function MissingPersonsPage({ params }: { params: Promise<{
             {t('title')}
           </Link>
         </div>
+      </div>
+
+      {/* Search Bar - Smaller version */}
+      <div className="mb-6">
+        <HeroSearchBar locale={locale} size="small" />
       </div>
 
       {/* Reports List */}

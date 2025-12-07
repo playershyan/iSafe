@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
@@ -8,7 +8,7 @@ import { Alert } from '@/components/ui/Alert';
 import { Loading } from '@/components/ui/Loading';
 import { Toast } from '@/components/ui/Toast';
 import type { Database } from '@/types/supabase';
-import { Save, LogOut } from 'lucide-react';
+import { Save, LogOut, HelpCircle } from 'lucide-react';
 import clsx from 'clsx';
 
 type CompensationApplication = Database['public']['Tables']['compensation_applications']['Row'];
@@ -33,6 +33,7 @@ export default function CompensationDashboardPage({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<any>(null);
+  const errorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Filters
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -60,11 +61,25 @@ export default function CompensationDashboardPage({
   useEffect(() => {
     loadApplications();
     loadStats();
+    
+    // Cleanup error timeout on unmount or when dependencies change
+    return () => {
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+        errorTimeoutRef.current = null;
+      }
+    };
   }, [statusFilter, districtFilter, searchQuery, currentPage]);
 
   const loadApplications = async () => {
     try {
       setIsLoading(true);
+      
+      // Clear existing error timeout
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+        errorTimeoutRef.current = null;
+      }
       setError(null);
 
       const queryParams = new URLSearchParams();
@@ -89,8 +104,16 @@ export default function CompensationDashboardPage({
 
       setApplications(data.applications || []);
       setTotalPages(data.pagination?.totalPages || 1);
+      setError(null); // Clear any previous errors on success
     } catch (err: any) {
-      setError(err.message || 'Failed to load applications');
+      const errorMessage = err.message || 'Failed to load applications';
+      setError(errorMessage);
+      
+      // Auto-dismiss error after 10 seconds
+      errorTimeoutRef.current = setTimeout(() => {
+        setError(null);
+        errorTimeoutRef.current = null;
+      }, 10000);
     } finally {
       setIsLoading(false);
     }
@@ -107,6 +130,16 @@ export default function CompensationDashboardPage({
     } catch (err) {
       console.error('Failed to load stats:', err);
     }
+  };
+
+  const dismissError = () => {
+    // Clear the timeout if it exists
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+      errorTimeoutRef.current = null;
+    }
+    // Clear the error state
+    setError(null);
   };
 
   const handleLogout = async () => {
@@ -267,7 +300,7 @@ export default function CompensationDashboardPage({
               <LogOut className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </div>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 items-center">
             <Button 
               variant="secondary" 
               onClick={() => router.push(`/${locale}/compensation/dashboard/staff-centers`)}
@@ -276,17 +309,14 @@ export default function CompensationDashboardPage({
             >
               Manage Staff Centers
             </Button>
-            <Button 
-              variant="secondary" 
+            <button
               onClick={() => router.push(`/${locale}/compensation/dashboard/help`)}
-              size="small"
-              className="w-full md:w-auto"
+              className="flex items-center justify-center w-12 h-12 rounded border-2 border-primary bg-white text-primary hover:bg-primary hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              title="Help & Guides"
+              aria-label="Help & Guides"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Help & Guides
-            </Button>
+              <HelpCircle className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
@@ -389,7 +419,17 @@ export default function CompensationDashboardPage({
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {error && (
             <div className="p-4">
-              <Alert variant="error">{error}</Alert>
+              <div className="flex items-center justify-between">
+                <Alert variant="error">{error}</Alert>
+                <button
+                  onClick={dismissError}
+                  className="ml-4 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded p-1"
+                  aria-label="Dismiss error"
+                  title="Dismiss"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           )}
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import { z } from 'zod';
 import { generatePosterCode, generateId } from '@/lib/utils/helpers';
 import { getAnonymousUserIdFromCookies, setAnonymousUserIdCookie } from '@/lib/utils/anonymousUser';
@@ -32,7 +32,7 @@ const createMissingPersonSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
     const cookieStore = await cookies();
     const body = await request.json();
     
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
     const { searchParams } = new URL(request.url);
     const posterCode = searchParams.get('posterCode');
 

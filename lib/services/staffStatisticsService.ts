@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 
 export interface StaffStatistics {
   centerPersonsCount: number;
@@ -14,7 +14,7 @@ export interface CenterPerson {
 
 export async function getStaffStatistics(centerId: string): Promise<StaffStatistics> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
     
     // Count persons in the specific center (using center ID as shelter ID)
     const { count: centerCount, error: centerError } = await supabase
@@ -50,7 +50,7 @@ export async function getStaffStatistics(centerId: string): Promise<StaffStatist
 
 export async function getCenterPersons(centerId: string): Promise<CenterPerson[]> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
     
     const { data: persons, error } = await supabase
       .from('persons')

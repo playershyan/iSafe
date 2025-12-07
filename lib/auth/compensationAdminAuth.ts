@@ -3,7 +3,7 @@
  * Handles authentication for compensation dashboard administrators
  */
 
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 
@@ -35,7 +35,7 @@ export async function authenticateCompensationAdmin(
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
 
     // Find admin by username
     const { data: admin, error: adminError } = await supabase
@@ -46,6 +46,7 @@ export async function authenticateCompensationAdmin(
       .single();
 
     if (adminError || !admin) {
+      console.error('Admin lookup error:', adminError);
       return {
         success: false,
         error: 'Invalid username or password',

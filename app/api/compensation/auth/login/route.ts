@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     );
 
     if (!success || !admin) {
+      console.error('Admin authentication failed:', error);
       return NextResponse.json(
         { error: error || 'Authentication failed' },
         { status: 401 }

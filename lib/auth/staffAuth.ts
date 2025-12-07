@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { getServiceRoleClient } from '@/lib/supabase/serviceRoleClient';
 import bcrypt from 'bcryptjs';
 
 export async function authenticateStaff(
@@ -15,21 +15,46 @@ export async function authenticateStaff(
   error?: string;
 }> {
   try {
-    const supabase = await createClient();
+    const supabase = getServiceRoleClient();
+    
+    // Normalize center code - trim and uppercase
+    const normalizedCode = centerCode.trim().toUpperCase();
+    
+    console.log('Staff auth attempt:', { centerCode, normalizedCode });
     
     // Find staff center by code
     const { data: center, error: centerError } = await supabase
       .from('staff_centers')
       .select('*')
-      .eq('code', centerCode.toUpperCase())
+      .eq('code', normalizedCode)
       .single();
 
-    if (centerError || !center) {
+    if (centerError) {
+      console.error('Error finding staff center:', centerError);
+      return {
+        success: false,
+        error: centerError.code === 'PGRST116' ? 'Center not found' : `Database error: ${centerError.message}`,
+      };
+    }
+
+    if (!center) {
+      console.error('Center not found for code:', normalizedCode);
       return {
         success: false,
         error: 'Center not found',
       };
     }
+    
+    // Check if center is active
+    if (!center.is_active) {
+      console.error('Center is inactive:', { id: center.id, code: center.code });
+      return {
+        success: false,
+        error: 'Center is inactive',
+      };
+    }
+    
+    console.log('Center found:', { id: center.id, code: center.code, name: center.name, isActive: center.is_active });
 
     // Find authentication record for this center
     const { data: auth, error: authError } = await supabase
@@ -47,6 +72,8 @@ export async function authenticateStaff(
 
     // Verify access code
     const isValid = await bcrypt.compare(accessCode, auth.access_code);
+    
+    console.log('Access code verification:', { isValid, providedCode: accessCode.substring(0, 3) + '...' });
 
     if (!isValid) {
       return {

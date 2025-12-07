@@ -138,7 +138,11 @@ NEXT_PUBLIC_HERO_BANNER_IMAGES
 
 ### Step 4: Format the Configuration
 
-The banner configuration uses JSON format. You need to format it like this:
+The banner configuration uses JSON format. You can add **one or more** banner images. Multiple images will automatically create a rotating slideshow.
+
+#### Single Image Format
+
+For a single banner image:
 
 \`\`\`json
 [
@@ -151,23 +155,65 @@ The banner configuration uses JSON format. You need to format it like this:
 ]
 \`\`\`
 
+#### Multiple Images Format (Slideshow)
+
+To add multiple images that will rotate automatically:
+
+\`\`\`json
+[
+  {
+    "imageUrlDesktop": "https://your-image-url.com/desktop-banner-1.jpg",
+    "imageUrlMobile": "https://your-image-url.com/mobile-banner-1.jpg",
+    "linkUrl": "https://example.com/page-1",
+    "alt": "First banner description"
+  },
+  {
+    "imageUrlDesktop": "https://your-image-url.com/desktop-banner-2.jpg",
+    "imageUrlMobile": "https://your-image-url.com/mobile-banner-2.jpg",
+    "linkUrl": "https://example.com/page-2",
+    "alt": "Second banner description"
+  },
+  {
+    "imageUrlDesktop": "https://your-image-url.com/desktop-banner-3.jpg",
+    "imageUrlMobile": "https://your-image-url.com/mobile-banner-3.jpg",
+    "linkUrl": "https://example.com/page-3",
+    "alt": "Third banner description"
+  }
+]
+\`\`\`
+
 **Explanation of each field:**
 - \`imageUrlDesktop\`: The image URL for desktop/tablet screens (required)
 - \`imageUrlMobile\`: The image URL for mobile phones (required)
 - \`linkUrl\`: Where users go when they click the banner (optional - leave out if you don't want a link)
 - \`alt\`: Description text for accessibility (optional but recommended)
 
+**Important Notes about Multiple Images:**
+- Each image in the array must be a separate object with its own desktop/mobile URLs
+- When you add multiple images, they will automatically rotate every 2 seconds
+- Users can click on the dots at the bottom to manually switch between images
+- Each image can have its own unique link URL
+- There's no limit to how many images you can add (though 3-5 is recommended for best performance)
+
 ### Step 5: Add to Environment File
 
 In your \`.env.local\` file, add or update:
 
+**For a single image:**
 \`\`\`
 NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://your-image-url.com/desktop-banner.jpg","imageUrlMobile":"https://your-image-url.com/mobile-banner.jpg","linkUrl":"https://example.com","alt":"Banner description"}]
+\`\`\`
+
+**For multiple images (slideshow):**
+\`\`\`
+NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://your-image-url.com/desktop-banner-1.jpg","imageUrlMobile":"https://your-image-url.com/mobile-banner-1.jpg","linkUrl":"https://example.com/page-1","alt":"First banner"},{"imageUrlDesktop":"https://your-image-url.com/desktop-banner-2.jpg","imageUrlMobile":"https://your-image-url.com/mobile-banner-2.jpg","linkUrl":"https://example.com/page-2","alt":"Second banner"},{"imageUrlDesktop":"https://your-image-url.com/desktop-banner-3.jpg","imageUrlMobile":"https://your-image-url.com/mobile-banner-3.jpg","linkUrl":"https://example.com/page-3","alt":"Third banner"}]
 \`\`\`
 
 **Important:** 
 - Put everything on one line (remove all line breaks from the JSON)
 - Make sure the JSON is valid (use an online JSON validator if unsure)
+- When adding multiple images, separate each image object with a comma
+- Each image object must be enclosed in curly braces \`{}\`
 
 ### Step 6: Restart Your Application
 
@@ -184,13 +230,27 @@ Visit your home page and verify:
 - The mobile version shows on phones
 - Clicking the banner (if you set a link) takes you to the correct page
 
-## Example Configuration
+## Example Configurations
 
-Here's a complete example:
+### Single Image Example
 
 \`\`\`
 NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://res.cloudinary.com/myaccount/image/upload/v123/hero-desktop.jpg","imageUrlMobile":"https://res.cloudinary.com/myaccount/image/upload/v123/hero-mobile.jpg","linkUrl":"https://isafe.gov.lk/emergency-info","alt":"Emergency Information Banner"}]
 \`\`\`
+
+### Multiple Images Example (Slideshow)
+
+Here's an example with three different banners that will rotate automatically:
+
+\`\`\`
+NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://res.cloudinary.com/myaccount/image/upload/v123/compensation-desktop.jpg","imageUrlMobile":"https://res.cloudinary.com/myaccount/image/upload/v123/compensation-mobile.jpg","linkUrl":"en/compensation/apply","alt":"Allowance application"},{"imageUrlDesktop":"https://res.cloudinary.com/myaccount/image/upload/v123/emergency-desktop.jpg","imageUrlMobile":"https://res.cloudinary.com/myaccount/image/upload/v123/emergency-mobile.jpg","linkUrl":"https://isafe.gov.lk/emergency-info","alt":"Emergency Information"},{"imageUrlDesktop":"https://res.cloudinary.com/myaccount/image/upload/v123/help-desktop.jpg","imageUrlMobile":"https://res.cloudinary.com/myaccount/image/upload/v123/help-mobile.jpg","linkUrl":"en/contact","alt":"Contact Us"}]
+\`\`\`
+
+**What happens with multiple images:**
+- Images automatically rotate every 2 seconds
+- Users see navigation dots at the bottom to manually switch between images
+- Each image can link to a different page when clicked
+- All images share the same size and positioning on the page
 
 ## Troubleshooting
 
@@ -213,15 +273,32 @@ NEXT_PUBLIC_HERO_BANNER_IMAGES=[{"imageUrlDesktop":"https://res.cloudinary.com/m
   - Verify the URL starts with \`http://\` or \`https://\`
   - Test the URL directly in your browser
 
+## Tips for Multiple Images
+
+When using multiple banner images:
+
+- **Image Count:** 3-5 images work best. Too many may slow down page loading
+- **Consistent Sizing:** Keep all images the same dimensions for a smooth slideshow experience
+- **Different Links:** Each image can link to a different page - useful for promoting multiple features
+- **Alt Text:** Use descriptive alt text for each image for better accessibility
+- **Same Locale:** If you have locale-specific banners, each locale can have its own set of images
+- **Auto-rotation:** Images automatically change every 2 seconds - users can pause by clicking a dot
+
 ## Quick Reference
 
 **Environment Variable:** \`NEXT_PUBLIC_HERO_BANNER_IMAGES\`
 
-**Format:** JSON array with one object
+**Format:** JSON array with one or more objects
+
+**Single Image:** Array with one object \`[{...}]\`
+
+**Multiple Images:** Array with multiple objects \`[{...}, {...}, {...}]\` (creates slideshow)
 
 **Required Fields:** \`imageUrlDesktop\`, \`imageUrlMobile\`
 
 **Optional Fields:** \`linkUrl\`, \`alt\`
+
+**Slideshow:** Automatically enabled when array has 2+ images, rotates every 2 seconds
 
 **Where to edit:** \`.env.local\` file or hosting platform environment variables`,
 

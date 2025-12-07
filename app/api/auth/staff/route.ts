@@ -17,17 +17,26 @@ export async function POST(request: NextRequest) {
     const validated = staffAuthSchema.parse(body);
 
     // Authenticate staff
+    console.log('Staff auth request:', { 
+      code: validated.shelterCode, 
+      codeLength: validated.shelterCode.length,
+      accessCodeLength: validated.accessCode.length 
+    });
+    
     const authResult = await authenticateStaff(
       validated.shelterCode,
       validated.accessCode
     );
 
     if (!authResult.success || !authResult.center) {
+      console.error('Staff auth failed:', authResult.error);
       return NextResponse.json(
         { error: authResult.error || 'Authentication failed' },
         { status: 401 }
       );
     }
+    
+    console.log('Staff auth successful:', { centerId: authResult.center.id, centerCode: authResult.center.code });
 
     // Create JWT token (reusing shelter token structure for compatibility)
     const token = await createShelterToken({
