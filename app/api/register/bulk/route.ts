@@ -139,8 +139,9 @@ export async function POST(request: NextRequest) {
             { status: 500 }
           );
         } else {
+          // newShelter is guaranteed to be non-null here
           shelter = newShelter;
-          console.log('Created shelter for staff center:', { id: shelter.id, code: shelter.code });
+          console.log('Created shelter for staff center:', { id: newShelter.id, code: newShelter.code });
         }
       } else {
         console.error('Shelter not found and not a staff center:', { 

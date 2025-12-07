@@ -144,11 +144,10 @@ export async function POST(request: NextRequest) {
             { status: 500 }
           );
         } else {
+          // newShelter is guaranteed to be non-null here
           shelter = newShelter;
+          console.log('Created shelter for staff center:', { id: newShelter.id, code: newShelter.code });
         }
-
-        shelter = newShelter;
-        console.log('Created shelter for staff center:', { id: shelter.id, code: shelter.code });
       } else {
         console.error('Shelter not found and not a staff center:', { 
           shelterId: validated.shelterId, 
@@ -160,6 +159,14 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+    }
+
+    // Final check: shelter must exist at this point
+    if (!shelter) {
+      return NextResponse.json(
+        { error: 'Shelter record not available' },
+        { status: 500 }
+      );
     }
 
     console.log('Creating person:', {

@@ -64,11 +64,6 @@ export function Footer() {
             </div>
           </div>
           
-          {/* Copyright */}
-          <div className="mb-3 text-center">
-            <p className="text-sm text-gray-600">{tCommon('copyright')}</p>
-          </div>
-          
           {/* Designer Credit */}
           <div className="text-center">
             <p className="text-sm font-bold text-gray-500">
@@ -82,9 +77,8 @@ export function Footer() {
       <div className="hidden md:block">
         <div className="mx-auto max-w-7xl px-8 py-4">
           <div className="flex flex-col gap-3">
-            {/* Top row: Copyright and Navigation */}
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-600">{tCommon('copyright')}</p>
+            {/* Top row: Navigation */}
+            <div className="flex items-center justify-end">
               <nav className="flex items-center gap-x-4 text-sm text-gray-600">
                 <Link
                   href={`/${locale}/about`}
