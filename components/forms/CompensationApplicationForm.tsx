@@ -169,7 +169,14 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
   };
 
   const updateField = (field: keyof FormData, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value };
+      // Reset phone verification if phone number changes
+      if (field === 'applicantPhone' && value !== prev.applicantPhone) {
+        updated.phoneVerified = false;
+      }
+      return updated;
+    });
     // Clear error when user updates field
     if (errors[field]) {
       setErrors(prev => {
@@ -201,10 +208,30 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
 
     switch (currentStep) {
       case 1:
-        if (!formData.applicantName.trim()) newErrors.applicantName = t('errors.nameRequired');
-        if (!formData.applicantNic.trim()) newErrors.applicantNic = t('errors.nicRequired');
-        if (!formData.applicantPhone.trim()) newErrors.applicantPhone = t('errors.phoneRequired');
-        if (!formData.applicantAddress.trim()) newErrors.applicantAddress = t('errors.addressRequired');
+        if (!formData.applicantName.trim() || formData.applicantName.trim().length < 2) {
+          newErrors.applicantName = t('errors.nameRequired');
+        }
+        if (!formData.applicantNic.trim()) {
+          newErrors.applicantNic = t('errors.nicRequired');
+        } else {
+          // Validate NIC format
+          const nicRegex = /^(\d{9}[VvXx]|\d{12})$/;
+          if (!nicRegex.test(formData.applicantNic)) {
+            newErrors.applicantNic = 'Invalid NIC format (e.g., 199512345678 or 951234567V)';
+          }
+        }
+        if (!formData.applicantPhone.trim()) {
+          newErrors.applicantPhone = t('errors.phoneRequired');
+        } else {
+          // Validate phone format
+          const phoneRegex = /^0\d{9}$/;
+          if (!phoneRegex.test(formData.applicantPhone)) {
+            newErrors.applicantPhone = 'Invalid phone number (e.g., 0771234567)';
+          }
+        }
+        if (!formData.applicantAddress.trim() || formData.applicantAddress.trim().length < 10) {
+          newErrors.applicantAddress = t('errors.addressRequired');
+        }
         break;
 
       case 2:
@@ -220,6 +247,39 @@ export function CompensationApplicationForm({ locale }: CompensationApplicationF
         break;
 
       case 4:
+        if (!formData.phoneVerified) newErrors.phoneVerified = t('errors.phoneVerificationRequired');
+        break;
+
+      case 5:
+        // Validate all steps before final submission
+        if (!formData.applicantName.trim() || formData.applicantName.trim().length < 2) {
+          newErrors.applicantName = t('errors.nameRequired');
+        }
+        if (!formData.applicantNic.trim()) {
+          newErrors.applicantNic = t('errors.nicRequired');
+        } else {
+          const nicRegex = /^(\d{9}[VvXx]|\d{12})$/;
+          if (!nicRegex.test(formData.applicantNic)) {
+            newErrors.applicantNic = 'Invalid NIC format';
+          }
+        }
+        if (!formData.applicantPhone.trim()) {
+          newErrors.applicantPhone = t('errors.phoneRequired');
+        } else {
+          const phoneRegex = /^0\d{9}$/;
+          if (!phoneRegex.test(formData.applicantPhone)) {
+            newErrors.applicantPhone = 'Invalid phone number';
+          }
+        }
+        if (!formData.applicantAddress.trim() || formData.applicantAddress.trim().length < 10) {
+          newErrors.applicantAddress = t('errors.addressRequired');
+        }
+        if (!formData.district) newErrors.district = t('errors.districtRequired');
+        if (!formData.divisionalSecretariat)
+          newErrors.divisionalSecretariat = t('errors.divisionalSecretariatRequired');
+        if (!formData.gramaNiladhariDivision)
+          newErrors.gramaNiladhariDivision = t('errors.gramaNiladhariRequired');
+        if (formData.claims.length === 0) newErrors.claims = t('errors.selectAtLeastOneClaim');
         if (!formData.phoneVerified) newErrors.phoneVerified = t('errors.phoneVerificationRequired');
         break;
     }
