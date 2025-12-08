@@ -103,7 +103,7 @@ export function ShelterAuthForm({ locale, shelterCodeLabel, accessCodeLabel, sub
         <button
           type="button"
           onClick={() => setShowAccessCode(!showAccessCode)}
-          className="absolute right-3 top-[52px] text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded p-1 transition-colors"
+          className="absolute right-3 top-[56px] text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded p-1 transition-colors"
           aria-label={showAccessCode ? 'Hide access code' : 'Show access code'}
         >
           {showAccessCode ? (

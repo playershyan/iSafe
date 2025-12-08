@@ -8,7 +8,7 @@ import { Alert } from '@/components/ui/Alert';
 import { Loading } from '@/components/ui/Loading';
 import { Toast } from '@/components/ui/Toast';
 import type { Database } from '@/types/supabase';
-import { Save, LogOut, HelpCircle } from 'lucide-react';
+import { Save, LogOut, HelpCircle, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
 
 type CompensationApplication = Database['public']['Tables']['compensation_applications']['Row'];
@@ -53,6 +53,11 @@ export default function CompensationDashboardPage({
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
+
+  // Bulk selection
+  const [selectedApplicationIds, setSelectedApplicationIds] = useState<Set<string>>(new Set());
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     params.then((p) => setLocale(p.locale));
@@ -285,6 +290,65 @@ export default function CompensationDashboardPage({
     }
   };
 
+  const handleSelectAll = () => {
+    if (selectedApplicationIds.size === applications.length) {
+      setSelectedApplicationIds(new Set());
+    } else {
+      setSelectedApplicationIds(new Set(applications.map(app => app.id)));
+    }
+  };
+
+  const handleSelectApplication = (applicationId: string) => {
+    const newSelected = new Set(selectedApplicationIds);
+    if (newSelected.has(applicationId)) {
+      newSelected.delete(applicationId);
+    } else {
+      newSelected.add(applicationId);
+    }
+    setSelectedApplicationIds(newSelected);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedApplicationIds.size === 0) return;
+
+    setIsDeleting(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/compensation/applications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          applicationIds: Array.from(selectedApplicationIds),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete applications');
+      }
+
+      // Show success toast
+      setToastMessage(`Successfully deleted ${selectedApplicationIds.size} application(s)`);
+      setToastType('success');
+      setShowToast(true);
+
+      // Clear selection and reload
+      setSelectedApplicationIds(new Set());
+      setShowDeleteConfirm(false);
+      await loadApplications();
+      await loadStats();
+    } catch (err: any) {
+      setError(err.message || 'Failed to delete applications');
+      setToastMessage(err.message || 'Failed to delete applications');
+      setToastType('error');
+      setShowToast(true);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gray-50 py-6 px-4">
       <div className="max-w-7xl mx-auto">
@@ -417,6 +481,24 @@ export default function CompensationDashboardPage({
 
         {/* Applications Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
+          {/* Bulk Actions Bar */}
+          {!isLoading && applications.length > 0 && selectedApplicationIds.size > 0 && (
+            <div className="bg-primary/10 border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+              <div className="text-sm text-gray-700">
+                <span className="font-medium">{selectedApplicationIds.size}</span> application(s) selected
+              </div>
+              <Button
+                variant="danger"
+                size="small"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={isDeleting}
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete Selected
+              </Button>
+            </div>
+          )}
+
           {error && (
             <div className="p-4">
               <div className="flex items-center justify-between">
@@ -444,6 +526,15 @@ export default function CompensationDashboardPage({
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="px-4 py-3 text-left">
+                      <input
+                        type="checkbox"
+                        checked={selectedApplicationIds.size === applications.length && applications.length > 0}
+                        onChange={handleSelectAll}
+                        className="rounded border-gray-300 text-primary focus:ring-primary"
+                        aria-label="Select all applications"
+                      />
+                    </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {t('applicationCode')}
                     </th>
@@ -473,6 +564,15 @@ export default function CompensationDashboardPage({
                 <tbody className="bg-white divide-y divide-gray-200">
                   {applications.map((app) => (
                     <tr key={app.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <input
+                          type="checkbox"
+                          checked={selectedApplicationIds.has(app.id)}
+                          onChange={() => handleSelectApplication(app.id)}
+                          className="rounded border-gray-300 text-primary focus:ring-primary"
+                          aria-label={`Select application ${app.application_code}`}
+                        />
+                      </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm font-mono font-medium text-primary">
                         {app.application_code}
                       </td>
@@ -759,6 +859,35 @@ export default function CompensationDashboardPage({
                     </Button>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Confirm Deletion</h2>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete <strong>{selectedApplicationIds.size}</strong> application(s)? 
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={handleBulkDelete}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete'}
+                </Button>
               </div>
             </div>
           </div>

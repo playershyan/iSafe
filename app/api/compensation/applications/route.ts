@@ -79,3 +79,89 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+const bulkDeleteSchema = z.object({
+  applicationIds: z.array(z.string().uuid()).min(1, 'At least one application ID is required'),
+});
+
+/**
+ * Bulk delete compensation applications
+ * DELETE /api/compensation/applications
+ */
+export async function DELETE(request: NextRequest) {
+  try {
+    // Verify authentication
+    const cookieStore = await cookies();
+    const token = cookieStore.get('compensation_admin_token')?.value;
+
+    if (!token) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const session = await verifyCompensationAdminToken(token);
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Invalid or expired session' },
+        { status: 401 }
+      );
+    }
+
+    // Parse request body
+    const body = await request.json();
+    const validated = bulkDeleteSchema.parse(body);
+
+    const { getServiceRoleClient } = await import('@/lib/supabase/serviceRoleClient');
+    const supabase = getServiceRoleClient();
+
+    // Delete claims first (due to foreign key constraint)
+    const { error: claimsDeleteError } = await supabase
+      .from('compensation_claims')
+      .delete()
+      .in('application_id', validated.applicationIds);
+
+    if (claimsDeleteError) {
+      console.error('Error deleting claims:', claimsDeleteError);
+      return NextResponse.json(
+        { error: 'Failed to delete claims', details: claimsDeleteError.message },
+        { status: 500 }
+      );
+    }
+
+    // Delete applications
+    const { error: applicationsDeleteError, count } = await supabase
+      .from('compensation_applications')
+      .delete()
+      .in('id', validated.applicationIds)
+      .select('*', { count: 'exact', head: false });
+
+    if (applicationsDeleteError) {
+      console.error('Error deleting applications:', applicationsDeleteError);
+      return NextResponse.json(
+        { error: 'Failed to delete applications', details: applicationsDeleteError.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      deletedCount: validated.applicationIds.length,
+      message: `Successfully deleted ${validated.applicationIds.length} application(s)`,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request', details: error.errors },
+        { status: 400 }
+      );
+    }
+
+    console.error('Error deleting applications:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
