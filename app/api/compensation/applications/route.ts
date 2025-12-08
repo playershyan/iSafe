@@ -131,11 +131,10 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Delete applications
-    const { error: applicationsDeleteError, count } = await supabase
+    const { error: applicationsDeleteError } = await supabase
       .from('compensation_applications')
       .delete()
-      .in('id', validated.applicationIds)
-      .select('*', { count: 'exact', head: false });
+      .in('id', validated.applicationIds);
 
     if (applicationsDeleteError) {
       console.error('Error deleting applications:', applicationsDeleteError);
